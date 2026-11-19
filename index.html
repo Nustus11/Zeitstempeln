@@ -21,7 +21,7 @@
 @media (prefers-color-scheme: light){
   :root:not([data-theme=dark]){
     --bg:#f2f2f7; --text:#000; --sec:rgba(60,60,67,.6); --ter:rgba(60,60,67,.3);
-    --glass:rgba(255,255,255,.55); --glass-strong:rgba(255,255,255,.82); --edge:rgba(255,255,255,.7); --hi:rgba(255,255,255,.9);
+    --glass:rgba(255,255,255,.55); --glass-strong:rgba(255,255,255,.82); --edge:rgba(0,0,0,.06); --hi:rgba(255,255,255,.6);
     --sep:rgba(60,60,67,.14); --fill:rgba(118,118,128,.12); --shadow:0 10px 40px rgba(31,38,135,.12);
     --blue:#007AFF; --green:#34C759; --orange:#FF9500; --red:#FF3B30; --indigo:#5856D6;
     --b1:#93c5fd; --b2:#99f6e4; --b3:#c4b5fd;
@@ -29,7 +29,7 @@
 }
 :root[data-theme=light]{
     --bg:#f2f2f7; --text:#000; --sec:rgba(60,60,67,.6); --ter:rgba(60,60,67,.3);
-    --glass:rgba(255,255,255,.55); --glass-strong:rgba(255,255,255,.82); --edge:rgba(255,255,255,.7); --hi:rgba(255,255,255,.9);
+    --glass:rgba(255,255,255,.55); --glass-strong:rgba(255,255,255,.82); --edge:rgba(0,0,0,.06); --hi:rgba(255,255,255,.6);
     --sep:rgba(60,60,67,.14); --fill:rgba(118,118,128,.12); --shadow:0 10px 40px rgba(31,38,135,.12);
     --blue:#007AFF; --green:#34C759; --orange:#FF9500; --red:#FF3B30; --indigo:#5856D6;
     --b1:#93c5fd; --b2:#99f6e4; --b3:#c4b5fd;
@@ -147,10 +147,10 @@ button.cell:active{background:var(--fill)}
 .check{color:var(--blue);font-weight:600}
 .stepbox{border-radius:20px;overflow:hidden;margin-bottom:10px;background:var(--glass)}
 .stephead{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 0;font-size:13px;color:var(--sec)}
-.stephead .mini{display:flex;gap:4px}
-.stephead .mini button{background:var(--fill);border:0;color:var(--text);width:30px;height:30px;border-radius:50%;font-size:14px}
-.stephead .mini button:disabled{opacity:.3}
-.stephead .mini button.x{color:var(--red)}
+.stephead .smini{display:flex;gap:4px}
+.stephead .smini button{background:var(--fill);border:0;color:var(--text);width:30px;height:30px;border-radius:50%;font-size:14px}
+.stephead .smini button:disabled{opacity:.3}
+.stephead .smini button.x{color:var(--red)}
 
 /* Tab-Leiste */
 .tabbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 10px);z-index:20;
@@ -165,6 +165,20 @@ button.cell:active{background:var(--fill)}
 .empty{padding:22px 16px;text-align:center;color:var(--sec);font-size:15px}
 .backbtn{background:none;border:0;color:var(--blue);font:inherit;padding:4px 0 12px;display:block}
 .grow{flex:1;min-width:0}
+.blobs i{transition:background 1s,opacity 1s}
+body{transition:background-color .8s}
+body.vbmode .blobs i{opacity:.95}
+body.vbmode .vbtoggle.on{background:#fff;color:#0e7490;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+body.vbmode{--b1:#06b6d4;--b2:#14b8a6;--b3:#0891b2;--bg:#0b6470}
+@media (prefers-color-scheme: light){ body.vbmode:not([data-x]){--b1:#22d3ee;--b2:#2dd4bf;--b3:#06b6d4;--bg:#7fe0e8} }
+:root[data-theme=light] body.vbmode{--b1:#22d3ee;--b2:#2dd4bf;--b3:#06b6d4;--bg:#7fe0e8}
+:root[data-theme=dark] body.vbmode{--b1:#06b6d4;--b2:#14b8a6;--b3:#0891b2;--bg:#0b6470}
+.vbtoggle{border:0;font:inherit;font-size:14px;font-weight:600;border-radius:999px;padding:8px 16px;background:var(--fill);color:var(--sec);cursor:pointer}
+.vbtoggle.on{background:#30B0C7;color:#fff;box-shadow:0 4px 14px rgba(48,176,199,.35)}
+.circ{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+.circ.holding{animation:holdfill 1s linear forwards}
+@keyframes holdfill{from{box-shadow:inset 0 0 0 0 var(--red)}to{box-shadow:inset 0 0 0 40px var(--red);color:#fff}}
+.search.glass{box-shadow:none;border:.5px solid var(--edge);background:var(--fill)}
 .todaybtn{border:0;font:inherit;font-size:13px;font-weight:600;color:var(--blue);background:var(--fill);border-radius:999px;padding:4px 12px;margin-top:4px}
 .pmid{display:flex;flex-direction:column;align-items:center}
 .others{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:6px}
@@ -207,7 +221,6 @@ body.hasmini{padding-bottom:calc(env(safe-area-inset-bottom) + 170px)}
 <nav class="tabbar glass">
   <button data-tab="stopp" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.5l2.2 1.6M10 2.5h4M12 2.5V6M18.5 6.5l1.2-1.2"/></svg>Stempeln</button>
   <button data-tab="ausw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 20V12M12 20V5M19 20v-5"/></svg>Auswertung</button>
-  <button data-tab="buch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Buchungen</button>
   <button data-tab="einst"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>Verwalten</button>
 </nav>
 
@@ -273,7 +286,7 @@ async function initCloud(){
         }
       }
       let changed = false;
-      snap.docs.forEach(d => { if(writing[d.id] || dirty[d.id]) return; const data = d.data(); if(!data) return; applyDoc(d.id, data); changed = true; });
+      snap.docs.forEach(d => { if(writing[d.id] || dirty[d.id]) return; const data = d.data(); if(!data) return; try{ if(JSON.stringify(bodyFor(d.id)) === JSON.stringify(data)) return; }catch(e){} applyDoc(d.id, data); changed = true; });
       syncStatus = 'synchronisiert';
       if(changed){ saveLocal(); if(!sheetOpen()) render(); }
       renderSyncInfo();
@@ -316,6 +329,7 @@ const aKey = a => (a && a.nr || '') + '|' + (a && a.produkt || '');
 const aLabel = a => a ? ('#' + a.nr + (a.produkt ? ' · ' + a.produkt : '')) : '–';
 
 function entryDur(e, now){
+  if(e.fx || e.fxp) return { work: 0, pause: 0 };
   const end = e.e || now;
   let p = 0; (e.p||[]).forEach(([ps,pe]) => { p += (pe || end) - ps; });
   return { work: Math.max(0, end - e.s - p), pause: p };
@@ -356,13 +370,15 @@ function findRun(eid){ return eid ? runs().find(r => r.eid===eid) || null : null
 function curEntry(){ return runEntry(runs()[0]); }
 function stopRun(r, now){
   const e = runEntry(r);
-  if(e){ if(isPaused(e)) e.p[e.p.length-1][1] = now; e.e = now; persist('d-'+r.day); }
+  if(e && e.fxp){ delete state.days[r.day][r.eid]; persist('d-'+r.day); }
+  else if(e){ if(isPaused(e)) e.p[e.p.length-1][1] = now; e.e = now; persist('d-'+r.day); }
   state.aktiv = runs().filter(x => x.eid !== r.eid); persist('aktiv');
 }
-function startEntry(auftrag, t, m, ab, now){
+function startEntry(auftrag, t, m, ab, now, vb){
   const day = dayKey(new Date(now));
   const e = { id: uid(), a:{ nr:auftrag.nr, produkt:auftrag.produkt }, t, m: m||'', s: now, e: null, p: [], note:'' };
-  if(ab) e.ab = { n: ab.name, i: ab.idx, of: ab.steps.length };
+  if(vb) e.vb = true;
+  if(ab) e.ab = { n: ab.name, i: ab.idx, of: ab.steps.length, sid: ab.sid || '' };
   state.days[day] = state.days[day] || {};
   state.days[day][e.id] = e; persist('d-'+day);
   const r = { day, eid: e.id, ab: ab || null };
@@ -377,6 +393,7 @@ function togglePause(r){
 }
 // Zeitabschnitte eines Eintrags ohne Pausen
 function segs(e, now){
+  if(e.fx || e.fxp) return [];
   const end = e.e || now, out = []; let cur = e.s;
   (e.p||[]).slice().sort((x,y) => x[0]-y[0]).forEach(([ps,pe]) => { pe = pe || end; if(ps > cur) out.push([cur, Math.min(ps, end)]); cur = Math.max(cur, pe); });
   if(end > cur) out.push([cur, end]);
@@ -395,13 +412,21 @@ function summarize(dayKeys, now){
   dayKeys.forEach(k => {
     const d = state.days[k]; if(!d) return;
     Object.values(d).forEach(e => {
+      if(e.fxp) return;
+      if(e.fx){
+        const v = (+e.mt || 0) * 60000, key = aKey(e.a);
+        const g = per[key] = per[key] || { a:e.a, own:0, vb:0, masch:{}, taet:{}, n:0 };
+        g.n++; if(e.m){ g.masch[e.m] = (g.masch[e.m]||0) + v; masch[e.m] = (masch[e.m]||0) + v; }
+        return;
+      }
       const w = entryDur(e, now).work;
       segs(e, now).forEach(s => all.push(s));
       const key = aKey(e.a);
-      const g = per[key] = per[key] || { a:e.a, own:0, masch:{}, taet:{}, n:0 };
-      g.own += w; g.n++;
+      const g = per[key] = per[key] || { a:e.a, own:0, vb:0, masch:{}, taet:{}, n:0 };
+      g.own += w; g.n++; if(e.vb) g.vb += w;
       g.taet[e.t] = (g.taet[e.t]||0) + w;
-      if(e.m){ g.masch[e.m] = (g.masch[e.m]||0) + w; masch[e.m] = (masch[e.m]||0) + w; }
+      const mv = e.vb ? 0 : (e.mz != null ? (+e.mz)*60000 : w);
+      if(e.m && mv){ g.masch[e.m] = (g.masch[e.m]||0) + mv; masch[e.m] = (masch[e.m]||0) + mv; }
     });
   });
   return { own: unionTime(all), masch, per: Object.values(per).sort((x,y)=>y.own-x.own) };
@@ -429,6 +454,7 @@ function csvAuftraege(keys){
   const rows = [['Auftrags-Nr.','Produkt','Art','Bezeichnung','Zeit (h:mm)','Zeit (Std. dezimal)','Minuten']];
   s.per.forEach(g => {
     rows.push([g.a.nr, g.a.produkt, 'Arbeitszeit gesamt', '', dur(g.own), decN(g.own), Math.round(g.own/60000)]);
+    if(g.vb) rows.push([g.a.nr, g.a.produkt, 'davon Vorbereitungszeit', '', dur(g.vb), decN(g.vb), Math.round(g.vb/60000)]);
     Object.entries(g.masch).forEach(([m,v]) => rows.push([g.a.nr, g.a.produkt, 'Maschinenzeit', m, dur(v), decN(v), Math.round(v/60000)]));
     Object.entries(g.taet).forEach(([t,v]) => rows.push([g.a.nr, g.a.produkt, 'Tätigkeit', t, dur(v), decN(v), Math.round(v/60000)]));
   });
@@ -436,11 +462,11 @@ function csvAuftraege(keys){
 }
 function csvBuchungen(keys){
   const now = Date.now();
-  const rows = [['Datum','Start','Ende','Auftrags-Nr.','Produkt','Arbeitsablauf','Schritt','Tätigkeit','Maschine','Pause (min)','Dauer (h:mm)','Dauer (Std. dezimal)','Notiz']];
+  const rows = [['Datum','Start','Ende','Auftrags-Nr.','Produkt','Arbeitsablauf','Schritt','Tätigkeit','Maschine','Vorbereitung','Pause (min)','Dauer (h:mm)','Dauer (Std. dezimal)','Maschinenzeit (h:mm)','Notiz']];
   keys.forEach(k => Object.values(state.days[k]||{}).sort((a,b)=>a.s-b.s).forEach(e => {
     const d = entryDur(e, now);
     rows.push([parseDay(k).toLocaleDateString('de-DE'), hm(e.s), e.e?hm(e.e):'läuft', e.a.nr, e.a.produkt, e.ab?e.ab.n:'', e.ab?(e.ab.i+1)+'/'+e.ab.of:'',
-      e.t, e.m, Math.round(d.pause/60000), dur(d.work), decN(d.work), (e.note||'').replace(/\s+/g,' ')]);
+      e.t, e.m, e.vb ? 'ja' : '', e.fx ? '' : Math.round(d.pause/60000), e.fx ? '' : dur(d.work), e.fx ? '' : decN(d.work), e.fx ? dur((+e.mt||0)*60000) : e.m ? dur((e.vb ? 0 : e.mz != null ? +e.mz*60000 : d.work)) : '', (e.note||'').replace(/\s+/g,' ')]);
   }));
   return csv(rows);
 }
@@ -481,7 +507,7 @@ function pick(kind, cur, opt){
     const items = () => kind==='auftrag'
       ? state.stamm.auftraege.filter(a => !a.done || a.id===cur).map(a => ({ v:a.id, l:'#'+a.nr, s:a.produkt, k:(a.nr+' '+a.produkt).toLowerCase(), nr:true }))
       : kind==='ab' ? state.stamm.ablaeufe.map(a => ({ v:a.id, l:a.name, s:a.steps.map(x=>x.t).join(' → '), k:a.name.toLowerCase() }))
-      : state.stamm[kind].map(x => ({ v:x.name, l:x.name, k:x.name.toLowerCase() }));
+      : state.stamm[kind].map(x => ({ v:x.name, l:x.name, s: kind==='masch' && x.fix ? 'feste Zeit, ohne Zeitmessung' : '', k:x.name.toLowerCase() }));
     const row = (v, l, s, on, nr) => `<button class="cell" data-v="${esc(v)}"><span class="cl two"><span class="${nr?'nr':''}">${esc(l)}</span>${s?`<small>${esc(s)}</small>`:''}</span>${on?'<span class="check">✓</span>':''}</button>`;
     const plist = body.querySelector('#plist');
     const draw = () => {
@@ -521,10 +547,14 @@ const aVal = a => a ? `<span class="nr" style="color:var(--text)">#${esc(a.nr)}<
 const pickCell = (key, label, valHtml, ph) => `<button class="cell" data-pk="${key}"><span class="cl">${label}</span><span class="cv ${valHtml?'':'ph'}">${valHtml||ph}</span><span class="chev">›</span></button>`;
 const timeVal = v => `<span class="cv tnum"><span style="color:var(--text)">${dur(v)}</span> · ${dec(v)}</span>`;
 function entryCell(e, now){
+  if(e.fx) return `<button class="cell" data-entry="${e.id}" data-day="${dayKey(new Date(e.s))}">
+    <span class="cl two"><span>${esc(e.t)} <span class="dim">· ${esc(e.m)}</span></span>
+    <small>${e.a.produkt ? esc(e.a.produkt) + ' · ' : ''}#${esc(e.a.nr)} · ${hm(e.s)} · fest</small></span>
+    <span class="cv tnum" style="color:var(--orange)">⚙︎ ${dur((+e.mt||0)*60000)}</span><span class="chev">›</span></button>`;
   const d = entryDur(e, now);
   return `<button class="cell" data-entry="${e.id}" data-day="${dayKey(new Date(e.s))}">
-    <span class="cl two"><span>${esc(e.t)}${e.m?` <span class="dim">· ${esc(e.m)}</span>`:''}</span>
-    <small><span class="nr">#${esc(e.a.nr)}</span> ${esc(e.a.produkt)} · ${hm(e.s)}–${e.e?hm(e.e):'jetzt'}</small></span>
+    <span class="cl two"><span>${esc(e.t)}${e.m?` <span class="dim">· ${esc(e.m)}</span>`:''}${e.vb && e.t !== 'Vorbereitung' ? ' <span class="dim">· Vorbereitung</span>' : ''}</span>
+    <small>${e.a.produkt ? esc(e.a.produkt) + ' · ' : ''}#${esc(e.a.nr)} · ${hm(e.s)}–${e.e?hm(e.e):'jetzt'}${e.m && e.e ? ' · ⚙︎ ' + dur(machMin(e)*60000) : ''}</small></span>
     <span class="cv tnum" style="color:var(--text)">${dur(d.work)}</span><span class="chev">›</span></button>`;
 }
 function bindEntries(root){ (root||view).querySelectorAll('[data-entry]').forEach(b => b.onclick = () => editEntry(b.dataset.day, b.dataset.entry)); }
@@ -543,22 +573,32 @@ function suspendRun(r, now){
 function runsOf(A){ return runs().filter(r => { const e = runEntry(r); return e && aFind(e.a) === A; }); }
 function stopRunsOf(A, now){ runsOf(A).forEach(r => stopRun(r, now)); }
 function afterRunEnd(){ fsRun = null; fsMin = runs().length > 0; }
-function reactivate(A){ if(A && A.done){ A.done = false; delete A.doneAt; persist('stamm'); } }
-function clearResume(A){ if(A && A.resume){ delete A.resume; delete A.resumeAt; persist('stamm'); } }
+const freshA = A => A && (state.stamm.auftraege.find(x => x.id === A.id) || A);
+function reactivate(A){ A = freshA(A); if(A && A.done){ A.done = false; delete A.doneAt; persist('stamm'); } }
+function clearResume(A){ A = freshA(A); if(A && A.resume){ delete A.resume; delete A.resumeAt; persist('stamm'); } }
 
-function startTaskFor(A, t, m){
+function startTaskFor(A, t, m, vb, fxMin){
+  A = freshA(A);
+  if(m && isFixM(m)){
+    const mt = Math.round(+fxMin || 0);
+    if(mt <= 0){ toast('Bitte feste Zeit in Minuten eingeben'); return false; }
+    bookFixed(A, m, t, null, Date.now(), mt); buzz(); toast('⚙︎ ' + m + ': ' + dur(mt*60000) + ' gebucht'); render(); return true;
+  }
   if(!t){ toast('Bitte Tätigkeit wählen'); return false; }
   const now = Date.now(); stopRunsOf(A, now); clearResume(A); reactivate(A);
-  fsRun = startEntry(A, t, m, null, now).eid;
-  state.stamm.last = Object.assign(state.stamm.last||{}, { a:A.id, t, m:m||'' }); persist('stamm');
+  fsRun = startEntry(A, t, m, null, now, vb).eid;
+  if(!vb){ state.stamm.last = Object.assign(state.stamm.last||{}, { a:A.id, t, m:m||'' }); persist('stamm'); }
   fsMin = false; buzz(); toast('▶︎ ' + t); return true;
 }
 function startAblaufFor(A, def, fromIdx){
+  A = freshA(A);
   if(!def.steps.length){ toast('Arbeitsablauf hat keine Schritte'); return false; }
   const now = Date.now(); stopRunsOf(A, now); clearResume(A); reactivate(A);
-  const ab = { id:def.id, name:def.name, steps:clone(def.steps), idx: fromIdx||0, a:{ nr:A.nr, produkt:A.produkt } };
-  fsRun = startEntry(A, ab.steps[ab.idx].t, ab.steps[ab.idx].m, ab, now).eid;
+  const ab = { id:def.id, name:def.name, steps:clone(def.steps), idx: fromIdx||0, a:{ nr:A.nr, produkt:A.produkt }, sid: uid() };
   state.stamm.last = Object.assign(state.stamm.last||{}, { a:A.id, ab:def.id }); persist('stamm');
+  const r = runAblaufFrom(ab, now);
+  if(!r){ afterRunEnd(); buzz(); render(); doneAsk(freshA(A), 'Arbeitsablauf abgeschlossen'); return true; }
+  fsRun = r.eid;
   fsMin = false; buzz(); toast(fromIdx ? '▶︎ Fortgesetzt bei Schritt ' + (fromIdx+1) : '▶︎ ' + def.name); return true;
 }
 function resumeFor(A){
@@ -566,13 +606,52 @@ function resumeFor(A){
   if(r.ab) return startAblaufFor(A, r.ab, r.ab.idx);
   return startTaskFor(A, r.t, r.m);
 }
+/* ---------- Maschinen mit fester Buchungszeit ---------- */
+// feste Minuten einer Maschine (0 = normale Maschine mit Zeitmessung)
+function isFixM(name){ const x = name && state.stamm.masch.find(m => m.name === name); return !!(x && x.fix); }
+// Minuten-Feld für feste Maschinen (Einzelaufgabe / Nächste Aufgabe)
+const fxCell = (f) => isFixM(f.m) ? `<label class="cell"><span class="cl two"><span>Feste Zeit</span><small>wird ohne Stoppuhr gebucht</small></span><input type="number" id="fx-mt" min="1" inputmode="numeric" placeholder="0" value="${f.mt || ''}" style="width:70px"><span class="dim">min</span></label>` : '';
+// feste Maschinenzeit buchen: keine Arbeitszeit, nur Maschinenzeit
+function bookFixed(a, m, t, ab, now, mt){
+  const day = dayKey(new Date(now));
+  const e = { id: uid(), a:{ nr:a.nr, produkt:a.produkt }, t: t || 'Maschinenbuchung', m, s: now, e: now, p: [], note:'', fx: true, mt: Math.max(0, Math.round(+mt || 0)) };
+  if(ab) e.ab = { n: ab.name, i: ab.idx, of: ab.steps.length, sid: ab.sid || '' };
+  state.days[day] = state.days[day] || {};
+  state.days[day][e.id] = e; persist('d-'+day);
+  const A = aFind(e.a); if(A) reactivate(A);
+  return e;
+}
+// Arbeitsablauf ab ab.idx weiterführen: Schritte mit fester Maschinenzeit werden sofort gebucht
+function runAblaufFrom(ab, now){
+  if(ab.idx >= ab.steps.length) return null;
+  const s = ab.steps[ab.idx];
+  const r = startEntry(ab.a, s.t, s.m, ab, now, isFixM(s.m) ? false : s.vb);
+  // Schritt mit fester Maschinenzeit: wartet auf Bestätigung, keine Zeitmessung
+  if(isFixM(s.m)){ const e = runEntry(r); e.fxp = true; e.mt = +s.mt || 0; persist('d-'+r.day); }
+  return r;
+}
+// festen Schritt bestätigen: Zeit buchen und zum nächsten Schritt
+function confirmFixed(r, mt){
+  const e = runEntry(r); if(!e || !e.fxp) return;
+  mt = Math.round(+mt || 0);
+  if(mt <= 0) return toast('Bitte Minuten eingeben');
+  const now = Date.now(), ab = clone(r.ab);
+  delete e.fxp; e.fx = true; e.mt = mt; e.s = now; e.e = now; persist('d-'+r.day);
+  state.aktiv = runs().filter(x => x.eid !== r.eid); persist('aktiv');
+  toast('⚙︎ ' + e.m + ': ' + dur(mt*60000) + ' gebucht');
+  ab.idx++;
+  const nr = runAblaufFrom(ab, now);
+  if(!nr){ const A = aFind(ab.a); clearResume(A); afterRunEnd(); buzz(); render(); doneAsk(A, 'Arbeitsablauf abgeschlossen'); return; }
+  fsRun = nr.eid; buzz(); render();
+}
 function nextStep(r){
   if(!r || !r.ab) return;
   const now = Date.now(), ab = clone(r.ab);
   stopRun(r, now);
   ab.idx++;
-  if(ab.idx >= ab.steps.length){ const A = aFind(ab.a); clearResume(A); afterRunEnd(); buzz(); render(); doneAsk(A, 'Arbeitsablauf abgeschlossen'); return; }
-  fsRun = startEntry(ab.a, ab.steps[ab.idx].t, ab.steps[ab.idx].m, ab, now).eid;
+  const nr = runAblaufFrom(ab, now);
+  if(!nr){ const A = aFind(ab.a); clearResume(A); afterRunEnd(); buzz(); render(); doneAsk(A, 'Arbeitsablauf abgeschlossen'); return; }
+  fsRun = nr.eid;
   buzz(); toast('Weiter: ' + ab.steps[ab.idx].t); render();
 }
 function skipStep(r){
@@ -582,11 +661,65 @@ function skipStep(r){
   persist('d-'+r.day);
   state.aktiv = runs().filter(x => x.eid !== r.eid); persist('aktiv');
   ab.idx++;
-  if(ab.idx >= ab.steps.length){ const A = aFind(ab.a); clearResume(A); afterRunEnd(); buzz(); render(); doneAsk(A, 'Letzter Schritt übersprungen'); return; }
-  fsRun = startEntry(ab.a, ab.steps[ab.idx].t, ab.steps[ab.idx].m, ab, now).eid;
+  const nr = runAblaufFrom(ab, now);
+  if(!nr){ const A = aFind(ab.a); clearResume(A); afterRunEnd(); buzz(); render(); doneAsk(A, 'Arbeitsablauf abgeschlossen'); return; }
+  fsRun = nr.eid;
   buzz(); toast('Übersprungen → ' + ab.steps[ab.idx].t); render();
 }
+// Einzelne Aufgabe: direkt zur nächsten Tätigkeit am selben Auftrag
+function nextTaskSheet(r){
+  const e = runEntry(r); if(!e) return;
+  const A = aFind(e.a) || ensureAuftrag(e.a.nr, e.a.produkt);
+  const f = { t:'', m:'' };
+  const body = openSheet(1, { title:'Nächste Aufgabe' });
+  const draw = () => {
+    body.innerHTML = `<div class="subttl" style="text-align:center;margin-top:-8px">${esc(A.produkt || '')} · #${esc(A.nr)} · bisher: ${esc(e.t)}</div>
+      <div class="sect"><div class="group">${pickCell('t','Tätigkeit',esc(f.t),'Wählen')}${pickCell('m','Maschine',esc(f.m),'Ohne')}${fxCell(f)}</div></div>
+      <button class="cta blue" id="go">${isFixM(f.m) ? '⚙︎ Feste Zeit buchen' : 'Weiter'}</button>
+      ${isFixM(f.m) ? '<div class="foot" style="text-align:center">Deine laufende Aufgabe läuft dabei weiter.</div>' : ''}`;
+    const fm = body.querySelector('#fx-mt'); if(fm) fm.oninput = () => { f.mt = fm.value; };
+    body.querySelectorAll('[data-pk]').forEach(b => b.onclick = async () => {
+      const k = b.dataset.pk;
+      const v = await pick(k==='t' ? 'taet' : 'masch', f[k], k==='m' ? { none:'Ohne Maschine' } : {});
+      if(v !== undefined){ f[k] = v; draw(); }
+    });
+    body.querySelector('#go').onclick = () => { if(startTaskFor(A, f.t, f.m, false, f.mt)) closeSheet(1); };
+  };
+  draw();
+}
+// Vorbereitungszeit während des Stempelns an/aus: ab jetzt neuer Abschnitt
+function toggleVb(r){
+  const e = runEntry(r); if(!e) return;
+  const now = Date.now(), wasPaused = isPaused(e), vb = !e.vb;
+  if(now - e.s < 60000 && !(e.p||[]).length){ if(vb) e.vb = true; else delete e.vb; persist('d-'+r.day); buzz(); render(); return; }
+  stopRun(r, now);
+  const nr = startEntry(e.a, e.t, e.m, r.ab, now, vb);
+  if(wasPaused){ const ne = runEntry(nr); ne.p.push([now, null]); persist('d-'+nr.day); }
+  fsRun = nr.eid; buzz(); toast(vb ? 'Vorbereitungszeit an' : 'Vorbereitungszeit aus'); render();
+}
+// Fertig-Knopf: Zeit stoppen und Auftrag fertig melden
+function doneRun(r){
+  const e = runEntry(r); if(!e) return;
+  if(e.fxp){ const inp = document.getElementById('fxc'), mt = Math.round(+(inp ? inp.value : e.mt) || 0);
+    if(mt > 0){ const now0 = Date.now(); delete e.fxp; e.fx = true; e.mt = mt; e.s = now0; e.e = now0; persist('d-'+r.day); state.aktiv = runs().filter(x => x.eid !== r.eid); persist('aktiv'); } }
+  const A = aFind(e.a), now = Date.now();
+  stopRun(r, now); if(A){ stopRunsOf(A, now); clearResume(A); }
+  markDone(A); afterRunEnd(); render();
+}
+// Pause gedrückt halten: alle Zeiten dieser Stempelung löschen
+function discardRun(r){
+  if(!runEntry(r)) return;
+  const sid = r.ab && r.ab.sid, del = [];
+  if(sid){ for(const d in state.days) for(const x of Object.values(state.days[d])) if(x.ab && x.ab.sid === sid) del.push([d, x.id]); }
+  else del.push([r.day, r.eid]);
+  state.aktiv = runs().filter(x => x.eid !== r.eid); persist('aktiv');
+  del.forEach(([d, id]) => { delete state.days[d][id]; });
+  [...new Set(del.map(x => x[0]))].forEach(d => persist('d-'+d));
+  try{ navigator.vibrate && navigator.vibrate([30,60,30]); }catch(e){}
+  afterRunEnd(); toast('Verworfen – ' + (del.length > 1 ? del.length + ' Zeiten' : 'Zeit') + ' gelöscht'); render();
+}
 function markDone(A){
+  A = freshA(A);
   if(!A) return;
   A.done = true; A.doneAt = Date.now(); delete A.resume; delete A.resumeAt; persist('stamm');
   buzz(); toast('✓ ' + (A.produkt || '#'+A.nr) + ' fertig gemeldet');
@@ -600,7 +733,7 @@ function stopSheet(r){
     <div class="sect"><div class="group">
       <button class="cell" id="s-pause"><span class="icon" style="background:var(--orange)">❚❚</span><span class="cl two"><span>Unterbrechen</span><small>${ab ? `Später bei Schritt ${ab.idx+1} „${esc(ab.steps[ab.idx].t)}“ fortsetzen` : 'Später an dieser Stelle fortsetzen'}</small></span></button>
       <button class="cell" id="s-done"><span class="icon" style="background:var(--green)">✓</span><span class="cl two"><span>Auftrag fertig melden</span><small>Zeit stoppen und Auftrag abschließen</small></span></button>
-    </div></div>`;
+    </div><div class="foot">Tipp: „Stopp“ gedrückt halten verwirft die Stempelung und löscht ${ab ? 'alle Zeiten dieses Arbeitsablaufs' : 'diese Zeit'}.</div></div>`;
   body.querySelector('#s-pause').onclick = () => { suspendRun(r, Date.now()); afterRunEnd(); closeSheet(1); buzz(); toast('Unterbrochen – später fortsetzen'); };
   body.querySelector('#s-done').onclick = () => { const now = Date.now(); stopRun(r, now); if(A) stopRunsOf(A, now); markDone(A); afterRunEnd(); closeSheet(1); };
 }
@@ -653,15 +786,16 @@ function auftragSheet(A){
   const f = { t: last.t || '', m: last.m || '' };
   const task = () => {
     body.innerHTML = `${back()}<div class="sect"><h2><span>Einzelne Aufgabe</span></h2><div class="group">
-        ${pickCell('t','Tätigkeit',esc(f.t),'Wählen')}${pickCell('m','Maschine',esc(f.m),'Ohne')}</div></div>
-      <button class="cta green" id="go">${runsOf(A).length ? 'Wechseln & starten' : 'Starten'}</button>`;
+        ${pickCell('t','Tätigkeit',esc(f.t),'Wählen')}${pickCell('m','Maschine',esc(f.m),'Ohne')}${fxCell(f)}</div></div>
+      <button class="cta green" id="go">${isFixM(f.m) ? '⚙︎ Feste Zeit buchen' : runsOf(A).length ? 'Wechseln & starten' : 'Starten'}</button>`;
     bindBack(home);
+    const fm = body.querySelector('#fx-mt'); if(fm) fm.oninput = () => { f.mt = fm.value; };
     body.querySelectorAll('[data-pk]').forEach(b => b.onclick = async () => {
       const k = b.dataset.pk;
       const v = await pick(k==='t' ? 'taet' : 'masch', f[k], k==='m' ? { none:'Ohne Maschine' } : {});
       if(v !== undefined){ f[k] = v; task(); }
     });
-    body.querySelector('#go').onclick = () => { if(startTaskFor(A, f.t, f.m)) closeSheet(1); };
+    body.querySelector('#go').onclick = () => { if(startTaskFor(A, f.t, f.m, false, f.mt)) closeSheet(1); };
   };
 
   let q = '';
@@ -677,7 +811,7 @@ function auftragSheet(A){
         ? `<div class="sect"><div class="group">${list.map(x => `<button class="cell" data-ab="${x.id}"><span class="icon" style="background:var(--indigo)">${x.steps.length}</span><span class="cl two"><span>${esc(x.name)}</span><small>${x.steps.map(s => esc(s.t)).join(' → ')}</small></span><span class="chev">›</span></button>`).join('')}</div></div>`
         : `<div class="sect"><div class="group"><div class="empty">${all.length ? 'Kein Arbeitsablauf gefunden.' : 'Noch keine Arbeitsabläufe angelegt.'}</div></div></div>`)
         + `<div class="group"><button class="cell accent" id="abnew" style="justify-content:center">＋ Neuer Arbeitsablauf</button></div>`;
-      el.querySelectorAll('[data-ab]').forEach(b => b.onclick = () => abDetail(all.find(x => x.id===b.dataset.ab)));
+      el.querySelectorAll('[data-ab]').forEach(b => b.onclick = () => { if(startAblaufFor(A, all.find(x => x.id===b.dataset.ab))) closeSheet(1); });
       el.querySelector('#abnew').onclick = () => editAblauf(null);
     };
     body.querySelector('#abq').oninput = ev => { q = ev.target.value; draw(); };
@@ -716,29 +850,53 @@ function renderRunning(r){
   const e = runEntry(r), now = Date.now(), paused = isPaused(e), ab = r.ab;
   const others = runs().filter(x => x.eid !== r.eid);
   document.body.classList.add('fs');
+  document.body.classList.toggle('vbmode', !!e.vb);
   view.innerHTML = `<div class="fsview">
     <div class="nav"><button id="fmin" aria-label="Zur Übersicht" style="background:none;border:0;color:var(--text);width:44px;height:44px;display:grid;place-items:center;margin-left:-10px;padding:0"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
-      <span class="pill-live"><span class="live ${paused?'p':''}"></span>${paused?'Pausiert':'Läuft seit '+hm(e.s)}</span><span style="width:44px"></span></div>
+      <span class="pill-live"><span class="live ${paused||e.fxp?'p':''}"></span>${e.fxp ? 'Wartet auf Bestätigung' : paused?'Pausiert':'Läuft seit '+hm(e.s)}</span><span style="width:44px"></span></div>
     ${others.length ? `<div class="others">${others.map(o => { const oe = runEntry(o); return `<button class="ochip" data-sw="${o.eid}"><span class="live ${isPaused(oe)?'p':''}"></span>${esc(oe.a.produkt || '#'+oe.a.nr)} <span class="tnum dim" data-live="${o.eid}">${dur(entryDur(oe, now).work, true)}</span></button>`; }).join('')}</div>` : ''}
     <div class="fstop">
       <div class="fsprod">${esc(e.a.produkt || '#'+e.a.nr)}</div>
       ${e.a.produkt ? `<div class="fsnr">Auftrag #${esc(e.a.nr)}</div>` : ''}
       <div class="fstask">${esc(e.t)}${e.m ? `<span class="chip" style="margin-left:8px;vertical-align:middle">⚙︎ ${esc(e.m)}</span>` : ''}</div>
     </div>
-    <div class="clock fsclock" id="clock">${dur(entryDur(e, now).work, true)}</div>
-    ${ab ? `<div class="fssteps glass">${ab.steps.map((s,i) => `<div class="fsstep ${i<ab.idx?'d':i===ab.idx?'c':''}"><span class="n">${i<ab.idx?'✓':i+1}</span><span class="grow">${esc(s.t)}${s.m?` <span class="dim">· ${esc(s.m)}</span>`:''}</span></div>`).join('')}</div>` : '<div style="flex:1"></div>'}
+    ${e.fxp ? `<div class="glass" style="border-radius:24px;padding:18px 20px;margin:22px 0 16px;text-align:center">
+        <div class="dim" style="font-size:14px">Feste Maschinenzeit – bitte bestätigen</div>
+        <div style="display:flex;align-items:baseline;justify-content:center;gap:8px;margin-top:8px">
+          <input type="number" id="fxc" min="1" inputmode="numeric" value="${+e.mt || ''}" placeholder="0" style="width:120px;font-size:56px;font-weight:200;text-align:center;background:none;border:0;border-bottom:2px solid var(--sep);color:var(--text);outline:none;font-variant-numeric:tabular-nums">
+          <span style="font-size:22px" class="dim">min</span></div>
+        <div class="dim" style="font-size:12px;margin-top:8px">Zählt nur als Maschinenzeit, nicht als Arbeitszeit</div></div>`
+      : `<div class="clock fsclock" id="clock">${dur(entryDur(e, now).work, true)}</div>`}
+    ${ab ? `<div class="fssteps glass">${ab.steps.map((s,i) => `<div class="fsstep ${i<ab.idx?'d':i===ab.idx?'c':''}"><span class="n">${i<ab.idx?'✓':i+1}</span><span class="grow">${esc(s.t)}${s.m?` <span class="dim">· ${esc(s.m)}${isFixM(s.m) ? ' (fest ' + dur((+s.mt||0)*60000) + ')' : ''}</span>`:''}</span></div>`).join('')}</div>` : '<div style="flex:1"></div>'}
     <div class="fsbottom">
-      <div class="ctl">
-        <button class="circ ${paused?'green':'orange'}" id="bp">${paused?'Start':'Pause'}</button>
-        ${ab ? `<button class="capsule" id="bn">${ab.idx < ab.steps.length-1 ? `Nächster Schritt<small>${esc(ab.steps[ab.idx+1].t)}</small>` : 'Abschließen ✓'}</button>` : '<span></span>'}
-        <button class="circ red" id="bs">Stopp</button>
-      </div>
+    ${(e.m || e.vb) && !e.fxp ? `<div style="text-align:center;margin:0 0 14px"><button class="vbtoggle ${e.vb?'on':''}" id="bvb">⚒︎ Vorbereitungszeit ${e.vb?'an':'aus'}</button>
+      <div class="dim" style="font-size:12px;margin-top:6px">${e.vb ? 'Zählt nur als Arbeitszeit, nicht als Maschinenzeit' : (e.m ? 'Zählt als Arbeits- und Maschinenzeit' : 'Zählt als Arbeitszeit')}</div></div>` : ''}
+
+      ${`<div class="ctl">
+        <button class="circ ${paused?'gray':'orange'}" id="bp">${paused?'Löschen':'Pause'}</button>
+        ${!paused && e.fxp ? `<button class="capsule" id="bfx" style="background:var(--green);box-shadow:0 8px 24px rgba(48,209,88,.35),inset 0 1px 0 rgba(255,255,255,.35)">⚙︎ Bestätigen<small>und weiter</small></button>` : paused ? `<button class="capsule" id="bres" style="background:var(--green);box-shadow:0 8px 24px rgba(48,209,88,.35),inset 0 1px 0 rgba(255,255,255,.35)">Start<small>Zeit läuft weiter</small></button>` : ab ? `<button class="capsule" id="bn">${ab.idx < ab.steps.length-1 ? `Nächster Schritt<small>${esc(ab.steps[ab.idx+1].t)}</small>` : 'Abschließen ✓'}</button>` : `<button class="capsule" id="bnt">Nächste Aufgabe<small>Tätigkeit wechseln</small></button>`}
+        <button class="circ green" id="bdone">Fertig</button>
+      </div>`}
       ${ab ? `<button class="linkbtn" id="bskip" style="margin:14px auto 0;padding:6px">Schritt überspringen</button>` : ''}
     </div></div>`;
   document.getElementById('fmin').onclick = () => { fsMin = true; render(); };
-  document.getElementById('bp').onclick = () => togglePause(r);
-  document.getElementById('bs').onclick = () => stopSheet(r);
+  const bfx = document.getElementById('bfx'); if(bfx) bfx.onclick = () => confirmFixed(r, document.getElementById('fxc').value);
+  const bs = document.getElementById('bp');
+  let holdT = null, held = false;
+  const cancelHold = () => { clearTimeout(holdT); holdT = null; bs.classList.remove('holding'); };
+  bs.addEventListener('pointerdown', () => { held = false; bs.classList.add('holding'); holdT = setTimeout(() => { held = true; cancelHold(); discardRun(r); }, 1000); });
+  ['pointerup','pointerleave','pointercancel'].forEach(ev => bs.addEventListener(ev, cancelHold));
+  bs.addEventListener('contextmenu', ev => ev.preventDefault());
+  bs.onclick = () => {
+    if(held){ held = false; return; }
+    if(paused){ toast('Gedrückt halten zum Löschen'); return; }
+    togglePause(r); fsMin = true; fsRun = null; render(); window.scrollTo(0,0); toast('Pausiert – unter „Gestoppt“');
+  };
+  const bres = document.getElementById('bres'); if(bres) bres.onclick = () => togglePause(r);
+  document.getElementById('bdone').onclick = () => doneRun(r);
+  const bvb = document.getElementById('bvb'); if(bvb) bvb.onclick = () => toggleVb(r);
   const bn = document.getElementById('bn'); if(bn) bn.onclick = () => nextStep(r);
+  const bnt = document.getElementById('bnt'); if(bnt) bnt.onclick = () => nextTaskSheet(r);
   view.querySelectorAll('[data-sw]').forEach(b => b.onclick = () => { fsRun = b.dataset.sw; render(); });
   const sk = document.getElementById('bskip');
   if(sk){
@@ -762,7 +920,7 @@ function renderMini(){
     m.innerHTML = `<span class="live ${paused?'p':''}"></span><span class="grow" style="min-width:0;text-align:left"><b>${esc(e.t)}</b><small>${esc(e.a.produkt || '')} · #${esc(e.a.nr)}</small></span><span class="tnum" data-live="${rs[0].eid}">${dur(entryDur(e, Date.now()).work, true)}</span>`;
     m.onclick = () => { fsRun = rs[0].eid; fsMin = false; tab = 'stopp'; render(); window.scrollTo(0,0); };
   } else {
-    m.innerHTML = `<span class="live"></span><span class="grow" style="min-width:0;text-align:left"><b>${rs.length} Aufträge laufen</b><small>${rs.map(r => esc(runEntry(r).a.produkt || '#'+runEntry(r).a.nr)).join(' · ')}</small></span><span class="chev" style="color:var(--ter);font-size:22px">›</span>`;
+    m.innerHTML = `<span class="live"></span><span class="grow" style="min-width:0;text-align:left"><b>${(() => { const p = rs.filter(r => isPaused(runEntry(r))).length, l = rs.length - p; return [l ? l + (l===1 ? ' Auftrag läuft' : ' Aufträge laufen') : '', p ? p + ' pausiert' : ''].filter(Boolean).join(' · '); })()}</b><small>${rs.map(r => esc(runEntry(r).a.produkt || '#'+runEntry(r).a.nr)).join(' · ')}</small></span><span class="chev" style="color:var(--ter);font-size:22px">›</span>`;
     m.onclick = () => { fsMin = true; tab = 'stopp'; render(); window.scrollTo(0,0); };
   }
 }
@@ -803,17 +961,21 @@ function drawAList(){
   const byUse = (x,y) => (lu[aKey(y)]||0) - (lu[aKey(x)]||0) || x.nr.localeCompare(y.nr, 'de', { numeric:true });
   const all = state.stamm.auftraege.filter(match);
   const isRun = a => !!runBy[aKey(a)];
-  const fresh = all.filter(a => !a.done && !a.resume && !isRun(a) && !lu[aKey(a)]).sort((x,y) => x.nr.localeCompare(y.nr, 'de', { numeric:true }));
+  const isPausedRun = a => isRun(a) && isPaused(runEntry(runBy[aKey(a)]));
+  const isLive = a => isRun(a) && !isPausedRun(a);
+  const fresh = all.filter(a => !a.done && !a.resume && !isRun(a)).sort(byUse);
   const groups = [
-    { k:'aktiv', t:'Aktiv', c:'var(--blue)', list: all.filter(a => !a.done && (!a.resume || isRun(a)) && (isRun(a) || lu[aKey(a)])).sort((x,y) => isRun(y) - isRun(x) || byUse(x,y)), empty:'Keine aktiven Aufträge.' },
-    { k:'gestoppt', t:'Gestoppt', c:'var(--orange)', list: all.filter(a => !a.done && a.resume && !isRun(a)).sort((x,y) => (y.resumeAt||0) - (x.resumeAt||0)), empty:'Keine gestoppten Aufträge.' },
+    { k:'aktiv', t:'Aktiv', c:'var(--blue)', list: all.filter(a => !a.done && isLive(a)).sort(byUse), empty:'Keine aktiven Aufträge.' },
+    { k:'gestoppt', t:'Gestoppt', c:'var(--orange)', list: all.filter(a => !a.done && (isPausedRun(a) || (!isRun(a) && a.resume))).sort((x,y) => isPausedRun(y) - isPausedRun(x) || (y.resumeAt||0) - (x.resumeAt||0)), empty:'Keine gestoppten Aufträge.' },
     { k:'fertig', t:'Fertig', c:'var(--green)', list: all.filter(a => a.done).sort((x,y) => (y.doneAt||0) - (x.doneAt||0)), empty:'Noch nichts fertig gemeldet.' },
   ];
   const cell = a => {
     const run = isRun(a);
-    const icon = a.done ? ['var(--green)','✓'] : run ? ['var(--green)','▶︎'] : a.resume ? ['var(--orange)','❚❚'] : ['var(--blue)','#'];
-    const sub = (a.produkt ? '#'+esc(a.nr) : '') + (a.resume && !run && !a.done && a.resume.ab ? ` · Schritt ${a.resume.ab.idx+1}/${a.resume.ab.steps.length}: ${esc(a.resume.ab.steps[a.resume.ab.idx].t)}` : a.resume && !run && !a.done ? ` · ${esc(a.resume.t)}` : '');
-    const right = a.done ? (a.doneAt ? agoText(a.doneAt) : '') : run ? `<span style="color:var(--green)" class="tnum" data-live="${runBy[aKey(a)].eid}">${dur(entryDur(runEntry(runBy[aKey(a)]), Date.now()).work, true)}</span>` : agoText(a.resume ? a.resumeAt : lu[aKey(a)]);
+    const pr = isPausedRun(a);
+    const icon = a.done ? ['var(--green)','✓'] : pr ? ['var(--orange)','❚❚'] : run ? ['var(--green)','▶︎'] : a.resume ? ['var(--orange)','❚❚'] : ['var(--blue)','#'];
+    const rE = run ? runEntry(runBy[aKey(a)]) : null;
+    const sub = (a.produkt ? '#'+esc(a.nr) : '') + (pr ? ` · pausiert · ${esc(rE.t)}` : '') + (a.resume && !run && !a.done && a.resume.ab ? ` · Schritt ${a.resume.ab.idx+1}/${a.resume.ab.steps.length}: ${esc(a.resume.ab.steps[a.resume.ab.idx].t)}` : a.resume && !run && !a.done ? ` · ${esc(a.resume.t)}` : '');
+    const right = a.done ? (a.doneAt ? agoText(a.doneAt) : '') : run && rE && rE.fxp ? '<span style="color:var(--orange)">bestätigen</span>' : run ? `<span style="color:${pr?'var(--orange)':'var(--green)'}" class="tnum" data-live="${runBy[aKey(a)].eid}">${dur(entryDur(runEntry(runBy[aKey(a)]), Date.now()).work, true)}</span>` : agoText(a.resume ? a.resumeAt : lu[aKey(a)]);
     return `<button class="cell" data-auf="${a.id}"><span class="icon" style="background:${icon[0]}">${icon[1]}</span>
       <span class="cl two"><span style="font-weight:600">${esc(a.produkt || '#'+a.nr)}</span><small>${sub}</small></span>
       <span class="cv" style="font-size:14px">${right}</span><span class="chev">›</span></button>`;
@@ -844,7 +1006,7 @@ setInterval(tick, 1000);
 function renderAusw(){
   const now = Date.now(), r = rangeKeys(aMode, aOff), s = summarize(r.keys, now);
   const sum = o => Object.values(o).reduce((x,y) => x+y, 0);
-  let h = `<div class="nav"></div><div class="ttl">Auswertung</div><div class="subttl">Arbeits- und Maschinenzeiten pro Auftrag</div>
+  let h = `<div class="nav"><span></span><button class="round glass" id="aadd" aria-label="Nachtragen">＋</button></div><div class="ttl">Auswertung</div><div class="subttl">Arbeits- und Maschinenzeiten pro Auftrag</div>
     <div class="seg glass">${['tag','woche','monat'].map(m => `<button data-mode="${m}" class="${aMode===m?'on':''}">${{tag:'Tag',woche:'Woche',monat:'Monat'}[m]}</button>`).join('')}</div>
     <div class="period"><button class="round glass" id="ap">‹</button><div class="pmid"><b>${esc(r.label)}</b>${aOff ? '<button class="todaybtn" id="atoday">Heute</button>' : ''}</div><button class="round glass" id="an">›</button></div>
     <div class="kpis glass"><div><span>Meine Zeit</span><b class="tnum">${dur(s.own)}</b></div><div><span>Maschinen</span><b class="tnum">${dur(sum(s.masch))}</b></div><div><span>Aufträge</span><b>${s.per.length}</b></div></div>`;
@@ -858,9 +1020,10 @@ function renderAusw(){
     s.per.forEach((g, i) => {
       const mt = sum(g.masch);
       h += `<div class="sect"><div class="group glass">
-        <div class="cell"><span class="cl two"><span class="nr" style="font-size:22px">#${esc(g.a.nr)}</span><small>${esc(g.a.produkt)}${(aFind(g.a)||{}).done ? ' · <span style="color:var(--green)">✓ fertig</span>' : ''}</small></span>
+        <div class="cell"><span class="cl two"><span style="font-size:22px;font-weight:700">${esc(g.a.produkt || '#'+g.a.nr)}</span><small>${g.a.produkt ? '#'+esc(g.a.nr) : ''}${(aFind(g.a)||{}).done ? ' · <span style="color:var(--green)">✓ fertig</span>' : ''}</small></span>
           <button class="round" style="background:var(--fill);color:var(--blue)" data-copy="${i}" aria-label="Kopieren">${ICON_COPY}</button></div>
         <div class="cell"><span class="icon" style="background:var(--blue)"><svg viewBox="0 0 24 24" width="17" height="17" fill="#fff"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6z"/></svg></span><span class="cl">Meine Arbeitszeit</span>${timeVal(g.own)}</div>
+        ${g.vb ? `<div class="cell"><span class="icon" style="background:#30B0C7">⚒︎</span><span class="cl dim">davon Vorbereitung</span>${timeVal(g.vb)}</div>` : ''}
         ${Object.entries(g.masch).sort((a,b) => b[1]-a[1]).map(([m,v]) => `<div class="cell"><span class="icon" style="background:var(--orange)">⚙︎</span><span class="cl">${esc(m)}</span>${timeVal(v)}</div>`).join('')}
         ${mt && Object.keys(g.masch).length > 1 ? `<div class="cell"><span class="icon" style="background:var(--fill)"></span><span class="cl dim">Maschinen gesamt</span>${timeVal(mt)}</div>` : ''}
       </div></div>`;
@@ -874,6 +1037,7 @@ function renderAusw(){
   view.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => { aMode = b.dataset.mode; aOff = 0; render(); });
   document.getElementById('ap').onclick = () => { aOff--; render(); };
   document.getElementById('an').onclick = () => { aOff++; render(); };
+  document.getElementById('aadd').onclick = () => editEntry(aMode === 'tag' ? r.keys[0] : dayKey(new Date()), null);
   const at = document.getElementById('atoday'); if(at) at.onclick = () => { aOff = 0; render(); };
   bindEntries();
   document.getElementById('ex1').onclick = () => offerFile(`Auftraege_${r.fname}.csv`, csvAuftraege(r.keys));
@@ -953,7 +1117,7 @@ function renderSub(k){
     const open = st.auftraege.filter(a => !a.done), done = st.auftraege.filter(a => a.done);
     list = `<div class="sect"><h2><span>Offen</span></h2><div class="group glass">${open.map(cell).join('') || '<div class="empty">Keine offenen Aufträge.</div>'}</div></div>`
       + (done.length ? `<div class="sect"><h2><span>Fertig gemeldet</span></h2><div class="group glass">${done.map(cell).join('')}</div><div class="foot">Fertige Aufträge erscheinen nicht mehr in der Auswahl. Ihre Zeiten bleiben erhalten.</div></div>` : '');
-  } else list = st[k].length ? `<div class="group glass">${st[k].map(x => `<button class="cell" data-it="${x.id}"><span class="cl">${esc(x.name)}</span><span class="chev">›</span></button>`).join('')}</div>`
+  } else list = st[k].length ? `<div class="group glass">${st[k].map(x => `<button class="cell" data-it="${x.id}"><span class="cl two"><span>${esc(x.name)}</span>${x.fix ? `<small>feste Zeit, ohne Zeitmessung</small>` : ''}</span><span class="chev">›</span></button>`).join('')}</div>`
       : `<div class="group glass"><div class="empty">Noch leer – wird beim Starten automatisch gefüllt.</div></div>`;
   view.innerHTML = `<div class="nav"><button class="back" id="back">‹ Verwalten</button><button class="round glass" id="add" aria-label="Hinzufügen">＋</button></div>
     <div class="ttl">${LISTS[k].t}</div><div class="subttl"></div>${list}`;
@@ -965,69 +1129,103 @@ function editItem(k, id){
   const st = state.stamm, isA = k==='auftraege';
   const x = id ? st[k].find(y => y.id===id) : null;
   let armed = false;
-  const body = openSheet(1, { title: x ? ({auftraege:'Auftrag',taet:'Tätigkeit',masch:'Maschine'}[k]) : 'Neu', right:'Sichern', onRight: save });
+  const body = openSheet(1, { title: x ? (isA ? 'Auftrag' : ({taet:'Tätigkeit',masch:'Maschine'}[k])) : 'Neu', right:'Sichern', onRight: save });
   body.innerHTML = isA
     ? `<div class="sect"><div class="group">
         <label class="cell"><span>Auftrags-Nr.</span><input id="ei-nr" value="${esc(x?x.nr:'')}" style="flex:1"></label>
         <label class="cell"><span>Produkt</span><input id="ei-pr" value="${esc(x?x.produkt:'')}" placeholder="Produktname" style="flex:1"></label></div></div>
       ${x ? `<div class="sect"><div class="group"><label class="cell"><span class="cl">Fertig gemeldet</span><input type="checkbox" class="sw" id="ei-done" ${x.done?'checked':''}></label></div></div>` : ''}`
     : `<div class="sect"><div class="group"><label class="cell"><input class="left" id="ei-n" value="${esc(x?x.name:'')}" placeholder="Name"></label></div>
-       ${x ? '<div class="foot">Umbenennen ändert nur künftige Buchungen.</div>' : ''}</div>`;
+       ${x ? '<div class="foot">Umbenennen ändert nur künftige Buchungen.</div>' : ''}</div>
+       ${k==='masch' ? `<div class="sect"><div class="group">
+         <label class="cell"><span class="cl two"><span>Feste Zeit buchen</span><small>Keine Zeitmessung, keine Arbeitszeit</small></span><input type="checkbox" class="sw" id="ei-fx" ${x && x.fix ? 'checked' : ''}></label>
+       </div><div class="foot">Die Zeit legst du pro Arbeitsablauf-Schritt fest oder gibst sie bei einer einzelnen Aufgabe ein. Sie wird ohne Stoppuhr als Maschinenzeit gebucht.</div></div>` : ''}`;
   if(x) body.insertAdjacentHTML('beforeend', `<div class="group"><button class="cell danger" id="ei-del">Löschen</button></div>`);
   function save(){
     if(isA){
       const nr = document.getElementById('ei-nr').value.trim(), pr = document.getElementById('ei-pr').value.trim();
       if(!nr) return toast('Auftrags-Nr. fehlt');
-      if(x){ x.nr = nr; x.produkt = pr; x.done = document.getElementById('ei-done').checked; persist('stamm'); } else ensureAuftrag(nr, pr);
+      const cx = id ? state.stamm[k].find(y => y.id===id) : null;
+      if(cx){ cx.nr = nr; cx.produkt = pr; cx.done = document.getElementById('ei-done').checked; persist('stamm'); } else ensureAuftrag(nr, pr);
     } else {
       const n = document.getElementById('ei-n').value.trim(); if(!n) return toast('Name fehlt');
-      if(x){ x.name = n; persist('stamm'); } else ensureName(k, n);
+      const fix = k==='masch' && document.getElementById('ei-fx').checked;
+      let cx = id ? state.stamm[k].find(y => y.id===id) : null;
+      if(cx){ cx.name = n; } else { ensureName(k, n); cx = state.stamm[k].find(y => y.name.toLowerCase() === n.toLowerCase()); }
+      if(k==='masch' && cx){ if(fix) cx.fix = true; else delete cx.fix; }
+      persist('stamm');
     }
     closeSheet(1); toast('Gespeichert');
   }
   const del = document.getElementById('ei-del');
   if(del) del.onclick = () => {
     if(!armed){ armed = true; del.textContent = 'Wirklich löschen?'; return; }
-    st[k] = st[k].filter(y => y.id !== id); persist('stamm'); closeSheet(1); toast('Gelöscht');
+    state.stamm[k] = state.stamm[k].filter(y => y.id !== id); persist('stamm'); closeSheet(1); toast('Gelöscht');
   };
 }
 
 /* ---------- Buchung bearbeiten ---------- */
+// Maschinenzeit einer Buchung in Minuten (Vorbereitung = 0, sonst angepasst oder gemessen)
+function machMin(e, now){ if(e.vb) return 0; if(e.mz != null) return +e.mz; return Math.round(entryDur(e, now || Date.now()).work / 60000); }
 function editEntry(day, eid){
   const orig = eid ? state.days[day] && state.days[day][eid] : null;
   if(eid && !orig) return;
+  if(orig && orig.fx) return editFixed(day, orig);
   const runObj = findRun(eid), running = !!runObj;
   const now = Date.now(), last = state.stamm.last || {};
   const e = orig ? clone(orig) : { a:null, t:last.t||'', m:'', s:parseDay(day).setHours(8,0,0,0), e:parseDay(day).setHours(9,0,0,0), p:[], note:'' };
   let aId = e.a ? (ensureAuftrag(e.a.nr, e.a.produkt)||{}).id : last.a;
-  const pMin = Math.round(entryDur(e, now).pause/60000);
-  const x = { day, s:hm(e.s), e:e.e?hm(e.e):'', p:pMin, t:e.t, m:e.m||'', note:e.note||'' };
+  const mz0 = e.m ? machMin(e, now) : 0;
+  const x = { day, s:hm(e.s), e:e.e?hm(e.e):'', t:e.t, m:e.m||'', note:e.note||'', mz: mz0 };
   let armed = false;
   const body = openSheet(1, { title: orig ? 'Buchung' : 'Nachtragen', right:'Sichern', onRight: save });
+  const g = id => document.getElementById(id);
   const read = () => {
-    const g = id => document.getElementById(id);
     if(!g('xe-day')) return;
-    x.day = g('xe-day').value || x.day; x.s = g('xe-s').value; if(!running){ x.e = g('xe-e').value; x.p = g('xe-p').value; } x.note = g('xe-n').value;
+    x.day = g('xe-day').value || x.day; x.s = g('xe-s').value; if(!running) x.e = g('xe-e').value;
+    x.note = g('xe-n').value; if(g('xe-mz')) x.mz = g('xe-mz').value;
   };
+  // Dauer aus Start/Ende (Pausen werden beim Ändern der Zeiten verworfen)
+  const span = () => {
+    if(!x.s || !x.e) return null;
+    const [sh, sm] = x.s.split(':').map(Number), [eh, em] = x.e.split(':').map(Number);
+    let m = (eh*60+em) - (sh*60+sm); if(m <= 0) m += 1440; return m;
+  };
+  const showMach = () => !running && x.m && !isFixM(x.m);
   const draw = () => {
+    const sp = running ? null : (x.s === hm(e.s) && x.e === (e.e ? hm(e.e) : '') && orig ? Math.round(entryDur(e, now).work/60000) : span());
     body.innerHTML = `
       ${e.ab ? `<div class="subttl" style="text-align:center;margin-bottom:12px">${esc(e.ab.n)} · Schritt ${e.ab.i+1} von ${e.ab.of}</div>` : ''}
       <div class="sect"><div class="group">
         <label class="cell"><span class="cl">Datum</span><input type="date" id="xe-day" value="${x.day}"></label>
         <label class="cell"><span class="cl">Start</span><input type="time" id="xe-s" value="${x.s}"></label>
         <label class="cell"><span class="cl">Ende</span>${running ? '<span class="cv">läuft noch</span>' : `<input type="time" id="xe-e" value="${x.e}">`}</label>
-        ${running ? '' : `<label class="cell"><span class="cl">Pause</span><input type="number" id="xe-p" min="0" inputmode="numeric" value="${x.p}" style="width:70px"><span class="dim">min</span></label>`}
-      </div></div>
+        ${running ? '' : `<div class="cell"><span class="cl">Arbeitszeit</span><span class="cv tnum" id="xe-dur">${sp != null ? dur(sp*60000) : '–'}</span></div>`}
+        ${showMach() ? `<label class="cell"><span class="cl two"><span>Maschinenzeit</span><small>⚙︎ ${esc(x.m)} · <span id="xe-mzh">${dur((+x.mz||0)*60000)} h</span></small></span><input type="number" id="xe-mz" min="0" inputmode="numeric" value="${x.mz}" style="width:70px"><span class="dim">min</span></label>` : ''}
+      </div>${showMach() ? '<div class="foot">Maschinenzeit kannst du unabhängig von der Arbeitszeit anpassen, z. B. auf 0 für reine Vorbereitung.</div>' : ''}</div>
       <div class="sect"><div class="group">${pickCell('a','Auftrag',aVal(aById(aId)),'Wählen')}${pickCell('t','Tätigkeit',esc(x.t),'Wählen')}${pickCell('m','Maschine',esc(x.m),'Ohne')}</div></div>
       <div class="sect"><h2><span>Notiz</span></h2><div class="group"><div class="cell"><textarea id="xe-n" placeholder="Optional">${esc(x.note)}</textarea></div></div></div>
       ${orig && !running ? '<div class="group"><button class="cell danger" id="xe-del">Buchung löschen</button></div>' : ''}`;
+    const upd = () => {
+      const oldSpan = span(); read(); const ns = span();
+      const d = g('xe-dur'); if(d) d.textContent = ns != null ? dur(ns*60000) : '–';
+      // Maschinenzeit mitziehen, solange sie der Arbeitszeit entsprach
+      if(g('xe-mz') && oldSpan != null && +x.mz === oldSpan && ns != null){ x.mz = ns; g('xe-mz').value = ns; }
+      const h = g('xe-mzh'); if(h) h.textContent = dur((+x.mz||0)*60000) + ' h';
+    };
+    ['xe-s','xe-e'].forEach(id => { const el = g(id); if(el) el.onchange = upd; });
+    const mzi = g('xe-mz'); if(mzi) mzi.oninput = () => { x.mz = mzi.value; g('xe-mzh').textContent = dur((+x.mz||0)*60000) + ' h'; };
     body.querySelectorAll('[data-pk]').forEach(b => b.onclick = async () => {
       read();
       const k = b.dataset.pk;
       const v = await pick({ a:'auftrag', t:'taet', m:'masch' }[k], k==='a' ? aId : x[k], k==='m' ? { none:'Ohne Maschine' } : {});
-      if(v !== undefined){ if(k==='a') aId = v; else x[k] = v; draw(); }
+      if(v !== undefined){
+        if(k==='a') aId = v; else x[k] = v;
+        if(k==='m' && v && !orig) x.mz = span() || 0;
+        draw();
+      }
     });
-    const del = document.getElementById('xe-del');
+    const del = g('xe-del');
     if(del) del.onclick = () => {
       if(!armed){ armed = true; del.textContent = 'Wirklich löschen?'; return; }
       delete state.days[day][e.id]; persist('d-'+day); closeSheet(1); toast('Gelöscht');
@@ -1047,15 +1245,43 @@ function editEntry(day, eid){
       const [eh, em] = x.e.split(':').map(Number);
       let end = parseDay(x.day).setHours(eh, em, 0, 0); if(end <= s) end += 86400000;
       ne.e = end;
-      const pm = Math.max(0, parseInt(x.p)||0);
-      if(pm !== pMin || (orig && orig.s !== s)) ne.p = pm ? [[s, s + pm*60000]] : [];
-      if(end - s - pm*60000 < 0) return toast('Pause ist länger als die Buchung');
+      if(!orig || x.s !== hm(orig.s) || x.e !== hm(orig.e) || x.day !== day) ne.p = [];
+      if(showMach()){
+        const mz = Math.max(0, Math.round(+x.mz || 0));
+        const auto = Math.round(entryDur(ne, now).work / 60000);
+        if(mz !== auto || orig && orig.mz != null){ ne.mz = mz; } else delete ne.mz;
+        delete ne.vb;
+      } else if(!ne.m){ delete ne.mz; delete ne.vb; }
     }
     if(orig && x.day !== day){ delete state.days[day][e.id]; persist('d-'+day); if(runObj){ runObj.day = x.day; persist('aktiv'); } }
     state.days[x.day] = state.days[x.day] || {}; state.days[x.day][ne.id] = ne; persist('d-'+x.day);
     closeSheet(1); toast('Gespeichert');
   }
   draw();
+}
+
+function editFixed(day, orig){
+  let armed = false;
+  const body = openSheet(1, { title:'Maschinenbuchung', right:'Sichern', onRight: save });
+  body.innerHTML = `<div class="subttl" style="text-align:center;margin-top:-8px">${esc(orig.a.produkt || '')} · #${esc(orig.a.nr)} · ${esc(orig.m)}</div>
+    <div class="sect"><div class="group">
+      <label class="cell"><span class="cl">Datum</span><input type="date" id="xf-day" value="${day}"></label>
+      <label class="cell"><span class="cl">Maschinenzeit</span><input type="number" id="xf-mt" min="0" inputmode="numeric" value="${+orig.mt||0}" style="width:70px"><span class="dim">min</span></label>
+    </div><div class="foot">Feste Buchung – zählt nur als Maschinenzeit, nicht als Arbeitszeit.</div></div>
+    <div class="sect"><h2><span>Notiz</span></h2><div class="group"><div class="cell"><textarea id="xf-n" placeholder="Optional">${esc(orig.note||'')}</textarea></div></div></div>
+    <div class="group"><button class="cell danger" id="xf-del">Buchung löschen</button></div>`;
+  function save(){
+    const nd = document.getElementById('xf-day').value || day, mt = Math.max(0, Math.round(+document.getElementById('xf-mt').value || 0));
+    const ne = { ...clone(orig), mt, note: document.getElementById('xf-n').value };
+    if(nd !== day){ const t = new Date(orig.s); const s = parseDay(nd).setHours(t.getHours(), t.getMinutes(), 0, 0); ne.s = s; ne.e = s; delete state.days[day][orig.id]; persist('d-'+day); }
+    state.days[nd] = state.days[nd] || {}; state.days[nd][ne.id] = ne; persist('d-'+nd);
+    closeSheet(1); toast('Gespeichert');
+  }
+  const del = document.getElementById('xf-del');
+  del.onclick = () => {
+    if(!armed){ armed = true; del.textContent = 'Wirklich löschen?'; return; }
+    delete state.days[day][orig.id]; persist('d-'+day); closeSheet(1); toast('Gelöscht');
+  };
 }
 
 /* ---------- Arbeitsablauf bearbeiten ---------- */
@@ -1068,9 +1294,11 @@ function editAblauf(id){
     body.innerHTML = `<div class="sect"><div class="group"><label class="cell"><input class="left" id="ab-name" value="${esc(name)}" placeholder="Name, z. B. Welle fertigen"></label></div></div>
       <div class="sect"><h2><span>Schritte</span></h2>
       ${steps.map((s,i) => `<div class="stepbox">
-        <div class="stephead"><span>SCHRITT ${i+1}</span><span class="mini">
+        <div class="stephead"><span>SCHRITT ${i+1}</span><span class="smini">
           <button data-up="${i}" ${i===0?'disabled':''} aria-label="hoch">↑</button><button data-dn="${i}" ${i===steps.length-1?'disabled':''} aria-label="runter">↓</button><button class="x" data-rs="${i}" aria-label="entfernen">✕</button></span></div>
         ${pickCell('t'+i,'Tätigkeit',esc(s.t),'Wählen')}${pickCell('m'+i,'Maschine',esc(s.m),'Ohne')}
+        ${isFixM(s.m) ? `<label class="cell"><span class="cl two"><span>Feste Zeit</span><small>wird ohne Stoppuhr gebucht</small></span><input type="number" data-mt="${i}" min="1" inputmode="numeric" placeholder="0" value="${s.mt || ''}" style="width:70px"><span class="dim">min</span></label>` : ''}
+        ${s.m && !isFixM(s.m) ? `<label class="cell"><span class="cl two"><span>Vorbereitungszeit</span><small>keine Maschinenstunden</small></span><input type="checkbox" class="sw" data-vb="${i}" ${s.vb?'checked':''}></label>` : ''}
       </div>`).join('')}
       <div class="group" style="background:var(--glass)"><button class="cell accent" id="ab-add" style="justify-content:center">＋ Schritt hinzufügen</button></div></div>
       ${orig ? '<div class="group" style="background:var(--glass)"><button class="cell danger" id="ab-del">Arbeitsablauf löschen</button></div>' : ''}`;
@@ -1084,18 +1312,23 @@ function editAblauf(id){
     body.querySelectorAll('[data-dn]').forEach(b => b.onclick = () => { readName(); const i = +b.dataset.dn; [steps[i+1], steps[i]] = [steps[i], steps[i+1]]; draw(); });
     body.querySelectorAll('[data-rs]').forEach(b => b.onclick = () => { readName(); steps.splice(+b.dataset.rs, 1); draw(); });
     document.getElementById('ab-add').onclick = () => { readName(); steps.push({ t:'', m:'' }); draw(); };
+    body.querySelectorAll('[data-mt]').forEach(c => c.oninput = () => { steps[+c.dataset.mt].mt = Math.round(+c.value || 0); });
+    body.querySelectorAll('[data-vb]').forEach(c => c.onchange = () => { const s = steps[+c.dataset.vb]; if(c.checked) s.vb = true; else delete s.vb; });
     const del = document.getElementById('ab-del');
     if(del) del.onclick = () => {
       if(!armed){ armed = true; del.textContent = 'Wirklich löschen?'; return; }
-      st.ablaeufe = st.ablaeufe.filter(x => x.id !== id); persist('stamm'); closeSheet(1); toast('Gelöscht');
+      state.stamm.ablaeufe = state.stamm.ablaeufe.filter(x => x.id !== id); persist('stamm'); closeSheet(1); toast('Gelöscht');
     };
   };
   function save(){
     readName();
-    const clean = steps.filter(s => s.t);
+    const missing = steps.findIndex(s => s.t && isFixM(s.m) && !(+s.mt > 0));
+    if(missing >= 0) return toast('Bitte feste Zeit für Schritt ' + (missing+1) + ' eingeben');
+    const clean = steps.filter(s => s.t).map(s => { const o = { t:s.t, m:s.m||'' }; if(s.m && s.vb && !isFixM(s.m)) o.vb = true; if(isFixM(s.m)) o.mt = Math.round(+s.mt); return o; });
     if(!name.trim()) return toast('Bitte einen Namen eingeben');
     if(!clean.length) return toast('Mindestens ein Schritt mit Tätigkeit');
-    if(orig){ orig.name = name.trim(); orig.steps = clean; } else st.ablaeufe.push({ id:uid(), name:name.trim(), steps:clean });
+    const cur = id ? state.stamm.ablaeufe.find(x => x.id===id) : null;
+    if(cur){ cur.name = name.trim(); cur.steps = clean; } else state.stamm.ablaeufe.push({ id:uid(), name:name.trim(), steps:clean });
     persist('stamm'); closeSheet(1); toast('Arbeitsablauf gespeichert');
   }
   draw();
@@ -1155,6 +1388,7 @@ function importBackup(){
 /* ---------- Start ---------- */
 function render(){
   document.body.classList.remove('fs');
+  document.body.classList.remove('vbmode');
   document.querySelectorAll('.tabbar button').forEach(b => b.classList.toggle('on', b.dataset.tab===tab));
   ({ stopp:renderStopp, ausw:renderAusw, buch:renderBuch, einst:renderEinst })[tab]();
   renderMini();

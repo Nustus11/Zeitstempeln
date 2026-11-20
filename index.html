@@ -165,6 +165,7 @@ button.cell:active{background:var(--fill)}
 .empty{padding:22px 16px;text-align:center;color:var(--sec);font-size:15px}
 .backbtn{background:none;border:0;color:var(--blue);font:inherit;padding:4px 0 12px;display:block}
 .grow{flex:1;min-width:0}
+.foot{font-size:13px;color:var(--sec);margin:7px 16px 0}
 .blobs i{transition:background 1s,opacity 1s}
 body{transition:background-color .8s}
 body.vbmode .blobs i{opacity:.95}
@@ -346,7 +347,8 @@ function ensureName(listName, name){
   const L = state.stamm[listName];
   const f = L.find(x => x.name.toLowerCase() === name.toLowerCase());
   if(f) return f.name;
-  L.push({ id: uid(), name }); persist('stamm'); return name;
+  const it = { id: uid(), name }; if(listName === 'masch') it.rp = defaultPhrase(name);
+  L.push(it); persist('stamm'); return name;
 }
 function ensureAuftrag(nr, produkt){
   nr = (nr||'').trim(); produkt = (produkt||'').trim(); if(!nr) return null;
@@ -450,11 +452,13 @@ function kw(d){ const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.get
 function csv(rows){ return '﻿' + rows.map(r => r.map(c => { c = String(c==null?'':c); return /[;"\n\r]/.test(c) ? '"'+c.replace(/"/g,'""')+'"' : c; }).join(';')).join('\r\n'); }
 const decN = ms => (Math.max(0,ms)/3600000).toFixed(2).replace('.',',');
 function csvAuftraege(keys){
-  const s = summarize(keys, Date.now());
+  // Aufträge aus dem Zeitraum, jeweils mit allen Zeiten über alle Tage
+  const inRange = new Set(summarize(keys, Date.now()).per.map(g => aKey(g.a)));
+  const all = summarize(Object.keys(state.days), Date.now());
+  const s = { per: all.per.filter(g => inRange.has(aKey(g.a))) };
   const rows = [['Auftrags-Nr.','Produkt','Art','Bezeichnung','Zeit (h:mm)','Zeit (Std. dezimal)','Minuten']];
   s.per.forEach(g => {
     rows.push([g.a.nr, g.a.produkt, 'Arbeitszeit gesamt', '', dur(g.own), decN(g.own), Math.round(g.own/60000)]);
-    if(g.vb) rows.push([g.a.nr, g.a.produkt, 'davon Vorbereitungszeit', '', dur(g.vb), decN(g.vb), Math.round(g.vb/60000)]);
     Object.entries(g.masch).forEach(([m,v]) => rows.push([g.a.nr, g.a.produkt, 'Maschinenzeit', m, dur(v), decN(v), Math.round(v/60000)]));
     Object.entries(g.taet).forEach(([t,v]) => rows.push([g.a.nr, g.a.produkt, 'Tätigkeit', t, dur(v), decN(v), Math.round(v/60000)]));
   });
@@ -723,6 +727,26 @@ function markDone(A){
   if(!A) return;
   A.done = true; A.doneAt = Date.now(); delete A.resume; delete A.resumeAt; persist('stamm');
   buzz(); toast('✓ ' + (A.produkt || '#'+A.nr) + ' fertig gemeldet');
+  const id = A.id; setTimeout(() => doneSummary(id), 400);
+}
+// Zusammenfassung beim Fertigmelden: alle Zeiten des Auftrags
+function doneSummary(id){
+  const A = state.stamm.auftraege.find(x => x.id === id); if(!A) return;
+  const s = summarize(Object.keys(state.days), Date.now());
+  const g = s.per.find(x => aKey(x.a) === aKey(A));
+  const body = openSheet(1, { title:'Auftrag fertig ✓', left:'Schließen' });
+  if(!g){ body.innerHTML = `<div class="subttl" style="text-align:center">${esc(A.produkt || '')} · #${esc(A.nr)}</div><div class="group"><div class="empty">Keine Zeiten gebucht.</div></div>`; return; }
+  const ms = Object.entries(g.masch).sort((a,b) => b[1]-a[1]);
+  body.innerHTML = `<div style="text-align:center;margin:-6px 0 18px"><div style="font-size:24px;font-weight:700">${esc(A.produkt || '#'+A.nr)}</div>${A.produkt ? `<div class="dim" style="font-size:15px;margin-top:2px">#${esc(A.nr)}</div>` : ''}</div>
+    <div class="sect"><div class="group">
+      <div class="cell"><span class="icon" style="background:var(--blue)"><svg viewBox="0 0 24 24" width="17" height="17" fill="#fff"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6z"/></svg></span><span class="cl">Meine Arbeitszeit</span>${timeVal(g.own)}</div>
+      ${ms.map(([m,v]) => `<div class="cell"><span class="icon" style="background:var(--orange)">⚙︎</span><span class="cl">${esc(m)}</span>${timeVal(v)}</div>`).join('')}
+    </div><div class="foot">Alle Zeiten, die auf diesen Auftrag gebucht wurden.</div></div>
+    <button class="cta blue" id="dscopy">Zeiten kopieren</button>`;
+  body.querySelector('#dscopy').onclick = () => {
+    const mt = ms.map(([m,v]) => `  ${m}: ${dur(v)} (${dec(v)})`).join('\n');
+    copyText(`Auftrag ${A.nr} – ${A.produkt}\nArbeitszeit: ${dur(g.own)} (${dec(g.own)})` + (mt ? `\nMaschinenzeiten:\n${mt}` : ''));
+  };
 }
 // Stopp-Knopf: unterbrechen oder fertig melden
 function stopSheet(r){
@@ -1006,26 +1030,30 @@ setInterval(tick, 1000);
 function renderAusw(){
   const now = Date.now(), r = rangeKeys(aMode, aOff), s = summarize(r.keys, now);
   const sum = o => Object.values(o).reduce((x,y) => x+y, 0);
+  // Pro Auftrag: nur Aufträge aus dem Zeitraum, aber mit allen Zeiten (alle Tage)
+  const allBy = {}; summarize(Object.keys(state.days), now).per.forEach(g => { allBy[aKey(g.a)] = g; });
+  const perList = s.per.map(g => allBy[aKey(g.a)] || g).sort((x,y) => y.own - x.own);
   let h = `<div class="nav"><span></span><button class="round glass" id="aadd" aria-label="Nachtragen">＋</button></div><div class="ttl">Auswertung</div><div class="subttl">Arbeits- und Maschinenzeiten pro Auftrag</div>
     <div class="seg glass">${['tag','woche','monat'].map(m => `<button data-mode="${m}" class="${aMode===m?'on':''}">${{tag:'Tag',woche:'Woche',monat:'Monat'}[m]}</button>`).join('')}</div>
     <div class="period"><button class="round glass" id="ap">‹</button><div class="pmid"><b>${esc(r.label)}</b>${aOff ? '<button class="todaybtn" id="atoday">Heute</button>' : ''}</div><button class="round glass" id="an">›</button></div>
     <div class="kpis glass"><div><span>Meine Zeit</span><b class="tnum">${dur(s.own)}</b></div><div><span>Maschinen</span><b class="tnum">${dur(sum(s.masch))}</b></div><div><span>Aufträge</span><b>${s.per.length}</b></div></div>`;
+  h += `<div class="sect"><div class="group glass">
+      <button class="cell accent" id="abr"><span class="icon" style="background:var(--indigo)">✎</span><span class="cl two"><span>Ausbildungsbericht</span><small style="color:var(--sec)">${aMode==='woche' ? 'Ganze Woche, Tag für Tag' : aMode==='monat' ? 'Ganzer Monat, Tag für Tag' : 'Für diesen Tag'}</small></span><span class="chev">›</span></button>
+    </div></div>`;
   if(aMode==='tag'){
     const ents = r.keys.flatMap(k => Object.values(state.days[k]||{})).sort((x,y) => x.s-y.s);
     h += `<div class="sect"><h2><span>${aOff===0?'Heute':'Buchungen'}</span><span>${ents.length} ${ents.length===1?'Buchung':'Buchungen'}</span></h2>
       <div class="group glass">${ents.length ? ents.map(x => entryCell(x, now)).join('') : '<div class="empty">Keine Buchungen an diesem Tag.</div>'}</div></div>`;
-    if(s.per.length) h += `<div class="sect" style="margin-bottom:8px"><h2><span>Pro Auftrag</span></h2></div>`;
   }
-  if(s.per.length){
-    s.per.forEach((g, i) => {
+  if(perList.length) h += `<div class="sect" style="margin-bottom:8px"><h2><span>Pro Auftrag</span><span>Gesamtzeiten</span></h2></div>`;
+  if(perList.length){
+    perList.forEach((g, i) => {
       const mt = sum(g.masch);
       h += `<div class="sect"><div class="group glass">
         <div class="cell"><span class="cl two"><span style="font-size:22px;font-weight:700">${esc(g.a.produkt || '#'+g.a.nr)}</span><small>${g.a.produkt ? '#'+esc(g.a.nr) : ''}${(aFind(g.a)||{}).done ? ' · <span style="color:var(--green)">✓ fertig</span>' : ''}</small></span>
           <button class="round" style="background:var(--fill);color:var(--blue)" data-copy="${i}" aria-label="Kopieren">${ICON_COPY}</button></div>
         <div class="cell"><span class="icon" style="background:var(--blue)"><svg viewBox="0 0 24 24" width="17" height="17" fill="#fff"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6z"/></svg></span><span class="cl">Meine Arbeitszeit</span>${timeVal(g.own)}</div>
-        ${g.vb ? `<div class="cell"><span class="icon" style="background:#30B0C7">⚒︎</span><span class="cl dim">davon Vorbereitung</span>${timeVal(g.vb)}</div>` : ''}
         ${Object.entries(g.masch).sort((a,b) => b[1]-a[1]).map(([m,v]) => `<div class="cell"><span class="icon" style="background:var(--orange)">⚙︎</span><span class="cl">${esc(m)}</span>${timeVal(v)}</div>`).join('')}
-        ${mt && Object.keys(g.masch).length > 1 ? `<div class="cell"><span class="icon" style="background:var(--fill)"></span><span class="cl dim">Maschinen gesamt</span>${timeVal(mt)}</div>` : ''}
       </div></div>`;
     });
   } else h += `<div class="sect"><div class="group glass"><div class="empty">Keine Buchungen in diesem Zeitraum.</div></div></div>`;
@@ -1040,12 +1068,13 @@ function renderAusw(){
   document.getElementById('aadd').onclick = () => editEntry(aMode === 'tag' ? r.keys[0] : dayKey(new Date()), null);
   const at = document.getElementById('atoday'); if(at) at.onclick = () => { aOff = 0; render(); };
   bindEntries();
+  document.getElementById('abr').onclick = () => reportSheet(r);
   document.getElementById('ex1').onclick = () => offerFile(`Auftraege_${r.fname}.csv`, csvAuftraege(r.keys));
   document.getElementById('ex2').onclick = () => offerFile(`Buchungen_${r.fname}.csv`, csvBuchungen(r.keys));
   view.querySelectorAll('[data-copy]').forEach(b => b.onclick = () => {
-    const g = s.per[+b.dataset.copy];
+    const g = perList[+b.dataset.copy];
     const mt = Object.entries(g.masch).map(([m,v]) => `  ${m}: ${dur(v)} (${dec(v)})`).join('\n');
-    copyText(`Auftrag ${g.a.nr} – ${g.a.produkt}\nZeitraum: ${r.label}\nArbeitszeit: ${dur(g.own)} (${dec(g.own)})` + (mt ? `\nMaschinenzeiten:\n${mt}` : ''));
+    copyText(`Auftrag ${g.a.nr} – ${g.a.produkt}\nGesamt\nArbeitszeit: ${dur(g.own)} (${dec(g.own)})` + (mt ? `\nMaschinenzeiten:\n${mt}` : ''));
   });
 }
 
@@ -1065,6 +1094,77 @@ function renderBuch(){
   document.getElementById('badd').onclick = () => editEntry(bDay, null);
   const bt = document.getElementById('btoday'); if(bt) bt.onclick = () => { bDay = dayKey(new Date()); render(); };
   bindEntries();
+}
+
+/* ---------- Ausbildungsbericht ---------- */
+// Geschlecht der Maschine schätzen (für der/dem). Typbezeichnungen wie "B240" oder "MultiStrip" -> "die Maschine" = weiblich
+function machGender(m){
+  const w = m.trim().split(/\s+/).pop(), l = w.toLowerCase();
+  if(/\d/.test(w) || /[A-Z]/.test(w.slice(1))) return 'f';
+  if(/(kolben|ofen|automat|roboter|tisch|stand|platz|raum|bohrer|laser|schrank|kompressor|lötkolben|drucker|schneider)$/.test(l)) return 'm';
+  if(/(gerät|werkzeug|bad|becken|lager|zentrum)$/.test(l)) return 'n';
+  return 'f';
+}
+const V_IN  = /(sandstrahl|strahlen|wasch|reinig|trockn|härt|lackier|einbrenn|vergieß|vergiess|tauch|spül|beschicht)/;
+const V_AN  = /(zuschneid|ablängen|abläng|schneid|säg|bohr|fräs|dreh|schleif|entgrat|bieg|stanz|montier|bedien|einricht|rüst|schweiß|schweiss|programmier|ausformen|entform)/;
+const M_IN  = /(anlage|kabine|ofen|raum|bad|becken|schrank|strahler|kammer)$/i;
+const M_AN  = /(station|bank|platz|tisch|maschine|presse|säge|fräse|drehbank)$/i;
+// Vorschlag für neue Maschinen: "an der …", "mit dem …", "in der …" (danach frei änderbar)
+function defaultPhrase(m){
+  const g = machGender(m), n = m.trim();
+  const prep = M_IN.test(n) ? 'in' : M_AN.test(n) ? 'an' : 'mit';
+  const art = prep === 'in' ? (g === 'f' ? 'in der' : 'im') : prep === 'an' ? (g === 'f' ? 'an der' : 'am') : (g === 'f' ? 'mit der' : 'mit dem');
+  return art + ' ' + n;
+}
+// fest eingetragene Formulierung der Maschine
+function machPhrase(m){
+  const x = state.stamm.masch.find(y => y.name === m);
+  return (x && x.rp && x.rp.trim()) || defaultPhrase(m);
+}
+// allen Maschinen ohne Formulierung einmal eine eintragen
+function ensurePhrases(){
+  let ch = false;
+  (state.stamm.masch || []).forEach(x => { if(!x.rp){ x.rp = defaultPhrase(x.name); ch = true; } });
+  if(ch) persist('stamm');
+}
+// Tätigkeit + Maschine als Satz: Maschine vor das Verb am Ende, sonst dahinter
+function reportPhrase(t, m){
+  t = (t || '').trim(); if(!m) return t;
+  const p = machPhrase(m), w = t.split(/\s+/), last = w[w.length-1], ll = last.toLowerCase();
+  // kleingeschriebenes Wort am Ende = Verb; großgeschrieben nur, wenn es ein bekanntes Arbeitsverb ist (z. B. "Sandstrahlen")
+  const isVerb = /(en|ern|eln)$/.test(ll) && (/^[a-zäöü]/.test(last) || /^(sand)?strahlen$|^(ab)?(waschen|reinigen|trocknen|härten|lackieren|drehen|fräsen|bohren|schleifen|sägen|entgraten|crimpen|löten|verlöten|verzinnen|abisolieren|zuschneiden|ablängen|biegen|stanzen|schweißen|prüfen|messen|pressen|montieren)$/.test(ll));
+  if(w.length >= 2 && isVerb) return w.slice(0, -1).join(' ') + ' ' + p + ' ' + last;
+  return t + ' ' + p;
+}
+function reportText(keys){
+  const now = Date.now(), out = [];
+  keys.forEach(k => {
+    const d = state.days[k]; if(!d) return;
+    const groups = {};
+    Object.values(d).filter(e => !e.fx && !e.fxp && !(e.m && isFixM(e.m))).sort((a,b) => a.s - b.s).forEach(e => {
+      const key = (e.t||'').trim().toLowerCase() + '|' + (e.m||'');
+      const g = groups[key] = groups[key] || { t:e.t, m:e.m, ms:0 };
+      g.ms += entryDur(e, now).work;
+    });
+    const lines = Object.values(groups).filter(g => g.ms >= 10*60000).map(g => {
+      const h = Math.max(0.5, Math.round(g.ms / 1800000) / 2);
+      return '-' + reportPhrase(g.t, g.m) + ' ' + String(h).replace('.', ',') + 'h';
+    });
+    if(lines.length) out.push(WT_LONG[parseDay(k).getDay()] + ':\n' + lines.join('\n'));
+  });
+  return out.join('\n');
+}
+function reportSheet(r){
+  const txt = reportText(r.keys);
+  const body = openSheet(1, { title:'Ausbildungsbericht', left:'Fertig' });
+  body.innerHTML = `<div class="subttl" style="text-align:center;margin-top:-8px">${esc(r.label)}</div>
+    ${txt ? `<div class="group"><div class="cell"><textarea id="rtxt" style="font-size:15px;line-height:1.45;overflow:hidden">${esc(txt)}</textarea></div></div>
+      <div class="foot" style="margin-bottom:16px">Du kannst den Text hier noch ändern. Maschinen mit fester Zeit und Aufgaben unter 10 Minuten sind weggelassen, Zeiten auf halbe Stunden gerundet.</div>
+      <button class="cta blue" id="rcopy">Kopieren</button>`
+    : '<div class="group"><div class="empty">Keine passenden Tätigkeiten in diesem Zeitraum.</div></div>'}`;
+  const ta = body.querySelector('#rtxt');
+  if(ta){ const fit = () => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }; ta.oninput = fit; requestAnimationFrame(fit); }
+  const c = body.querySelector('#rcopy'); if(c) c.onclick = () => copyText(body.querySelector('#rtxt').value, body.querySelector('#rtxt'));
 }
 
 /* ---------- Tab: Verwalten ---------- */
@@ -1098,7 +1198,8 @@ function renderEinst(){
       <div class="cell"><span class="cl">Status</span><span class="cv" id="sync">${esc(syncStatus)}</span></div>
       <div class="cell"><span class="cl">Letzte Sicherung</span><span class="cv">${(() => { let t = 0; try{ t = +localStorage.getItem('zs-lastbackup') || 0; }catch(e){} return t ? new Date(t).toLocaleDateString('de-DE') : '<span style="color:var(--orange)">noch keine</span>'; })()}</span></div>
       <button class="cell accent" id="bkexp">Sicherung exportieren</button>
-      <button class="cell accent" id="bkimp">Sicherung importieren</button></div>
+      <button class="cell accent" id="bkimp">Sicherung importieren</button>
+      <button class="cell accent" id="vlexp"><span class="cl two"><span>Vorlagen exportieren</span><small style="color:var(--sec)">Arbeitsabläufe, Tätigkeiten und Maschinen – ohne Zeiten</small></span></button></div>
       <div class="foot">Tipp: In Safari „Teilen“ → „Zum Home-Bildschirm“ – dann startet die App mit einem Tipp.</div></div>`;
   view.querySelectorAll('[data-sub]').forEach(b => b.onclick = () => { einSub = b.dataset.sub; render(); window.scrollTo(0,0); });
   view.querySelectorAll('[data-theme-set]').forEach(b => b.onclick = () => { setTheme(b.dataset.themeSet); render(); });
@@ -1107,6 +1208,11 @@ function renderEinst(){
     if(ok){ try{ localStorage.setItem('zs-lastbackup', String(Date.now())); }catch(e){} render(); }
   };
   document.getElementById('bkimp').onclick = importBackup;
+  document.getElementById('vlexp').onclick = () => {
+    const st = state.stamm;
+    const data = { typ:'zeitstempel-vorlagen', days:{}, stamm:{ taet: clone(st.taet), masch: clone(st.masch), ablaeufe: clone(st.ablaeufe), auftraege: [] } };
+    offerFile('zeitstempel-vorlagen-' + dayKey(new Date()) + '.json', JSON.stringify(data));
+  };
 }
 function renderSub(k){
   const st = state.stamm; let list = '';
@@ -1117,7 +1223,7 @@ function renderSub(k){
     const open = st.auftraege.filter(a => !a.done), done = st.auftraege.filter(a => a.done);
     list = `<div class="sect"><h2><span>Offen</span></h2><div class="group glass">${open.map(cell).join('') || '<div class="empty">Keine offenen Aufträge.</div>'}</div></div>`
       + (done.length ? `<div class="sect"><h2><span>Fertig gemeldet</span></h2><div class="group glass">${done.map(cell).join('')}</div><div class="foot">Fertige Aufträge erscheinen nicht mehr in der Auswahl. Ihre Zeiten bleiben erhalten.</div></div>` : '');
-  } else list = st[k].length ? `<div class="group glass">${st[k].map(x => `<button class="cell" data-it="${x.id}"><span class="cl two"><span>${esc(x.name)}</span>${x.fix ? `<small>feste Zeit, ohne Zeitmessung</small>` : ''}</span><span class="chev">›</span></button>`).join('')}</div>`
+  } else list = st[k].length ? `<div class="group glass">${st[k].map(x => `<button class="cell" data-it="${x.id}"><span class="cl two"><span>${esc(x.name)}</span>${k==='masch' ? `<small>„${esc(x.rp || defaultPhrase(x.name))}“${x.fix ? ' · feste Zeit' : ''}</small>` : ''}</span><span class="chev">›</span></button>`).join('')}</div>`
       : `<div class="group glass"><div class="empty">Noch leer – wird beim Starten automatisch gefüllt.</div></div>`;
   view.innerHTML = `<div class="nav"><button class="back" id="back">‹ Verwalten</button><button class="round glass" id="add" aria-label="Hinzufügen">＋</button></div>
     <div class="ttl">${LISTS[k].t}</div><div class="subttl"></div>${list}`;
@@ -1139,6 +1245,7 @@ function editItem(k, id){
        ${x ? '<div class="foot">Umbenennen ändert nur künftige Buchungen.</div>' : ''}</div>
        ${k==='masch' ? `<div class="sect"><div class="group">
          <label class="cell"><span class="cl two"><span>Feste Zeit buchen</span><small>Keine Zeitmessung, keine Arbeitszeit</small></span><input type="checkbox" class="sw" id="ei-fx" ${x && x.fix ? 'checked' : ''}></label>
+         <label class="cell"><span class="cl two"><span>Im Ausbildungsbericht</span><small>so steht es im Bericht, z. B. „an der …“</small></span><input id="ei-rp" value="${esc(x ? (x.rp || defaultPhrase(x.name)) : '')}" placeholder="z. B. an der Maschine" style="flex:1;min-width:0"></label>
        </div><div class="foot">Die Zeit legst du pro Arbeitsablauf-Schritt fest oder gibst sie bei einer einzelnen Aufgabe ein. Sie wird ohne Stoppuhr als Maschinenzeit gebucht.</div></div>` : ''}`;
   if(x) body.insertAdjacentHTML('beforeend', `<div class="group"><button class="cell danger" id="ei-del">Löschen</button></div>`);
   function save(){
@@ -1151,8 +1258,14 @@ function editItem(k, id){
       const n = document.getElementById('ei-n').value.trim(); if(!n) return toast('Name fehlt');
       const fix = k==='masch' && document.getElementById('ei-fx').checked;
       let cx = id ? state.stamm[k].find(y => y.id===id) : null;
+      const oldName = cx ? cx.name : null;
       if(cx){ cx.name = n; } else { ensureName(k, n); cx = state.stamm[k].find(y => y.name.toLowerCase() === n.toLowerCase()); }
-      if(k==='masch' && cx){ if(fix) cx.fix = true; else delete cx.fix; }
+      if(k==='masch' && cx){
+        if(fix) cx.fix = true; else delete cx.fix;
+        let rp = (document.getElementById('ei-rp').value || '').trim();
+        if(oldName && oldName !== n && rp.endsWith(oldName)) rp = rp.slice(0, -oldName.length) + n;
+        cx.rp = rp || defaultPhrase(n);
+      }
       persist('stamm');
     }
     closeSheet(1); toast('Gespeichert');
@@ -1377,7 +1490,7 @@ function importBackup(){
       for(const k in d.days){ state.days[k] = Object.assign(state.days[k]||{}, d.days[k]); persist('d-'+k); }
       const st = state.stamm;
       (d.stamm.taet||[]).forEach(x => ensureName('taet', x.name));
-      (d.stamm.masch||[]).forEach(x => ensureName('masch', x.name));
+      (d.stamm.masch||[]).forEach(x => { const n = ensureName('masch', x.name); const m = st.masch.find(y => y.name === n); if(m && x.fix){ m.fix = true; } if(m && x.rp && !m.rp){ m.rp = x.rp; } });
       (d.stamm.auftraege||[]).forEach(x => { const a = ensureAuftrag(x.nr, x.produkt); if(a && x.done) a.done = true; });
       (d.stamm.ablaeufe||[]).forEach(x => { if(!st.ablaeufe.some(y => y.id===x.id)) st.ablaeufe.push(x); });
       persist('stamm'); closeSheet(1); toast('Import erfolgreich');
@@ -1387,6 +1500,7 @@ function importBackup(){
 
 /* ---------- Start ---------- */
 function render(){
+  ensurePhrases();
   document.body.classList.remove('fs');
   document.body.classList.remove('vbmode');
   document.querySelectorAll('.tabbar button').forEach(b => b.classList.toggle('on', b.dataset.tab===tab));

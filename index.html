@@ -506,7 +506,8 @@ function pick(kind, cur, opt){
     let q = '', finished = false;
     const finish = v => { if(finished) return; finished = true; closeSheet(2); res(v); };
     const titles = { auftrag:'Auftrag', taet:'Tätigkeit', masch:'Maschine', ab:'Arbeitsablauf' };
-    const body = openSheet(2, { title: titles[kind], onLeft: () => finish(undefined) });
+    const body = openSheet(2, { title: titles[kind], onLeft: () => finish(undefined), right: kind==='taet' ? 'Verwenden' : null, onRight: () => { if(q.trim()) finish(q.trim()); } });
+    const useBtn = document.querySelector('#S2 .shead .r');
     body.innerHTML = `<div class="search">${ICON_SEARCH}<input id="pq" placeholder="${kind==='ab'?'Suchen':'Suchen oder neu eingeben'}" autocomplete="off"></div><div id="plist"></div>`;
     const items = () => kind==='auftrag'
       ? state.stamm.auftraege.filter(a => !a.done || a.id===cur).map(a => ({ v:a.id, l:'#'+a.nr, s:a.produkt, k:(a.nr+' '+a.produkt).toLowerCase(), nr:true }))
@@ -522,11 +523,12 @@ function pick(kind, cur, opt){
       if(list.length) h += `<div class="sect"><div class="group">${list.map(i => row(i.v, i.l, i.s, i.v===cur, i.nr)).join('')}</div></div>`;
       else if(!ql) h += `<div class="empty">${kind==='ab' ? 'Noch keine Arbeitsabläufe – lege sie unter „Verwalten“ an.' : 'Noch keine Einträge – tippe oben etwas ein.'}</div>`;
       const exact = all.some(i => kind==='auftrag' ? i.l.toLowerCase()==='#'+ql : i.k===ql);
-      if(kind!=='ab' && ql && !exact) h += `<div class="group"><button class="cell accent" data-add>＋ „${esc(q.trim())}“ hinzufügen</button></div>`;
+      if(kind!=='ab' && ql && !exact) h += `<div class="group"><button class="cell accent" data-add>＋ „${esc(q.trim())}“ hinzufügen</button></div>${kind==='taet' ? '<div class="foot">Oben rechts „Verwenden“: nur dieses Mal buchen, ohne in der Liste zu speichern.</div>' : ''}`;
       plist.innerHTML = h;
       plist.querySelectorAll('[data-v]').forEach(b => b.onclick = () => finish(b.dataset.v));
       const add = plist.querySelector('[data-add]');
       if(add) add.onclick = () => kind==='auftrag' ? addAuftrag(q.trim()) : finish(ensureName(kind, q));
+      if(useBtn){ const on = !!ql && !exact; useBtn.style.visibility = on ? 'visible' : 'hidden'; }
     };
     const addAuftrag = nr => {
       plist.innerHTML = `<div class="sect"><h2>Neuer Auftrag</h2><div class="group">
@@ -702,13 +704,27 @@ function toggleVb(r){
   fsRun = nr.eid; buzz(); toast(vb ? 'Vorbereitungszeit an' : 'Vorbereitungszeit aus'); render();
 }
 // Fertig-Knopf: Zeit stoppen und Auftrag fertig melden
-function doneRun(r){
+function doneRun(r, keepOpen, fxMin){
   const e = runEntry(r); if(!e) return;
-  if(e.fxp){ const inp = document.getElementById('fxc'), mt = Math.round(+(inp ? inp.value : e.mt) || 0);
+  if(e.fxp){ const mt = Math.round(+(fxMin != null ? fxMin : e.mt) || 0);
     if(mt > 0){ const now0 = Date.now(); delete e.fxp; e.fx = true; e.mt = mt; e.s = now0; e.e = now0; persist('d-'+r.day); state.aktiv = runs().filter(x => x.eid !== r.eid); persist('aktiv'); } }
   const A = aFind(e.a), now = Date.now();
   stopRun(r, now); if(A){ stopRunsOf(A, now); clearResume(A); }
+  if(keepOpen){ afterRunEnd(); buzz(); toast('Gestoppt – ' + (e.a.produkt || '#'+e.a.nr) + ' bleibt offen'); render(); return; }
   markDone(A); afterRunEnd(); render();
+}
+// Fertig-Knopf: erst fragen, ob der Auftrag fertig ist oder offen bleibt
+function doneChoice(r){
+  const e = runEntry(r); if(!e) return;
+  const inp = document.getElementById('fxc'), fxMin = inp ? inp.value : null;
+  const body = openSheet(1, { title:'Aufgabe beenden' });
+  body.innerHTML = `<div class="subttl" style="text-align:center;margin-top:-8px">${esc(e.a.produkt || '')} · #${esc(e.a.nr)}</div>
+    <div class="sect"><div class="group">
+      <button class="cell" id="dc-yes"><span class="icon" style="background:var(--green)">✓</span><span class="cl two"><span>Auftrag fertig melden</span><small>Wird aus der Auswahl ausgeblendet</small></span></button>
+      <button class="cell" id="dc-no"><span class="icon" style="background:var(--blue)">#</span><span class="cl two"><span>Auftrag bleibt offen</span><small>Zeit stoppen – es kommen noch weitere Arbeiten</small></span></button>
+    </div></div>`;
+  body.querySelector('#dc-yes').onclick = () => { closeSheet(1, true); doneRun(r, false, fxMin); };
+  body.querySelector('#dc-no').onclick = () => { closeSheet(1, true); doneRun(r, true, fxMin); };
 }
 // Pause gedrückt halten: alle Zeiten dieser Stempelung löschen
 function discardRun(r){
@@ -807,7 +823,7 @@ function auftragSheet(A){
     };
   };
 
-  const f = { t: last.t || '', m: last.m || '' };
+  const f = { t: '', m: '' };
   const task = () => {
     body.innerHTML = `${back()}<div class="sect"><h2><span>Einzelne Aufgabe</span></h2><div class="group">
         ${pickCell('t','Tätigkeit',esc(f.t),'Wählen')}${pickCell('m','Maschine',esc(f.m),'Ohne')}${fxCell(f)}</div></div>
@@ -917,7 +933,7 @@ function renderRunning(r){
     togglePause(r); fsMin = true; fsRun = null; render(); window.scrollTo(0,0); toast('Pausiert – unter „Gestoppt“');
   };
   const bres = document.getElementById('bres'); if(bres) bres.onclick = () => togglePause(r);
-  document.getElementById('bdone').onclick = () => doneRun(r);
+  document.getElementById('bdone').onclick = () => doneChoice(r);
   const bvb = document.getElementById('bvb'); if(bvb) bvb.onclick = () => toggleVb(r);
   const bn = document.getElementById('bn'); if(bn) bn.onclick = () => nextStep(r);
   const bnt = document.getElementById('bnt'); if(bnt) bnt.onclick = () => nextTaskSheet(r);

@@ -7,32 +7,34 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Zeitstempel">
 <meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#141513">
 <script>try{var th=localStorage.getItem("zs-theme");if(th==="light"||th==="dark")document.documentElement.setAttribute("data-theme",th);}catch(e){}</script>
 <title>Zeitstempel</title>
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
 :root{
-  --bg:#000; --text:#fff; --sec:rgba(235,235,245,.6); --ter:rgba(235,235,245,.3);
-  --glass:rgba(40,40,46,.42); --glass-strong:rgba(44,44,50,.72); --edge:rgba(255,255,255,.16); --hi:rgba(255,255,255,.22);
+  --bg:#141513; --text:#fff; --sec:rgba(235,235,245,.62); --ter:rgba(235,235,245,.3);
+  --glass:rgba(34,34,32,.45); --glass-strong:rgba(38,38,36,.78); --edge:rgba(255,255,255,.16); --hi:rgba(255,255,255,.22);
   --sep:rgba(255,255,255,.1); --fill:rgba(118,118,128,.24); --shadow:0 10px 40px rgba(0,0,0,.35);
-  --blue:#0A84FF; --green:#30D158; --orange:#FF9F0A; --red:#FF453A; --indigo:#5E5CE6;
-  --b1:#1d4ed8; --b2:#0f766e; --b3:#6d28d9;
+  --blue:#74D4D8; --green:#30D158; --orange:#F4D24A; --red:#FF453A; --indigo:#6A2BB0;
+  --b1:#24063F; --b2:#123E40; --b3:#3A3112;
+  --tq:#74D4D8; --yl:#F4D24A; --pu:#2C0050; --ink:#1C1D1B;
 }
 @media (prefers-color-scheme: light){
   :root:not([data-theme=dark]){
-    --bg:#f2f2f7; --text:#000; --sec:rgba(60,60,67,.6); --ter:rgba(60,60,67,.3);
-    --glass:rgba(255,255,255,.55); --glass-strong:rgba(255,255,255,.82); --edge:rgba(0,0,0,.06); --hi:rgba(255,255,255,.6);
-    --sep:rgba(60,60,67,.14); --fill:rgba(118,118,128,.12); --shadow:0 10px 40px rgba(31,38,135,.12);
-    --blue:#007AFF; --green:#34C759; --orange:#FF9500; --red:#FF3B30; --indigo:#5856D6;
-    --b1:#93c5fd; --b2:#99f6e4; --b3:#c4b5fd;
+    --bg:#F5F5F2; --text:#1C1D1B; --sec:rgba(28,29,27,.6); --ter:rgba(28,29,27,.3);
+    --glass:rgba(255,255,255,.58); --glass-strong:rgba(255,255,255,.85); --edge:rgba(0,0,0,.06); --hi:rgba(255,255,255,.6);
+    --sep:rgba(28,29,27,.12); --fill:rgba(28,29,27,.07); --shadow:0 10px 40px rgba(44,0,80,.10);
+    --blue:#13929A; --green:#2FA84F; --orange:#B88A00; --red:#E0352B; --indigo:#4A1580;
+    --b1:#CDB5EE; --b2:#8FE0E3; --b3:#F7DE7A;
   }
 }
 :root[data-theme=light]{
-    --bg:#f2f2f7; --text:#000; --sec:rgba(60,60,67,.6); --ter:rgba(60,60,67,.3);
-    --glass:rgba(255,255,255,.55); --glass-strong:rgba(255,255,255,.82); --edge:rgba(0,0,0,.06); --hi:rgba(255,255,255,.6);
-    --sep:rgba(60,60,67,.14); --fill:rgba(118,118,128,.12); --shadow:0 10px 40px rgba(31,38,135,.12);
-    --blue:#007AFF; --green:#34C759; --orange:#FF9500; --red:#FF3B30; --indigo:#5856D6;
-    --b1:#93c5fd; --b2:#99f6e4; --b3:#c4b5fd;
+    --bg:#F5F5F2; --text:#1C1D1B; --sec:rgba(28,29,27,.6); --ter:rgba(28,29,27,.3);
+    --glass:rgba(255,255,255,.58); --glass-strong:rgba(255,255,255,.85); --edge:rgba(0,0,0,.06); --hi:rgba(255,255,255,.6);
+    --sep:rgba(28,29,27,.12); --fill:rgba(28,29,27,.07); --shadow:0 10px 40px rgba(44,0,80,.10);
+    --blue:#13929A; --green:#2FA84F; --orange:#B88A00; --red:#E0352B; --indigo:#4A1580;
+    --b1:#CDB5EE; --b2:#8FE0E3; --b3:#F7DE7A;
   }
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -55,7 +57,7 @@ body{
 /* Kopf */
 .nav{display:flex;align-items:center;justify-content:space-between;min-height:44px}
 .nav .back{background:none;border:0;color:var(--blue);font:inherit;padding:8px 0;display:flex;align-items:center;gap:2px}
-.ttl{font-size:34px;font-weight:700;letter-spacing:.01em;margin:2px 4px 2px}
+.ttl{font-size:34px;font-weight:800;letter-spacing:.01em;margin:2px 4px 2px}
 .subttl{color:var(--sec);font-size:15px;margin:0 4px 18px}
 .round{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:var(--text);font-size:22px;border:0;font-weight:400;padding:0}
 .round svg{width:20px;height:20px}
@@ -92,7 +94,7 @@ button.cell:active{background:var(--fill)}
 /* Knöpfe */
 .cta{display:block;width:100%;border:0;border-radius:999px;padding:17px;font:inherit;font-size:18px;font-weight:600;color:#fff;margin:4px 0 26px;box-shadow:0 8px 24px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.35)}
 .cta:active{transform:scale(.98)}
-.cta.green{background:var(--green)} .cta.blue{background:var(--blue)}
+.cta.green{background:var(--yl);color:var(--ink)} .cta.blue{background:var(--tq);color:var(--ink)}
 .ctl{display:flex;justify-content:space-between;align-items:center;margin-top:18px}
 .circ{width:78px;height:78px;border-radius:50%;border:0;font:inherit;font-size:15px;font-weight:500;display:grid;place-items:center;
   box-shadow:inset 0 1px 0 var(--hi)}
@@ -100,8 +102,8 @@ button.cell:active{background:var(--fill)}
 .circ.red{background:color-mix(in srgb,var(--red) 22%,transparent);color:var(--red)}
 .circ.orange{background:color-mix(in srgb,var(--orange) 22%,transparent);color:var(--orange)}
 .circ.green{background:color-mix(in srgb,var(--green) 22%,transparent);color:var(--green)}
-.capsule{flex:1;margin:0 12px;height:78px;border-radius:999px;border:0;background:var(--blue);color:#fff;font:inherit;font-size:17px;font-weight:600;
-  box-shadow:0 8px 24px rgba(10,132,255,.35),inset 0 1px 0 rgba(255,255,255,.35);padding:0 14px;line-height:1.2}
+.capsule{flex:1;margin:0 12px;height:78px;border-radius:999px;border:0;background:var(--tq);color:var(--ink);font:inherit;font-size:17px;font-weight:700;
+  box-shadow:0 8px 24px rgba(116,212,216,.35),inset 0 1px 0 rgba(255,255,255,.35);padding:0 14px;line-height:1.2}
 .capsule small{display:block;font-size:13px;font-weight:400;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .linkbtn{background:none;border:0;color:var(--blue);font:inherit;padding:10px;display:block;margin:0 auto 22px}
 
@@ -115,7 +117,7 @@ button.cell:active{background:var(--fill)}
 .clock{font-size:76px;font-weight:200;letter-spacing:-.02em;text-align:center;margin:18px 0 4px;font-variant-numeric:tabular-nums}
 .prog{display:flex;gap:4px;margin:14px 0 6px}
 .prog i{flex:1;height:5px;border-radius:3px;background:var(--fill)}
-.prog i.d{background:var(--blue);opacity:.5} .prog i.c{background:var(--blue)}
+.prog i.d{background:var(--tq);opacity:.5} .prog i.c{background:var(--tq)}
 .progtxt{font-size:13px;color:var(--sec);text-align:center}
 
 /* Kennzahlen */
@@ -128,7 +130,7 @@ button.cell:active{background:var(--fill)}
 .period b{font-size:15px;font-weight:600}
 
 /* Sheets */
-.layer{position:fixed;inset:0;z-index:30;display:flex;align-items:flex-end;background:rgba(0,0,0,.32);opacity:0;pointer-events:none;transition:opacity .25s}
+.layer{position:fixed;inset:0;z-index:30;display:flex;align-items:flex-end;background:rgba(0,0,0,.38);opacity:0;pointer-events:none;transition:opacity .45s cubic-bezier(.32,.72,0,1)}
 .layer.open{opacity:1;pointer-events:auto}
 .layer.l2{z-index:40}
 .sheet{width:100%;max-height:94vh;overflow:auto;border-radius:30px 30px 0 0;padding:8px 16px calc(env(safe-area-inset-bottom) + 24px);
@@ -165,17 +167,23 @@ button.cell:active{background:var(--fill)}
 .empty{padding:22px 16px;text-align:center;color:var(--sec);font-size:15px}
 .backbtn{background:none;border:0;color:var(--blue);font:inherit;padding:4px 0 12px;display:block}
 .grow{flex:1;min-width:0}
+:root:not([data-theme=light]) body:not(.vbmode) .blobs i{opacity:.45}
+@media (prefers-color-scheme: light){ :root:not([data-theme=dark]) body:not(.vbmode) .blobs i{opacity:.55} }
+:root[data-theme=light] body:not(.vbmode) .blobs i{opacity:.55}
+.icon[style*="--orange"],.icon[style*="--blue"]{color:var(--ink)!important}
+.live{background:var(--tq)!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--tq) 25%,transparent)!important}
+.live.p{background:var(--yl)!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--yl) 25%,transparent)!important}
 .foot{font-size:13px;color:var(--sec);margin:7px 16px 0}
 .blobs i{transition:background 1s,opacity 1s}
 body{transition:background-color .8s}
 body.vbmode .blobs i{opacity:.95}
-body.vbmode .vbtoggle.on{background:#fff;color:#0e7490;box-shadow:0 6px 18px rgba(0,0,0,.18)}
-body.vbmode{--b1:#06b6d4;--b2:#14b8a6;--b3:#0891b2;--bg:#0b6470}
-@media (prefers-color-scheme: light){ body.vbmode:not([data-x]){--b1:#22d3ee;--b2:#2dd4bf;--b3:#06b6d4;--bg:#7fe0e8} }
-:root[data-theme=light] body.vbmode{--b1:#22d3ee;--b2:#2dd4bf;--b3:#06b6d4;--bg:#7fe0e8}
-:root[data-theme=dark] body.vbmode{--b1:#06b6d4;--b2:#14b8a6;--b3:#0891b2;--bg:#0b6470}
+body.vbmode .vbtoggle.on{background:var(--yl);color:var(--ink);box-shadow:0 6px 18px rgba(0,0,0,.25)}
+body.vbmode{--b1:#6A2BB0;--b2:#4A1580;--b3:#8A3FD0;--bg:#2C0050}
+@media (prefers-color-scheme: light){ body.vbmode:not([data-x]){--b1:#B993EA;--b2:#C9A8F0;--b3:#A57DE0;--bg:#D9C6F2} }
+:root[data-theme=light] body.vbmode{--b1:#B993EA;--b2:#C9A8F0;--b3:#A57DE0;--bg:#D9C6F2}
+:root[data-theme=dark] body.vbmode{--b1:#6A2BB0;--b2:#4A1580;--b3:#8A3FD0;--bg:#2C0050}
 .vbtoggle{border:0;font:inherit;font-size:14px;font-weight:600;border-radius:999px;padding:8px 16px;background:var(--fill);color:var(--sec);cursor:pointer}
-.vbtoggle.on{background:#30B0C7;color:#fff;box-shadow:0 4px 14px rgba(48,176,199,.35)}
+.vbtoggle.on{background:var(--yl);color:var(--ink)}
 .circ{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
 .circ.holding{animation:holdfill 1s linear forwards}
 @keyframes holdfill{from{box-shadow:inset 0 0 0 0 var(--red)}to{box-shadow:inset 0 0 0 40px var(--red);color:#fff}}
@@ -189,7 +197,7 @@ body.vbmode{--b1:#06b6d4;--b2:#14b8a6;--b3:#0891b2;--bg:#0b6470}
 .foldhead .dotc{width:10px;height:10px;border-radius:50%;flex:none}
 .foldhead .cnt{font-size:15px;font-weight:500;color:var(--sec);background:var(--fill);border-radius:999px;padding:2px 10px}
 .foldhead .chev{color:var(--ter);font-size:22px;font-weight:400;transition:transform .2s}
-body.fs{padding-bottom:calc(env(safe-area-inset-bottom) + 16px)} body.fs .tabbar{display:none}
+body.fs{padding-bottom:calc(env(safe-area-inset-bottom) + 16px)} body.fs .tabbar{transform:translate(-50%,140%);opacity:0;pointer-events:none}
 .fsview{min-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 26px);display:flex;flex-direction:column}
 .pill-live{display:flex;align-items:center;gap:8px;font-size:15px;color:var(--sec)}
 .fstop{text-align:center;margin-top:16px}
@@ -201,7 +209,7 @@ body.fs{padding-bottom:calc(env(safe-area-inset-bottom) + 16px)} body.fs .tabbar
 .fsstep{display:flex;gap:12px;align-items:center;padding:10px 0;font-size:16px;color:var(--sec)}
 .fsstep+.fsstep{border-top:.5px solid var(--sep)}
 .fsstep .n{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--fill);font-size:13px;font-weight:600;flex:none}
-.fsstep.c{color:var(--text);font-weight:600} .fsstep.c .n{background:var(--blue);color:#fff}
+.fsstep.c{color:var(--text);font-weight:600} .fsstep.c .n{background:var(--tq);color:var(--ink)}
 .fsstep.d .n{background:color-mix(in srgb,var(--green) 25%,transparent);color:var(--green)}
 .fsbottom{padding-top:18px}
 .mini{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 86px);z-index:19;width:min(calc(100% - 32px),420px);display:flex;align-items:center;gap:12px;padding:10px 16px;border-radius:20px;color:var(--text);font:inherit;text-align:left;cursor:pointer}
@@ -213,6 +221,51 @@ body.hasmini{padding-bottom:calc(env(safe-area-inset-bottom) + 170px)}
 .sw::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.25);transition:left .2s}
 .sw:checked{background:var(--green)} .sw:checked::after{left:22px}
 .hidden{display:none!important}
+
+/* ===== Übergänge im Apple-Stil ===== */
+:root{--spring:cubic-bezier(.32,.72,0,1);--spring-b:cubic-bezier(.34,1.36,.64,1)}
+.sheet{transition:transform .5s var(--spring)!important;will-change:transform}
+.sheet.behind{transform:scale(.94) translateY(-10px)!important;filter:brightness(.85);border-radius:30px}
+#view{transform-origin:50% 0;transition:transform .5s var(--spring),filter .5s var(--spring),border-radius .5s var(--spring)}
+body.sheeted #view{transform:scale(.93) translateY(calc(env(safe-area-inset-top) + 6px));border-radius:22px;filter:brightness(.8) saturate(.9);overflow:hidden}
+.tabbar{transition:transform .5s var(--spring),opacity .35s ease}
+body.sheeted .tabbar{transform:translate(-50%,8px) scale(.94);opacity:.5}
+.tabbar{position:fixed}
+.tabpill{position:absolute;top:5px;left:5px;bottom:5px;border-radius:999px;background:var(--fill);transition:transform .5s var(--spring-b),width .4s var(--spring);pointer-events:none}
+.tabbar button.on{background:none!important}
+.tabbar button{position:relative;transition:color .3s,opacity .3s,transform .25s var(--spring-b)}
+.tabbar button:active{transform:scale(.88)}
+.toast{transition:transform .55s var(--spring-b)!important}
+button.cell,.cta,.capsule,.circ,.round,.btn,.vbtoggle,.ochip,.todaybtn,.foldhead,.seg button{transition:transform .3s var(--spring-b),background-color .25s,opacity .25s,filter .2s}
+button.cell:active{transform:scale(.985)}
+.cta:active,.capsule:active,.circ:active,.round:active,.vbtoggle:active,.ochip:active{transform:scale(.94);filter:brightness(.92)}
+.seg button.on{transition:background .35s var(--spring),box-shadow .35s}
+.foldhead .chev{transition:transform .4s var(--spring-b)!important}
+.prog i,.fsstep .n{transition:background .4s var(--spring)}
+#mini{animation:miniIn .55s var(--spring-b)}
+@keyframes miniIn{from{transform:translate(-50%,30px) scale(.9);opacity:0}to{transform:translate(-50%,0) scale(1);opacity:1}}
+/* Seiteninhalt */
+@keyframes aRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes aFade{from{opacity:0;transform:scale(.985)}to{opacity:1;transform:none}}
+@keyframes aPush{from{opacity:.0;transform:translateX(34%)}to{opacity:1;transform:none}}
+@keyframes aPop{from{opacity:0;transform:translateX(-26%)}to{opacity:1;transform:none}}
+@keyframes aLeft{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+@keyframes aRight{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:none}}
+@keyframes aZoomIn{from{opacity:0;transform:scale(.9) translateY(40px);border-radius:40px}to{opacity:1;transform:none}}
+@keyframes aZoomOut{from{opacity:0;transform:scale(1.04)}to{opacity:1;transform:none}}
+#view.a-tab>*{animation:aRise .5s var(--spring) both}
+#view.a-tab>*:nth-child(2){animation-delay:.02s} #view.a-tab>*:nth-child(3){animation-delay:.04s} #view.a-tab>*:nth-child(4){animation-delay:.06s}
+#view.a-tab>*:nth-child(5){animation-delay:.08s} #view.a-tab>*:nth-child(6){animation-delay:.10s} #view.a-tab>*:nth-child(n+7){animation-delay:.12s}
+#view.a-fade>*:not(.nav):not(.ttl):not(.subttl):not(.seg){animation:aFade .4s var(--spring) both}
+#view.a-push{animation:aPush .5s var(--spring) both}
+#view.a-pop{animation:aPop .5s var(--spring) both}
+#view.a-left>*:not(.nav):not(.ttl):not(.subttl):not(.seg):not(.period){animation:aLeft .42s var(--spring) both}
+#view.a-right>*:not(.nav):not(.ttl):not(.subttl):not(.seg):not(.period){animation:aRight .42s var(--spring) both}
+#view.a-fsin .fsview{animation:aZoomIn .6s var(--spring) both}
+#view.a-fsin .fsbottom{animation:aRise .6s .08s var(--spring) both}
+#view.a-fsout{animation:aZoomOut .5s var(--spring) both}
+.clock{transition:color .3s}
+@media (prefers-reduced-motion: reduce){ *{animation:none!important;transition:none!important} }
 </style>
 </head>
 <body>
@@ -327,7 +380,7 @@ const dec = ms => (Math.max(0,ms)/3600000).toFixed(2).replace('.',',') + ' h';
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
 const aKey = a => (a && a.nr || '') + '|' + (a && a.produkt || '');
-const aLabel = a => a ? ('#' + a.nr + (a.produkt ? ' · ' + a.produkt : '')) : '–';
+const aLabel = a => a ? aOne(a) : '–';
 
 function entryDur(e, now){
   if(e.fx || e.fxp) return { work: 0, pause: 0 };
@@ -350,13 +403,19 @@ function ensureName(listName, name){
   const it = { id: uid(), name }; if(listName === 'masch') it.rp = defaultPhrase(name);
   L.push(it); persist('stamm'); return name;
 }
-function ensureAuftrag(nr, produkt){
-  nr = (nr||'').trim(); produkt = (produkt||'').trim(); if(!nr) return null;
+function ensureAuftrag(nr, produkt, ein){
+  nr = (nr||'').trim(); produkt = (produkt||'').trim(); ein = (ein||'').trim(); if(!nr && !produkt) return null;
   const L = state.stamm.auftraege;
   let f = L.find(x => x.nr === nr && x.produkt === produkt);
-  if(!f){ f = { id: uid(), nr, produkt, done:false }; L.push(f); persist('stamm'); }
+  if(!f){ f = { id: uid(), nr, produkt, done:false }; if(ein) f.ein = ein; L.push(f); persist('stamm'); }
+  else if(ein && !f.ein){ f.ein = ein; persist('stamm'); }
   return f;
 }
+// Anzeige: Name groß, darunter klein Auftrags-Nr. und EIN (beides optional)
+function aLive(a){ return (a && state.stamm.auftraege.find(x => x.nr===a.nr && x.produkt===a.produkt)) || a || {}; }
+function aTitle(a){ return (a && (a.produkt || (a.nr ? '#'+a.nr : ''))) || 'Ohne Namen'; }
+function aSub(a){ const L = aLive(a); return [a && a.produkt && a.nr ? '#'+a.nr : '', L.ein ? 'EIN '+L.ein : ''].filter(Boolean).join(' · '); }
+function aOne(a){ const s = aSub(a); return aTitle(a) + (s ? ' · ' + s : ''); }
 
 
 /* ---------- Zeiterfassung ---------- */
@@ -456,20 +515,20 @@ function csvAuftraege(keys){
   const inRange = new Set(summarize(keys, Date.now()).per.map(g => aKey(g.a)));
   const all = summarize(Object.keys(state.days), Date.now());
   const s = { per: all.per.filter(g => inRange.has(aKey(g.a))) };
-  const rows = [['Auftrags-Nr.','Produkt','Art','Bezeichnung','Zeit (h:mm)','Zeit (Std. dezimal)','Minuten']];
+  const rows = [['Auftrags-Nr.','Produkt','EIN','Art','Bezeichnung','Zeit (h:mm)','Zeit (Std. dezimal)','Minuten']];
   s.per.forEach(g => {
-    rows.push([g.a.nr, g.a.produkt, 'Arbeitszeit gesamt', '', dur(g.own), decN(g.own), Math.round(g.own/60000)]);
-    Object.entries(g.masch).forEach(([m,v]) => rows.push([g.a.nr, g.a.produkt, 'Maschinenzeit', m, dur(v), decN(v), Math.round(v/60000)]));
-    Object.entries(g.taet).forEach(([t,v]) => rows.push([g.a.nr, g.a.produkt, 'Tätigkeit', t, dur(v), decN(v), Math.round(v/60000)]));
+    rows.push([g.a.nr, g.a.produkt, aLive(g.a).ein||'', 'Arbeitszeit gesamt', '', dur(g.own), decN(g.own), Math.round(g.own/60000)]);
+    Object.entries(g.masch).forEach(([m,v]) => rows.push([g.a.nr, g.a.produkt, aLive(g.a).ein||'', 'Maschinenzeit', m, dur(v), decN(v), Math.round(v/60000)]));
+    Object.entries(g.taet).forEach(([t,v]) => rows.push([g.a.nr, g.a.produkt, aLive(g.a).ein||'', 'Tätigkeit', t, dur(v), decN(v), Math.round(v/60000)]));
   });
   return csv(rows);
 }
 function csvBuchungen(keys){
   const now = Date.now();
-  const rows = [['Datum','Start','Ende','Auftrags-Nr.','Produkt','Arbeitsablauf','Schritt','Tätigkeit','Maschine','Vorbereitung','Pause (min)','Dauer (h:mm)','Dauer (Std. dezimal)','Maschinenzeit (h:mm)','Notiz']];
+  const rows = [['Datum','Start','Ende','Auftrags-Nr.','Produkt','EIN','Arbeitsablauf','Schritt','Tätigkeit','Maschine','Vorbereitung','Pause (min)','Dauer (h:mm)','Dauer (Std. dezimal)','Maschinenzeit (h:mm)','Notiz']];
   keys.forEach(k => Object.values(state.days[k]||{}).sort((a,b)=>a.s-b.s).forEach(e => {
     const d = entryDur(e, now);
-    rows.push([parseDay(k).toLocaleDateString('de-DE'), hm(e.s), e.e?hm(e.e):'läuft', e.a.nr, e.a.produkt, e.ab?e.ab.n:'', e.ab?(e.ab.i+1)+'/'+e.ab.of:'',
+    rows.push([parseDay(k).toLocaleDateString('de-DE'), hm(e.s), e.e?hm(e.e):'läuft', e.a.nr, e.a.produkt, aLive(e.a).ein||'', e.ab?e.ab.n:'', e.ab?(e.ab.i+1)+'/'+e.ab.of:'',
       e.t, e.m, e.vb ? 'ja' : '', e.fx ? '' : Math.round(d.pause/60000), e.fx ? '' : dur(d.work), e.fx ? '' : decN(d.work), e.fx ? dur((+e.mt||0)*60000) : e.m ? dur((e.vb ? 0 : e.mz != null ? +e.mz*60000 : d.work)) : '', (e.note||'').replace(/\s+/g,' ')]);
   }));
   return csv(rows);
@@ -493,11 +552,48 @@ function openSheet(n, o){
   S.querySelector('.l').onclick = () => o.onLeft ? o.onLeft() : closeSheet(n);
   if(o.right) S.querySelector('.r').onclick = o.onRight;
   L.onclick = ev => { if(ev.target === L) S.querySelector('.l').click(); };
-  S.scrollTop = 0;
-  requestAnimationFrame(() => L.classList.add('open'));
+  S.scrollTop = 0; S.style.transform = '';
+  requestAnimationFrame(() => { L.classList.add('open'); updateSheetDepth(); });
+  enableSwipe(L, S);
   return S.querySelector('.sbody');
 }
-function closeSheet(n, noRender){ document.getElementById('L'+n).classList.remove('open'); if(n===1 && !noRender) render(); }
+function closeSheet(n, noRender){
+  const L = document.getElementById('L'+n), S = document.getElementById('S'+n);
+  S.style.transform = ''; L.classList.remove('open'); updateSheetDepth();
+  if(n===1 && !noRender) render();
+}
+// iOS-Effekt: Seite dahinter wird kleiner und rückt nach hinten
+function updateSheetDepth(){
+  const o1 = document.getElementById('L1').classList.contains('open'), o2 = document.getElementById('L2').classList.contains('open');
+  document.body.classList.toggle('sheeted', o1 || o2);
+  document.getElementById('S1').classList.toggle('behind', o1 && o2);
+}
+// Sheet nach unten wischen zum Schließen
+function enableSwipe(L, S){
+  if(S._swipe) return; S._swipe = true;
+  let y0 = null, dy = 0, t0 = 0;
+  S.addEventListener('touchstart', ev => {
+    const inHead = ev.target.closest('.grab, .shead');
+    if(!inHead && S.scrollTop > 0) return;
+    if(ev.target.closest('input, textarea, select')) return;
+    y0 = ev.touches[0].clientY; dy = 0; t0 = Date.now(); S.style.transition = 'none';
+  }, { passive:true });
+  S.addEventListener('touchmove', ev => {
+    if(y0 === null) return;
+    dy = ev.touches[0].clientY - y0;
+    if(dy <= 0){ S.style.transform = ''; return; }
+    if(S.scrollTop > 0 && !ev.target.closest('.grab, .shead')){ y0 = null; S.style.transition = ''; S.style.transform = ''; return; }
+    S.style.transform = `translateY(${dy}px)`;
+  }, { passive:true });
+  S.addEventListener('touchend', () => {
+    if(y0 === null) return;
+    S.style.transition = '';
+    const fast = dy > 60 && Date.now() - t0 < 250;
+    if(dy > 140 || fast){ const l = S.querySelector('.shead .l'); if(l) l.click(); else S.style.transform = ''; }
+    else S.style.transform = '';
+    y0 = null;
+  });
+}
 
 /* ---------- Auswahlliste (Picker) ---------- */
 function pick(kind, cur, opt){
@@ -510,7 +606,7 @@ function pick(kind, cur, opt){
     const useBtn = document.querySelector('#S2 .shead .r');
     body.innerHTML = `<div class="search">${ICON_SEARCH}<input id="pq" placeholder="${kind==='ab'?'Suchen':'Suchen oder neu eingeben'}" autocomplete="off"></div><div id="plist"></div>`;
     const items = () => kind==='auftrag'
-      ? state.stamm.auftraege.filter(a => !a.done || a.id===cur).map(a => ({ v:a.id, l:'#'+a.nr, s:a.produkt, k:(a.nr+' '+a.produkt).toLowerCase(), nr:true }))
+      ? state.stamm.auftraege.filter(a => !a.done || a.id===cur).map(a => ({ v:a.id, l:aTitle(a), s:aSub(a), k:(a.nr+' '+a.produkt+' '+(a.ein||'')).toLowerCase() }))
       : kind==='ab' ? state.stamm.ablaeufe.map(a => ({ v:a.id, l:a.name, s:a.steps.map(x=>x.t).join(' → '), k:a.name.toLowerCase() }))
       : state.stamm[kind].map(x => ({ v:x.name, l:x.name, s: kind==='masch' && x.fix ? 'feste Zeit, ohne Zeitmessung' : '', k:x.name.toLowerCase() }));
     const row = (v, l, s, on, nr) => `<button class="cell" data-v="${esc(v)}"><span class="cl two"><span class="${nr?'nr':''}">${esc(l)}</span>${s?`<small>${esc(s)}</small>`:''}</span>${on?'<span class="check">✓</span>':''}</button>`;
@@ -522,7 +618,7 @@ function pick(kind, cur, opt){
       if(opt.none && !ql) h += `<div class="sect"><div class="group">${row('', opt.none, '', !cur)}</div></div>`;
       if(list.length) h += `<div class="sect"><div class="group">${list.map(i => row(i.v, i.l, i.s, i.v===cur, i.nr)).join('')}</div></div>`;
       else if(!ql) h += `<div class="empty">${kind==='ab' ? 'Noch keine Arbeitsabläufe – lege sie unter „Verwalten“ an.' : 'Noch keine Einträge – tippe oben etwas ein.'}</div>`;
-      const exact = all.some(i => kind==='auftrag' ? i.l.toLowerCase()==='#'+ql : i.k===ql);
+      const exact = all.some(i => kind==='auftrag' ? i.l.toLowerCase()===ql : i.k===ql);
       if(kind!=='ab' && ql && !exact) h += `<div class="group"><button class="cell accent" data-add>＋ „${esc(q.trim())}“ hinzufügen</button></div>${kind==='taet' ? '<div class="foot">Oben rechts „Verwenden“: nur dieses Mal buchen, ohne in der Liste zu speichern.</div>' : ''}`;
       plist.innerHTML = h;
       plist.querySelectorAll('[data-v]').forEach(b => b.onclick = () => finish(b.dataset.v));
@@ -532,13 +628,15 @@ function pick(kind, cur, opt){
     };
     const addAuftrag = nr => {
       plist.innerHTML = `<div class="sect"><h2>Neuer Auftrag</h2><div class="group">
-        <label class="cell"><span>Auftrags-Nr.</span><input id="na-nr" value="${esc(nr)}" style="flex:1"></label>
-        <label class="cell"><span>Produkt</span><input id="na-pr" placeholder="Produktname" style="flex:1"></label></div></div>
+<label class="cell"><span>Name</span><input id="na-pr" value="${esc(/^[\d\s\-\/.]+$/.test(nr) ? '' : nr)}" placeholder="Produktname" style="flex:1"></label>
+        <label class="cell"><span>Auftrags-Nr.</span><input id="na-nr" value="${esc(/^[\d\s\-\/.]+$/.test(nr) ? nr : '')}" style="flex:1"></label>
+        <label class="cell"><span>EIN</span><input id="na-ein" value="${esc('')}" style="flex:1"></label></div></div>
         <button class="cta blue" id="na-ok">Hinzufügen</button>`;
       document.getElementById('na-pr').focus();
       document.getElementById('na-ok').onclick = () => {
-        const a = ensureAuftrag(document.getElementById('na-nr').value, document.getElementById('na-pr').value);
-        if(!a) return toast('Auftrags-Nr. fehlt');
+        if(!document.getElementById('na-pr').value.trim()) return toast('Name fehlt');
+        const a = ensureAuftrag(document.getElementById('na-nr').value, document.getElementById('na-pr').value, document.getElementById('na-ein').value);
+        if(!a) return toast('Name fehlt');
         finish(a.id);
       };
     };
@@ -549,18 +647,18 @@ function pick(kind, cur, opt){
 
 /* ---------- Bausteine ---------- */
 const aById = id => state.stamm.auftraege.find(x => x.id===id);
-const aVal = a => a ? `<span class="nr" style="color:var(--text)">#${esc(a.nr)}</span> ${esc(a.produkt)}` : '';
+const aVal = a => a ? `<span style="color:var(--text)">${esc(aTitle(a))}</span>` : '';
 const pickCell = (key, label, valHtml, ph) => `<button class="cell" data-pk="${key}"><span class="cl">${label}</span><span class="cv ${valHtml?'':'ph'}">${valHtml||ph}</span><span class="chev">›</span></button>`;
 const timeVal = v => `<span class="cv tnum"><span style="color:var(--text)">${dur(v)}</span> · ${dec(v)}</span>`;
 function entryCell(e, now){
   if(e.fx) return `<button class="cell" data-entry="${e.id}" data-day="${dayKey(new Date(e.s))}">
     <span class="cl two"><span>${esc(e.t)} <span class="dim">· ${esc(e.m)}</span></span>
-    <small>${e.a.produkt ? esc(e.a.produkt) + ' · ' : ''}#${esc(e.a.nr)} · ${hm(e.s)} · fest</small></span>
+    <small>${esc(aTitle(e.a))} · ${hm(e.s)} · fest</small></span>
     <span class="cv tnum" style="color:var(--orange)">⚙︎ ${dur((+e.mt||0)*60000)}</span><span class="chev">›</span></button>`;
   const d = entryDur(e, now);
   return `<button class="cell" data-entry="${e.id}" data-day="${dayKey(new Date(e.s))}">
     <span class="cl two"><span>${esc(e.t)}${e.m?` <span class="dim">· ${esc(e.m)}</span>`:''}${e.vb && e.t !== 'Vorbereitung' ? ' <span class="dim">· Vorbereitung</span>' : ''}</span>
-    <small>${e.a.produkt ? esc(e.a.produkt) + ' · ' : ''}#${esc(e.a.nr)} · ${hm(e.s)}–${e.e?hm(e.e):'jetzt'}${e.m && e.e ? ' · ⚙︎ ' + dur(machMin(e)*60000) : ''}</small></span>
+    <small>${esc(aTitle(e.a))} · ${hm(e.s)}–${e.e?hm(e.e):'jetzt'}</small></span>
     <span class="cv tnum" style="color:var(--text)">${dur(d.work)}</span><span class="chev">›</span></button>`;
 }
 function bindEntries(root){ (root||view).querySelectorAll('[data-entry]').forEach(b => b.onclick = () => editEntry(b.dataset.day, b.dataset.entry)); }
@@ -600,7 +698,7 @@ function startAblaufFor(A, def, fromIdx){
   A = freshA(A);
   if(!def.steps.length){ toast('Arbeitsablauf hat keine Schritte'); return false; }
   const now = Date.now(); stopRunsOf(A, now); clearResume(A); reactivate(A);
-  const ab = { id:def.id, name:def.name, steps:clone(def.steps), idx: fromIdx||0, a:{ nr:A.nr, produkt:A.produkt }, sid: uid() };
+  const ab = { id:def.id, name:def.name, steps:clone(def.steps), idx: fromIdx||0, done: Array.isArray(def.done) ? clone(def.done) : [...Array(fromIdx||0).keys()], a:{ nr:A.nr, produkt:A.produkt }, sid: uid() };
   state.stamm.last = Object.assign(state.stamm.last||{}, { a:A.id, ab:def.id }); persist('stamm');
   const r = runAblaufFrom(ab, now);
   if(!r){ afterRunEnd(); buzz(); render(); doneAsk(freshA(A), 'Arbeitsablauf abgeschlossen'); return true; }
@@ -636,6 +734,35 @@ function runAblaufFrom(ab, now){
   if(isFixM(s.m)){ const e = runEntry(r); e.fxp = true; e.mt = +s.mt || 0; persist('d-'+r.day); }
   return r;
 }
+// nächsten offenen Schritt suchen: zuerst nach dem aktuellen, dann von vorne
+function normDone(ab){ if(!Array.isArray(ab.done)) ab.done = [...Array(ab.idx||0).keys()]; return ab.done; }
+function nextOpen(ab, from){
+  const d = normDone(ab), n = ab.steps.length;
+  for(let i = from + 1; i < n; i++) if(!d.includes(i)) return i;
+  for(let i = 0; i < n; i++) if(!d.includes(i)) return i;
+  return -1;
+}
+function markStepDone(ab){ normDone(ab); if(!ab.done.includes(ab.idx)) ab.done.push(ab.idx); }
+// auf einen Schritt tippen: dorthin springen (bisherige Zeit bleibt gebucht, Schritt bleibt offen)
+function jumpStep(r, i){
+  if(!r || !r.ab || i === r.ab.idx) return;
+  const now = Date.now(), ab = clone(r.ab);
+  const e = runEntry(r);
+  if(e && e.fxp){ delete state.days[r.day][r.eid]; persist('d-'+r.day); state.aktiv = runs().filter(x => x.eid !== r.eid); persist('aktiv'); }
+  else stopRun(r, now);
+  ab.done = normDone(ab).filter(x => x !== i);
+  ab.idx = i;
+  const nr = runAblaufFrom(ab, now);
+  fsRun = nr.eid; buzz(); toast('→ Schritt ' + (i+1) + ': ' + ab.steps[i].t); render();
+}
+function advance(ab, now, msg){
+  markStepDone(ab);
+  const ni = nextOpen(ab, ab.idx);
+  if(ni < 0){ const A = aFind(ab.a); clearResume(A); afterRunEnd(); buzz(); render(); doneAsk(A, 'Arbeitsablauf abgeschlossen'); return; }
+  ab.idx = ni;
+  const nr = runAblaufFrom(ab, now);
+  fsRun = nr.eid; buzz(); toast(msg + ab.steps[ni].t); render();
+}
 // festen Schritt bestätigen: Zeit buchen und zum nächsten Schritt
 function confirmFixed(r, mt){
   const e = runEntry(r); if(!e || !e.fxp) return;
@@ -644,21 +771,13 @@ function confirmFixed(r, mt){
   const now = Date.now(), ab = clone(r.ab);
   delete e.fxp; e.fx = true; e.mt = mt; e.s = now; e.e = now; persist('d-'+r.day);
   state.aktiv = runs().filter(x => x.eid !== r.eid); persist('aktiv');
-  toast('⚙︎ ' + e.m + ': ' + dur(mt*60000) + ' gebucht');
-  ab.idx++;
-  const nr = runAblaufFrom(ab, now);
-  if(!nr){ const A = aFind(ab.a); clearResume(A); afterRunEnd(); buzz(); render(); doneAsk(A, 'Arbeitsablauf abgeschlossen'); return; }
-  fsRun = nr.eid; buzz(); render();
+  advance(ab, now, '⚙︎ ' + dur(mt*60000) + ' gebucht → ');
 }
 function nextStep(r){
   if(!r || !r.ab) return;
   const now = Date.now(), ab = clone(r.ab);
   stopRun(r, now);
-  ab.idx++;
-  const nr = runAblaufFrom(ab, now);
-  if(!nr){ const A = aFind(ab.a); clearResume(A); afterRunEnd(); buzz(); render(); doneAsk(A, 'Arbeitsablauf abgeschlossen'); return; }
-  fsRun = nr.eid;
-  buzz(); toast('Weiter: ' + ab.steps[ab.idx].t); render();
+  advance(ab, now, 'Weiter: ');
 }
 function skipStep(r){
   if(!r || !r.ab) return;
@@ -666,11 +785,7 @@ function skipStep(r){
   if(state.days[r.day]) delete state.days[r.day][r.eid];
   persist('d-'+r.day);
   state.aktiv = runs().filter(x => x.eid !== r.eid); persist('aktiv');
-  ab.idx++;
-  const nr = runAblaufFrom(ab, now);
-  if(!nr){ const A = aFind(ab.a); clearResume(A); afterRunEnd(); buzz(); render(); doneAsk(A, 'Arbeitsablauf abgeschlossen'); return; }
-  fsRun = nr.eid;
-  buzz(); toast('Übersprungen → ' + ab.steps[ab.idx].t); render();
+  advance(ab, now, 'Übersprungen → ');
 }
 // Einzelne Aufgabe: direkt zur nächsten Tätigkeit am selben Auftrag
 function nextTaskSheet(r){
@@ -679,7 +794,7 @@ function nextTaskSheet(r){
   const f = { t:'', m:'' };
   const body = openSheet(1, { title:'Nächste Aufgabe' });
   const draw = () => {
-    body.innerHTML = `<div class="subttl" style="text-align:center;margin-top:-8px">${esc(A.produkt || '')} · #${esc(A.nr)} · bisher: ${esc(e.t)}</div>
+    body.innerHTML = `<div class="subttl" style="text-align:center;margin-top:-8px">${esc(aOne(A))} · bisher: ${esc(e.t)}</div>
       <div class="sect"><div class="group">${pickCell('t','Tätigkeit',esc(f.t),'Wählen')}${pickCell('m','Maschine',esc(f.m),'Ohne')}${fxCell(f)}</div></div>
       <button class="cta blue" id="go">${isFixM(f.m) ? '⚙︎ Feste Zeit buchen' : 'Weiter'}</button>
       ${isFixM(f.m) ? '<div class="foot" style="text-align:center">Deine laufende Aufgabe läuft dabei weiter.</div>' : ''}`;
@@ -710,7 +825,7 @@ function doneRun(r, keepOpen, fxMin){
     if(mt > 0){ const now0 = Date.now(); delete e.fxp; e.fx = true; e.mt = mt; e.s = now0; e.e = now0; persist('d-'+r.day); state.aktiv = runs().filter(x => x.eid !== r.eid); persist('aktiv'); } }
   const A = aFind(e.a), now = Date.now();
   stopRun(r, now); if(A){ stopRunsOf(A, now); clearResume(A); }
-  if(keepOpen){ afterRunEnd(); buzz(); toast('Gestoppt – ' + (e.a.produkt || '#'+e.a.nr) + ' bleibt offen'); render(); return; }
+  if(keepOpen){ afterRunEnd(); buzz(); toast('Gestoppt – ' + aTitle(e.a) + ' bleibt offen'); render(); return; }
   markDone(A); afterRunEnd(); render();
 }
 // Fertig-Knopf: erst fragen, ob der Auftrag fertig ist oder offen bleibt
@@ -718,7 +833,7 @@ function doneChoice(r){
   const e = runEntry(r); if(!e) return;
   const inp = document.getElementById('fxc'), fxMin = inp ? inp.value : null;
   const body = openSheet(1, { title:'Aufgabe beenden' });
-  body.innerHTML = `<div class="subttl" style="text-align:center;margin-top:-8px">${esc(e.a.produkt || '')} · #${esc(e.a.nr)}</div>
+  body.innerHTML = `<div class="subttl" style="text-align:center;margin-top:-8px">${esc(aOne(e.a))}</div>
     <div class="sect"><div class="group">
       <button class="cell" id="dc-yes"><span class="icon" style="background:var(--green)">✓</span><span class="cl two"><span>Auftrag fertig melden</span><small>Wird aus der Auswahl ausgeblendet</small></span></button>
       <button class="cell" id="dc-no"><span class="icon" style="background:var(--blue)">#</span><span class="cl two"><span>Auftrag bleibt offen</span><small>Zeit stoppen – es kommen noch weitere Arbeiten</small></span></button>
@@ -742,7 +857,7 @@ function markDone(A){
   A = freshA(A);
   if(!A) return;
   A.done = true; A.doneAt = Date.now(); delete A.resume; delete A.resumeAt; persist('stamm');
-  buzz(); toast('✓ ' + (A.produkt || '#'+A.nr) + ' fertig gemeldet');
+  buzz(); toast('✓ ' + aTitle(A) + ' fertig gemeldet');
   const id = A.id; setTimeout(() => doneSummary(id), 400);
 }
 // Zusammenfassung beim Fertigmelden: alle Zeiten des Auftrags
@@ -751,17 +866,17 @@ function doneSummary(id){
   const s = summarize(Object.keys(state.days), Date.now());
   const g = s.per.find(x => aKey(x.a) === aKey(A));
   const body = openSheet(1, { title:'Auftrag fertig ✓', left:'Schließen' });
-  if(!g){ body.innerHTML = `<div class="subttl" style="text-align:center">${esc(A.produkt || '')} · #${esc(A.nr)}</div><div class="group"><div class="empty">Keine Zeiten gebucht.</div></div>`; return; }
+  if(!g){ body.innerHTML = `<div class="subttl" style="text-align:center">${esc(aOne(A))}</div><div class="group"><div class="empty">Keine Zeiten gebucht.</div></div>`; return; }
   const ms = Object.entries(g.masch).sort((a,b) => b[1]-a[1]);
-  body.innerHTML = `<div style="text-align:center;margin:-6px 0 18px"><div style="font-size:24px;font-weight:700">${esc(A.produkt || '#'+A.nr)}</div>${A.produkt ? `<div class="dim" style="font-size:15px;margin-top:2px">#${esc(A.nr)}</div>` : ''}</div>
+  body.innerHTML = `<div style="text-align:center;margin:-6px 0 18px"><div style="font-size:24px;font-weight:700">${esc(aTitle(A))}</div>${aSub(A) ? `<div class="dim" style="font-size:15px;margin-top:2px">${esc(aSub(A))}</div>` : ''}</div>
     <div class="sect"><div class="group">
-      <div class="cell"><span class="icon" style="background:var(--blue)"><svg viewBox="0 0 24 24" width="17" height="17" fill="#fff"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6z"/></svg></span><span class="cl">Meine Arbeitszeit</span>${timeVal(g.own)}</div>
+      <div class="cell"><span class="icon" style="background:var(--blue)"><svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6z"/></svg></span><span class="cl">Meine Arbeitszeit</span>${timeVal(g.own)}</div>
       ${ms.map(([m,v]) => `<div class="cell"><span class="icon" style="background:var(--orange)">⚙︎</span><span class="cl">${esc(m)}</span>${timeVal(v)}</div>`).join('')}
     </div><div class="foot">Alle Zeiten, die auf diesen Auftrag gebucht wurden.</div></div>
     <button class="cta blue" id="dscopy">Zeiten kopieren</button>`;
   body.querySelector('#dscopy').onclick = () => {
     const mt = ms.map(([m,v]) => `  ${m}: ${dur(v)} (${dec(v)})`).join('\n');
-    copyText(`Auftrag ${A.nr} – ${A.produkt}\nArbeitszeit: ${dur(g.own)} (${dec(g.own)})` + (mt ? `\nMaschinenzeiten:\n${mt}` : ''));
+    copyText(`${aOne(A)}\nArbeitszeit: ${dur(g.own)} (${dec(g.own)})` + (mt ? `\nMaschinenzeiten:\n${mt}` : ''));
   };
 }
 // Stopp-Knopf: unterbrechen oder fertig melden
@@ -769,7 +884,7 @@ function stopSheet(r){
   const e = runEntry(r); if(!e) return;
   const A = aFind(e.a), ab = r.ab;
   const body = openSheet(1, { title:'Stoppen' });
-  body.innerHTML = `<div class="subttl" style="text-align:center;margin-top:-8px">${esc(e.a.produkt || '')} · #${esc(e.a.nr)}</div>
+  body.innerHTML = `<div class="subttl" style="text-align:center;margin-top:-8px">${esc(aOne(e.a))}</div>
     <div class="sect"><div class="group">
       <button class="cell" id="s-pause"><span class="icon" style="background:var(--orange)">❚❚</span><span class="cl two"><span>Unterbrechen</span><small>${ab ? `Später bei Schritt ${ab.idx+1} „${esc(ab.steps[ab.idx].t)}“ fortsetzen` : 'Später an dieser Stelle fortsetzen'}</small></span></button>
       <button class="cell" id="s-done"><span class="icon" style="background:var(--green)">✓</span><span class="cl two"><span>Auftrag fertig melden</span><small>Zeit stoppen und Auftrag abschließen</small></span></button>
@@ -781,7 +896,7 @@ function stopSheet(r){
 function doneAsk(A, title){
   if(!A){ toast(title); return; }
   const body = openSheet(1, { title, left:'Später' });
-  body.innerHTML = `<div class="subttl" style="text-align:center;margin-top:-8px">${esc(A.produkt || '')} · #${esc(A.nr)}</div>
+  body.innerHTML = `<div class="subttl" style="text-align:center;margin-top:-8px">${esc(aOne(A))}</div>
     <div class="sect"><div class="group">
       <button class="cell" id="d-yes"><span class="icon" style="background:var(--green)">✓</span><span class="cl two"><span>Auftrag fertig melden</span><small>Wird aus der Auswahl ausgeblendet</small></span></button>
       <button class="cell" id="d-no"><span class="icon" style="background:var(--blue)">#</span><span class="cl two"><span>Auftrag bleibt offen</span><small>Es kommen noch weitere Arbeiten</small></span></button>
@@ -796,13 +911,13 @@ function resumeText(r){
   return r.ab ? `${r.ab.name} · Schritt ${r.ab.idx+1}/${r.ab.steps.length}: ${r.ab.steps[r.ab.idx].t}` : `${r.t}${r.m ? ' · ' + r.m : ''}`;
 }
 function auftragSheet(A){
-  const body = openSheet(1, { title: A.produkt || ('#' + A.nr) });
+  const body = openSheet(1, { title: aTitle(A) });
   const last = state.stamm.last || {};
   const back = () => `<button class="backbtn" data-back>‹ Zurück</button>`;
   const bindBack = fn => { const b = body.querySelector('[data-back]'); if(b) b.onclick = fn; };
 
   const home = () => {
-    body.innerHTML = `<div class="subttl" style="text-align:center;margin-top:-8px">Auftrag #${esc(A.nr)}${A.done ? ` · <span style="color:var(--green)">✓ fertig${A.doneAt ? ' am ' + new Date(A.doneAt).toLocaleDateString('de-DE') : ''}</span>` : ''}</div>
+    body.innerHTML = `<div class="subttl" style="text-align:center;margin-top:-8px">${esc(aSub(A) || 'Auftrag')}${A.done ? ` · <span style="color:var(--green)">✓ fertig${A.doneAt ? ' am ' + new Date(A.doneAt).toLocaleDateString('de-DE') : ''}</span>` : ''}</div>
       ${A.resume ? `<div class="sect"><h2><span>Unterbrochen</span></h2><div class="group">
         <button class="cell" data-c="resume"><span class="icon" style="background:var(--orange)">▶︎</span><span class="cl two"><span style="font-weight:600">Fortsetzen</span><small>${esc(resumeText(A.resume))}</small></span><span class="chev">›</span></button></div></div>` : ''}
       <div class="sect">${A.resume || A.done ? `<h2><span>${A.done ? 'Weiterarbeiten' : 'Neu starten'}</span></h2>` : ''}<div class="group">
@@ -860,7 +975,7 @@ function auftragSheet(A){
 
   const abDetail = def => {
     body.innerHTML = `${back()}<div class="ttl" style="font-size:26px;margin:4px 4px 2px">${esc(def.name)}</div>
-      <div class="subttl">${def.steps.length} Schritte für ${esc(A.produkt||'')} · #${esc(A.nr)}</div>
+      <div class="subttl">${def.steps.length} Schritte für ${esc(aOne(A))}</div>
       <div class="sect"><div class="group">${def.steps.map((s,i) => `<div class="cell"><span class="icon" style="background:var(--indigo)">${i+1}</span><span class="cl two"><span>${esc(s.t)}</span>${s.m?`<small>⚙︎ ${esc(s.m)}</small>`:''}</span></div>`).join('')}</div></div>
       <button class="cta green" id="go">${runsOf(A).length ? 'Wechseln & starten' : 'Arbeitsablauf starten'}</button>`;
     bindBack(abList);
@@ -874,14 +989,16 @@ function newAuftragSheet(prefill){
   const body = openSheet(1, { title:'Neuer Auftrag', right:'Sichern', onRight: save });
   const digits = /^[\d\s\-\/.]+$/.test(prefill || '');
   body.innerHTML = `<div class="sect"><div class="group">
-      <label class="cell"><span>Auftrags-Nr.</span><input id="na-nr" value="${esc(digits ? prefill : '')}" style="flex:1"></label>
-      <label class="cell"><span>Produkt</span><input id="na-pr" value="${esc(digits ? '' : prefill || '')}" placeholder="Produktname" style="flex:1"></label></div></div>`;
+<label class="cell"><span>Name</span><input id="na-pr" value="${esc(digits ? '' : prefill || '')}" placeholder="Produktname" style="flex:1"></label>
+        <label class="cell"><span>Auftrags-Nr.</span><input id="na-nr" value="${esc(digits ? prefill : '')}" style="flex:1"></label>
+        <label class="cell"><span>EIN</span><input id="na-ein" value="${esc('')}" style="flex:1"></label></div></div>`;
   function save(){
-    const A = ensureAuftrag(document.getElementById('na-nr').value, document.getElementById('na-pr').value);
-    if(!A) return toast('Auftrags-Nr. fehlt');
+    if(!document.getElementById('na-pr').value.trim()) return toast('Name fehlt');
+    const A = ensureAuftrag(document.getElementById('na-nr').value, document.getElementById('na-pr').value, document.getElementById('na-ein').value);
+    if(!A) return toast('Name fehlt');
     if(A.done){ A.done = false; persist('stamm'); }
     aQuery = ''; stOpen.aktiv = true;
-    closeSheet(1); toast('Auftrag ' + (A.produkt || '#'+A.nr) + ' angelegt');
+    closeSheet(1); toast(aTitle(A) + ' angelegt');
   }
 }
 
@@ -894,10 +1011,10 @@ function renderRunning(r){
   view.innerHTML = `<div class="fsview">
     <div class="nav"><button id="fmin" aria-label="Zur Übersicht" style="background:none;border:0;color:var(--text);width:44px;height:44px;display:grid;place-items:center;margin-left:-10px;padding:0"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
       <span class="pill-live"><span class="live ${paused||e.fxp?'p':''}"></span>${e.fxp ? 'Wartet auf Bestätigung' : paused?'Pausiert':'Läuft seit '+hm(e.s)}</span><span style="width:44px"></span></div>
-    ${others.length ? `<div class="others">${others.map(o => { const oe = runEntry(o); return `<button class="ochip" data-sw="${o.eid}"><span class="live ${isPaused(oe)?'p':''}"></span>${esc(oe.a.produkt || '#'+oe.a.nr)} <span class="tnum dim" data-live="${o.eid}">${dur(entryDur(oe, now).work, true)}</span></button>`; }).join('')}</div>` : ''}
+    ${others.length ? `<div class="others">${others.map(o => { const oe = runEntry(o); return `<button class="ochip" data-sw="${o.eid}"><span class="live ${isPaused(oe)?'p':''}"></span>${esc(aTitle(oe.a))} <span class="tnum dim" data-live="${o.eid}">${dur(entryDur(oe, now).work, true)}</span></button>`; }).join('')}</div>` : ''}
     <div class="fstop">
-      <div class="fsprod">${esc(e.a.produkt || '#'+e.a.nr)}</div>
-      ${e.a.produkt ? `<div class="fsnr">Auftrag #${esc(e.a.nr)}</div>` : ''}
+      <div class="fsprod">${esc(aTitle(e.a))}</div>
+      ${aSub(e.a) ? `<div class="fsnr">${esc(aSub(e.a))}</div>` : ''}
       <div class="fstask">${esc(e.t)}${e.m ? `<span class="chip" style="margin-left:8px;vertical-align:middle">⚙︎ ${esc(e.m)}</span>` : ''}</div>
     </div>
     ${e.fxp ? `<div class="glass" style="border-radius:24px;padding:18px 20px;margin:22px 0 16px;text-align:center">
@@ -907,19 +1024,20 @@ function renderRunning(r){
           <span style="font-size:22px" class="dim">min</span></div>
         <div class="dim" style="font-size:12px;margin-top:8px">Zählt nur als Maschinenzeit, nicht als Arbeitszeit</div></div>`
       : `<div class="clock fsclock" id="clock">${dur(entryDur(e, now).work, true)}</div>`}
-    ${ab ? `<div class="fssteps glass">${ab.steps.map((s,i) => `<div class="fsstep ${i<ab.idx?'d':i===ab.idx?'c':''}"><span class="n">${i<ab.idx?'✓':i+1}</span><span class="grow">${esc(s.t)}${s.m?` <span class="dim">· ${esc(s.m)}${isFixM(s.m) ? ' (fest ' + dur((+s.mt||0)*60000) + ')' : ''}</span>`:''}</span></div>`).join('')}</div>` : '<div style="flex:1"></div>'}
+    ${ab ? `<div class="fssteps glass">${ab.steps.map((s,i) => { const dn = normDone(ab).includes(i); return `<div class="fsstep ${i===ab.idx?'c':dn?'d':''}" data-step="${i}" style="cursor:pointer"><span class="n">${dn && i!==ab.idx?'✓':i+1}</span><span class="grow">${esc(s.t)}${s.m?` <span class="dim">· ${esc(s.m)}${isFixM(s.m) ? ' (fest ' + dur((+s.mt||0)*60000) + ')' : ''}</span>`:''}</span></div>`; }).join('')}<div class="dim" style="font-size:12px;text-align:center;padding:8px 0 6px;border-top:.5px solid var(--sep)">Schritt antippen, um dorthin zu springen</div></div>` : '<div style="flex:1"></div>'}
     <div class="fsbottom">
     ${(e.m || e.vb) && !e.fxp ? `<div style="text-align:center;margin:0 0 14px"><button class="vbtoggle ${e.vb?'on':''}" id="bvb">⚒︎ Vorbereitungszeit ${e.vb?'an':'aus'}</button>
       <div class="dim" style="font-size:12px;margin-top:6px">${e.vb ? 'Zählt nur als Arbeitszeit, nicht als Maschinenzeit' : (e.m ? 'Zählt als Arbeits- und Maschinenzeit' : 'Zählt als Arbeitszeit')}</div></div>` : ''}
 
       ${`<div class="ctl">
         <button class="circ ${paused?'gray':'orange'}" id="bp">${paused?'Löschen':'Pause'}</button>
-        ${!paused && e.fxp ? `<button class="capsule" id="bfx" style="background:var(--green);box-shadow:0 8px 24px rgba(48,209,88,.35),inset 0 1px 0 rgba(255,255,255,.35)">⚙︎ Bestätigen<small>und weiter</small></button>` : paused ? `<button class="capsule" id="bres" style="background:var(--green);box-shadow:0 8px 24px rgba(48,209,88,.35),inset 0 1px 0 rgba(255,255,255,.35)">Start<small>Zeit läuft weiter</small></button>` : ab ? `<button class="capsule" id="bn">${ab.idx < ab.steps.length-1 ? `Nächster Schritt<small>${esc(ab.steps[ab.idx+1].t)}</small>` : 'Abschließen ✓'}</button>` : `<button class="capsule" id="bnt">Nächste Aufgabe<small>Tätigkeit wechseln</small></button>`}
+        ${!paused && e.fxp ? `<button class="capsule" id="bfx" style="background:var(--green);box-shadow:0 8px 24px rgba(48,209,88,.35),inset 0 1px 0 rgba(255,255,255,.35)">⚙︎ Bestätigen<small>und weiter</small></button>` : paused ? `<button class="capsule" id="bres" style="background:var(--green);box-shadow:0 8px 24px rgba(48,209,88,.35),inset 0 1px 0 rgba(255,255,255,.35)">Start<small>Zeit läuft weiter</small></button>` : ab ? `<button class="capsule" id="bn">${(() => { const tmp = { ...ab, done: [...normDone(ab), ab.idx] }, ni = nextOpen(tmp, ab.idx); return ni >= 0 ? `Nächster Schritt<small>${esc(ab.steps[ni].t)}</small>` : 'Abschließen ✓'; })()}</button>` : `<button class="capsule" id="bnt">Nächste Aufgabe<small>Tätigkeit wechseln</small></button>`}
         <button class="circ green" id="bdone">Fertig</button>
       </div>`}
       ${ab ? `<button class="linkbtn" id="bskip" style="margin:14px auto 0;padding:6px">Schritt überspringen</button>` : ''}
     </div></div>`;
   document.getElementById('fmin').onclick = () => { fsMin = true; render(); };
+  view.querySelectorAll('[data-step]').forEach(el => el.onclick = () => jumpStep(r, +el.dataset.step));
   const bfx = document.getElementById('bfx'); if(bfx) bfx.onclick = () => confirmFixed(r, document.getElementById('fxc').value);
   const bs = document.getElementById('bp');
   let holdT = null, held = false;
@@ -937,7 +1055,7 @@ function renderRunning(r){
   const bvb = document.getElementById('bvb'); if(bvb) bvb.onclick = () => toggleVb(r);
   const bn = document.getElementById('bn'); if(bn) bn.onclick = () => nextStep(r);
   const bnt = document.getElementById('bnt'); if(bnt) bnt.onclick = () => nextTaskSheet(r);
-  view.querySelectorAll('[data-sw]').forEach(b => b.onclick = () => { fsRun = b.dataset.sw; render(); });
+  view.querySelectorAll('[data-sw]').forEach(b => b.onclick = () => { fsRun = b.dataset.sw; navAnim = 'fade'; render(); });
   const sk = document.getElementById('bskip');
   if(sk){
     let armed = false, t;
@@ -957,10 +1075,10 @@ function renderMini(){
   document.body.classList.add('hasmini');
   if(rs.length === 1){
     const e = runEntry(rs[0]), paused = isPaused(e);
-    m.innerHTML = `<span class="live ${paused?'p':''}"></span><span class="grow" style="min-width:0;text-align:left"><b>${esc(e.t)}</b><small>${esc(e.a.produkt || '')} · #${esc(e.a.nr)}</small></span><span class="tnum" data-live="${rs[0].eid}">${dur(entryDur(e, Date.now()).work, true)}</span>`;
+    m.innerHTML = `<span class="live ${paused?'p':''}"></span><span class="grow" style="min-width:0;text-align:left"><b>${esc(e.t)}</b><small>${esc(aOne(e.a))}</small></span><span class="tnum" data-live="${rs[0].eid}">${dur(entryDur(e, Date.now()).work, true)}</span>`;
     m.onclick = () => { fsRun = rs[0].eid; fsMin = false; tab = 'stopp'; render(); window.scrollTo(0,0); };
   } else {
-    m.innerHTML = `<span class="live"></span><span class="grow" style="min-width:0;text-align:left"><b>${(() => { const p = rs.filter(r => isPaused(runEntry(r))).length, l = rs.length - p; return [l ? l + (l===1 ? ' Auftrag läuft' : ' Aufträge laufen') : '', p ? p + ' pausiert' : ''].filter(Boolean).join(' · '); })()}</b><small>${rs.map(r => esc(runEntry(r).a.produkt || '#'+runEntry(r).a.nr)).join(' · ')}</small></span><span class="chev" style="color:var(--ter);font-size:22px">›</span>`;
+    m.innerHTML = `<span class="live"></span><span class="grow" style="min-width:0;text-align:left"><b>${(() => { const p = rs.filter(r => isPaused(runEntry(r))).length, l = rs.length - p; return [l ? l + (l===1 ? ' Auftrag läuft' : ' Aufträge laufen') : '', p ? p + ' pausiert' : ''].filter(Boolean).join(' · '); })()}</b><small>${rs.map(r => esc(aTitle(runEntry(r).a))).join(' · ')}</small></span><span class="chev" style="color:var(--ter);font-size:22px">›</span>`;
     m.onclick = () => { fsMin = true; tab = 'stopp'; render(); window.scrollTo(0,0); };
   }
 }
@@ -987,7 +1105,7 @@ function renderStopp(){
   const d0 = new Date();
   view.innerHTML = `<div class="nav"><span></span><button class="round glass" id="addA" aria-label="Neuer Auftrag">＋</button></div><div class="ttl">Stempeln</div><div class="subttl">${WT_LONG[d0.getDay()]}, ${d0.getDate()}. ${MONATE[d0.getMonth()]}</div>
     <div class="sect">
-    <div class="search glass" style="border-radius:14px">${ICON_SEARCH}<input id="aq" placeholder="Produkt oder Auftrags-Nr. suchen" autocomplete="off" value="${esc(aQuery)}"></div>
+    <div class="search glass" style="border-radius:14px">${ICON_SEARCH}<input id="aq" placeholder="Name, Auftrags-Nr. oder EIN suchen" autocomplete="off" value="${esc(aQuery)}"></div>
     <div id="alist"></div></div>`;
   document.getElementById('aq').oninput = ev => { aQuery = ev.target.value; drawAList(); };
   document.getElementById('addA').onclick = () => newAuftragSheet(aQuery.trim());
@@ -997,8 +1115,8 @@ function drawAList(){
   const el = document.getElementById('alist'); if(!el) return;
   const lu = lastUse(), ql = aQuery.trim().toLowerCase();
   const runBy = {}; runs().forEach(r => { runBy[aKey(runEntry(r).a)] = r; });
-  const match = a => !ql || (a.nr + ' ' + a.produkt).toLowerCase().includes(ql);
-  const byUse = (x,y) => (lu[aKey(y)]||0) - (lu[aKey(x)]||0) || x.nr.localeCompare(y.nr, 'de', { numeric:true });
+  const match = a => !ql || (a.nr + ' ' + a.produkt + ' ' + (a.ein||'')).toLowerCase().includes(ql);
+  const byUse = (x,y) => (lu[aKey(y)]||0) - (lu[aKey(x)]||0) || aTitle(x).localeCompare(aTitle(y), 'de', { numeric:true });
   const all = state.stamm.auftraege.filter(match);
   const isRun = a => !!runBy[aKey(a)];
   const isPausedRun = a => isRun(a) && isPaused(runEntry(runBy[aKey(a)]));
@@ -1014,10 +1132,10 @@ function drawAList(){
     const pr = isPausedRun(a);
     const icon = a.done ? ['var(--green)','✓'] : pr ? ['var(--orange)','❚❚'] : run ? ['var(--green)','▶︎'] : a.resume ? ['var(--orange)','❚❚'] : ['var(--blue)','#'];
     const rE = run ? runEntry(runBy[aKey(a)]) : null;
-    const sub = (a.produkt ? '#'+esc(a.nr) : '') + (pr ? ` · pausiert · ${esc(rE.t)}` : '') + (a.resume && !run && !a.done && a.resume.ab ? ` · Schritt ${a.resume.ab.idx+1}/${a.resume.ab.steps.length}: ${esc(a.resume.ab.steps[a.resume.ab.idx].t)}` : a.resume && !run && !a.done ? ` · ${esc(a.resume.t)}` : '');
+    const sub = esc(aSub(a)) + (pr ? ` · pausiert · ${esc(rE.t)}` : '') + (a.resume && !run && !a.done && a.resume.ab ? ` · Schritt ${a.resume.ab.idx+1}/${a.resume.ab.steps.length}: ${esc(a.resume.ab.steps[a.resume.ab.idx].t)}` : a.resume && !run && !a.done ? ` · ${esc(a.resume.t)}` : '');
     const right = a.done ? (a.doneAt ? agoText(a.doneAt) : '') : run && rE && rE.fxp ? '<span style="color:var(--orange)">bestätigen</span>' : run ? `<span style="color:${pr?'var(--orange)':'var(--green)'}" class="tnum" data-live="${runBy[aKey(a)].eid}">${dur(entryDur(runEntry(runBy[aKey(a)]), Date.now()).work, true)}</span>` : agoText(a.resume ? a.resumeAt : lu[aKey(a)]);
     return `<button class="cell" data-auf="${a.id}"><span class="icon" style="background:${icon[0]}">${icon[1]}</span>
-      <span class="cl two"><span style="font-weight:600">${esc(a.produkt || '#'+a.nr)}</span><small>${sub}</small></span>
+      <span class="cl two"><span style="font-weight:600">${esc(aTitle(a))}</span><small>${sub}</small></span>
       <span class="cv" style="font-size:14px">${right}</span><span class="chev">›</span></button>`;
   };
   let h = '';
@@ -1066,7 +1184,7 @@ function renderAusw(){
     perList.forEach((g, i) => {
       const mt = sum(g.masch);
       h += `<div class="sect"><div class="group glass">
-        <div class="cell"><span class="cl two"><span style="font-size:22px;font-weight:700">${esc(g.a.produkt || '#'+g.a.nr)}</span><small>${g.a.produkt ? '#'+esc(g.a.nr) : ''}${(aFind(g.a)||{}).done ? ' · <span style="color:var(--green)">✓ fertig</span>' : ''}</small></span>
+        <div class="cell"><span class="cl two"><span style="font-size:22px;font-weight:700">${esc(aTitle(g.a))}</span><small>${esc(aSub(g.a))}${(aFind(g.a)||{}).done ? ' · <span style="color:var(--green)">✓ fertig</span>' : ''}</small></span>
           <button class="round" style="background:var(--fill);color:var(--blue)" data-copy="${i}" aria-label="Kopieren">${ICON_COPY}</button></div>
         <div class="cell"><span class="icon" style="background:var(--blue)"><svg viewBox="0 0 24 24" width="17" height="17" fill="#fff"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6z"/></svg></span><span class="cl">Meine Arbeitszeit</span>${timeVal(g.own)}</div>
         ${Object.entries(g.masch).sort((a,b) => b[1]-a[1]).map(([m,v]) => `<div class="cell"><span class="icon" style="background:var(--orange)">⚙︎</span><span class="cl">${esc(m)}</span>${timeVal(v)}</div>`).join('')}
@@ -1078,11 +1196,11 @@ function renderAusw(){
       <button class="cell accent" id="ex2"><span class="cl">Alle Buchungen einzeln</span><span style="width:22px">${ICON_SHARE}</span></button>
     </div><div class="foot">CSV-Datei, lässt sich in Excel oder Numbers öffnen.</div></div>`;
   view.innerHTML = h;
-  view.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => { aMode = b.dataset.mode; aOff = 0; render(); });
-  document.getElementById('ap').onclick = () => { aOff--; render(); };
-  document.getElementById('an').onclick = () => { aOff++; render(); };
+  view.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => { aMode = b.dataset.mode; aOff = 0; navAnim = 'fade'; render(); });
+  document.getElementById('ap').onclick = () => { aOff--; navAnim = 'right'; render(); };
+  document.getElementById('an').onclick = () => { aOff++; navAnim = 'left'; render(); };
   document.getElementById('aadd').onclick = () => editEntry(aMode === 'tag' ? r.keys[0] : dayKey(new Date()), null);
-  const at = document.getElementById('atoday'); if(at) at.onclick = () => { aOff = 0; render(); };
+  const at = document.getElementById('atoday'); if(at) at.onclick = () => { navAnim = aOff < 0 ? 'left' : 'right'; aOff = 0; render(); };
   bindEntries();
   document.getElementById('abr').onclick = () => reportSheet(r);
   document.getElementById('ex1').onclick = () => offerFile(`Auftraege_${r.fname}.csv`, csvAuftraege(r.keys));
@@ -1090,7 +1208,7 @@ function renderAusw(){
   view.querySelectorAll('[data-copy]').forEach(b => b.onclick = () => {
     const g = perList[+b.dataset.copy];
     const mt = Object.entries(g.masch).map(([m,v]) => `  ${m}: ${dur(v)} (${dec(v)})`).join('\n');
-    copyText(`Auftrag ${g.a.nr} – ${g.a.produkt}\nGesamt\nArbeitszeit: ${dur(g.own)} (${dec(g.own)})` + (mt ? `\nMaschinenzeiten:\n${mt}` : ''));
+    copyText(`${aOne(g.a)}\nGesamt\nArbeitszeit: ${dur(g.own)} (${dec(g.own)})` + (mt ? `\nMaschinenzeiten:\n${mt}` : ''));
   });
 }
 
@@ -1216,8 +1334,8 @@ function renderEinst(){
       <button class="cell accent" id="bkexp">Sicherung exportieren</button>
       <button class="cell accent" id="bkimp">Sicherung importieren</button>
       <button class="cell accent" id="vlexp"><span class="cl two"><span>Vorlagen exportieren</span><small style="color:var(--sec)">Arbeitsabläufe, Tätigkeiten und Maschinen – ohne Zeiten</small></span></button></div>
-      <div class="foot">Tipp: In Safari „Teilen“ → „Zum Home-Bildschirm“ – dann startet die App mit einem Tipp.</div></div>`;
-  view.querySelectorAll('[data-sub]').forEach(b => b.onclick = () => { einSub = b.dataset.sub; render(); window.scrollTo(0,0); });
+      </div>`;
+  view.querySelectorAll('[data-sub]').forEach(b => b.onclick = () => { einSub = b.dataset.sub; navAnim = 'push'; render(); window.scrollTo(0,0); });
   view.querySelectorAll('[data-theme-set]').forEach(b => b.onclick = () => { setTheme(b.dataset.themeSet); render(); });
   document.getElementById('bkexp').onclick = async () => {
     const ok = await offerFile('zeitstempel-sicherung-' + dayKey(new Date()) + '.json', JSON.stringify(state));
@@ -1235,7 +1353,7 @@ function renderSub(k){
   if(k==='ab') list = st.ablaeufe.length ? `<div class="group glass">${st.ablaeufe.map(x => `<button class="cell" data-it="${x.id}"><span class="cl two"><span>${esc(x.name)}</span><small>${x.steps.map(s => esc(s.t)).join(' → ')}</small></span><span class="chev">›</span></button>`).join('')}</div>`
       : `<div class="group glass"><div class="empty">Lege feste Abläufe an, z. B.<br>„Rüsten → Drehen → Entgraten → Prüfen“.</div></div>`;
   else if(k==='auftraege'){
-    const cell = a => `<button class="cell" data-it="${a.id}"><span class="cl two"><span class="nr">#${esc(a.nr)}</span><small>${esc(a.produkt||'–')}</small></span><span class="chev">›</span></button>`;
+    const cell = a => `<button class="cell" data-it="${a.id}"><span class="cl two"><span style="font-weight:600">${esc(aTitle(a))}</span><small>${esc(aSub(a))}</small></span><span class="chev">›</span></button>`;
     const open = st.auftraege.filter(a => !a.done), done = st.auftraege.filter(a => a.done);
     list = `<div class="sect"><h2><span>Offen</span></h2><div class="group glass">${open.map(cell).join('') || '<div class="empty">Keine offenen Aufträge.</div>'}</div></div>`
       + (done.length ? `<div class="sect"><h2><span>Fertig gemeldet</span></h2><div class="group glass">${done.map(cell).join('')}</div><div class="foot">Fertige Aufträge erscheinen nicht mehr in der Auswahl. Ihre Zeiten bleiben erhalten.</div></div>` : '');
@@ -1243,7 +1361,7 @@ function renderSub(k){
       : `<div class="group glass"><div class="empty">Noch leer – wird beim Starten automatisch gefüllt.</div></div>`;
   view.innerHTML = `<div class="nav"><button class="back" id="back">‹ Verwalten</button><button class="round glass" id="add" aria-label="Hinzufügen">＋</button></div>
     <div class="ttl">${LISTS[k].t}</div><div class="subttl"></div>${list}`;
-  document.getElementById('back').onclick = () => { einSub = null; render(); };
+  document.getElementById('back').onclick = () => { einSub = null; navAnim = 'pop'; render(); };
   document.getElementById('add').onclick = () => k==='ab' ? editAblauf(null) : editItem(k, null);
   view.querySelectorAll('[data-it]').forEach(b => b.onclick = () => k==='ab' ? editAblauf(b.dataset.it) : editItem(k, b.dataset.it));
 }
@@ -1254,8 +1372,9 @@ function editItem(k, id){
   const body = openSheet(1, { title: x ? (isA ? 'Auftrag' : ({taet:'Tätigkeit',masch:'Maschine'}[k])) : 'Neu', right:'Sichern', onRight: save });
   body.innerHTML = isA
     ? `<div class="sect"><div class="group">
+<label class="cell"><span>Name</span><input id="ei-pr" value="${esc(x?x.produkt:'')}" placeholder="Produktname" style="flex:1"></label>
         <label class="cell"><span>Auftrags-Nr.</span><input id="ei-nr" value="${esc(x?x.nr:'')}" style="flex:1"></label>
-        <label class="cell"><span>Produkt</span><input id="ei-pr" value="${esc(x?x.produkt:'')}" placeholder="Produktname" style="flex:1"></label></div></div>
+        <label class="cell"><span>EIN</span><input id="ei-ein" value="${esc(x&&x.ein?x.ein:'')}" style="flex:1"></label></div></div>
       ${x ? `<div class="sect"><div class="group"><label class="cell"><span class="cl">Fertig gemeldet</span><input type="checkbox" class="sw" id="ei-done" ${x.done?'checked':''}></label></div></div>` : ''}`
     : `<div class="sect"><div class="group"><label class="cell"><input class="left" id="ei-n" value="${esc(x?x.name:'')}" placeholder="Name"></label></div>
        ${x ? '<div class="foot">Umbenennen ändert nur künftige Buchungen.</div>' : ''}</div>
@@ -1266,10 +1385,10 @@ function editItem(k, id){
   if(x) body.insertAdjacentHTML('beforeend', `<div class="group"><button class="cell danger" id="ei-del">Löschen</button></div>`);
   function save(){
     if(isA){
-      const nr = document.getElementById('ei-nr').value.trim(), pr = document.getElementById('ei-pr').value.trim();
-      if(!nr) return toast('Auftrags-Nr. fehlt');
+      const nr = document.getElementById('ei-nr').value.trim(), pr = document.getElementById('ei-pr').value.trim(), ein = document.getElementById('ei-ein').value.trim();
+      if(!pr) return toast('Name fehlt');
       const cx = id ? state.stamm[k].find(y => y.id===id) : null;
-      if(cx){ cx.nr = nr; cx.produkt = pr; cx.done = document.getElementById('ei-done').checked; persist('stamm'); } else ensureAuftrag(nr, pr);
+      if(cx){ cx.nr = nr; cx.produkt = pr; if(ein) cx.ein = ein; else delete cx.ein; cx.done = document.getElementById('ei-done').checked; persist('stamm'); } else ensureAuftrag(nr, pr, ein);
     } else {
       const n = document.getElementById('ei-n').value.trim(); if(!n) return toast('Name fehlt');
       const fix = k==='masch' && document.getElementById('ei-fx').checked;
@@ -1392,7 +1511,7 @@ function editEntry(day, eid){
 function editFixed(day, orig){
   let armed = false;
   const body = openSheet(1, { title:'Maschinenbuchung', right:'Sichern', onRight: save });
-  body.innerHTML = `<div class="subttl" style="text-align:center;margin-top:-8px">${esc(orig.a.produkt || '')} · #${esc(orig.a.nr)} · ${esc(orig.m)}</div>
+  body.innerHTML = `<div class="subttl" style="text-align:center;margin-top:-8px">${esc(aOne(orig.a))} · ${esc(orig.m)}</div>
     <div class="sect"><div class="group">
       <label class="cell"><span class="cl">Datum</span><input type="date" id="xf-day" value="${day}"></label>
       <label class="cell"><span class="cl">Maschinenzeit</span><input type="number" id="xf-mt" min="0" inputmode="numeric" value="${+orig.mt||0}" style="width:70px"><span class="dim">min</span></label>
@@ -1489,9 +1608,22 @@ async function offerFile(filename, text){
     <button class="cta blue" id="fcopy" style="margin-top:16px">Kopieren</button>`;
   document.getElementById('fcopy').onclick = () => copyText(text, document.getElementById('ftxt'));
 }
-async function copyText(text, ta){
-  try{ await navigator.clipboard.writeText(text); toast('In die Zwischenablage kopiert'); }
-  catch(e){ if(ta){ ta.select(); toast('Markiert – jetzt kopieren'); } else toast('Kopieren nicht möglich'); }
+// Kopieren als reiner Text: zuerst über ein markiertes Textfeld (funktioniert auch im eingebetteten Fenster), sonst Zwischenablage-API
+function copyText(text, ta){
+  let ok = false;
+  try{
+    const t = document.createElement('textarea');
+    t.value = text; t.setAttribute('readonly', ''); t.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;font-size:16px';
+    document.body.appendChild(t); t.focus(); t.select(); t.setSelectionRange(0, text.length);
+    ok = document.execCommand('copy'); t.remove();
+  }catch(e){}
+  if(ok){ toast('In die Zwischenablage kopiert'); return; }
+  try{
+    const item = window.ClipboardItem ? new ClipboardItem({ 'text/plain': new Blob([text], { type:'text/plain' }) }) : null;
+    (item ? navigator.clipboard.write([item]) : navigator.clipboard.writeText(text))
+      .then(() => toast('In die Zwischenablage kopiert'))
+      .catch(() => { if(ta){ ta.focus(); ta.select(); toast('Markiert – jetzt über „Kopieren“ im Menü kopieren'); } else toast('Kopieren nicht möglich'); });
+  }catch(e){ if(ta){ ta.focus(); ta.select(); toast('Markiert – jetzt kopieren'); } else toast('Kopieren nicht möglich'); }
 }
 function importBackup(){
   const body = openSheet(1, { title:'Sicherung importieren', right:'Import', onRight: run });
@@ -1507,7 +1639,7 @@ function importBackup(){
       const st = state.stamm;
       (d.stamm.taet||[]).forEach(x => ensureName('taet', x.name));
       (d.stamm.masch||[]).forEach(x => { const n = ensureName('masch', x.name); const m = st.masch.find(y => y.name === n); if(m && x.fix){ m.fix = true; } if(m && x.rp && !m.rp){ m.rp = x.rp; } });
-      (d.stamm.auftraege||[]).forEach(x => { const a = ensureAuftrag(x.nr, x.produkt); if(a && x.done) a.done = true; });
+      (d.stamm.auftraege||[]).forEach(x => { const a = ensureAuftrag(x.nr, x.produkt, x.ein); if(a && x.done) a.done = true; });
       (d.stamm.ablaeufe||[]).forEach(x => { if(!st.ablaeufe.some(y => y.id===x.id)) st.ablaeufe.push(x); });
       persist('stamm'); closeSheet(1); toast('Import erfolgreich');
     }catch(e){ toast('Ungültige Sicherung'); }
@@ -1515,15 +1647,42 @@ function importBackup(){
 }
 
 /* ---------- Start ---------- */
+// Übergänge im Apple-Stil: nur wenn navAnim gesetzt ist (nicht bei Uhr-/Daten-Updates)
+let navAnim = null;
+function go(anim, fn){ navAnim = anim; fn(); }
+function playAnim(name){
+  if(!name || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  view.classList.remove('a-tab','a-push','a-pop','a-fsin','a-fsout','a-fade','a-left','a-right');
+  void view.offsetWidth;
+  view.classList.add('a-' + name);
+  clearTimeout(playAnim.t); playAnim.t = setTimeout(() => view.classList.remove('a-' + name), 700);
+}
 function render(){
+  const wasFs = document.body.classList.contains('fs');
   ensurePhrases();
   document.body.classList.remove('fs');
   document.body.classList.remove('vbmode');
   document.querySelectorAll('.tabbar button').forEach(b => b.classList.toggle('on', b.dataset.tab===tab));
   ({ stopp:renderStopp, ausw:renderAusw, buch:renderBuch, einst:renderEinst })[tab]();
   renderMini();
+  moveTabPill();
+  const isFs = document.body.classList.contains('fs');
+  let a = navAnim; navAnim = null;
+  if(!wasFs && isFs) a = 'fsin'; else if(wasFs && !isFs) a = 'fsout';
+  playAnim(a);
 }
-document.querySelectorAll('.tabbar button').forEach(b => b.onclick = () => { if(tab==='einst' && b.dataset.tab==='einst') einSub = null; tab = b.dataset.tab; render(); window.scrollTo(0,0); });
+// gleitende Markierung in der Tab-Leiste
+function moveTabPill(){
+  const bar = document.querySelector('.tabbar'); if(!bar) return;
+  let pill = bar.querySelector('.tabpill');
+  if(!pill){ pill = document.createElement('span'); pill.className = 'tabpill'; bar.prepend(pill); }
+  const on = bar.querySelector('button.on'); if(!on) return;
+  const br = bar.getBoundingClientRect(), r = on.getBoundingClientRect();
+  if(!r.width) return;
+  pill.style.width = r.width + 'px'; pill.style.transform = `translateX(${r.left - br.left - 5}px)`;
+}
+window.addEventListener('resize', moveTabPill);
+document.querySelectorAll('.tabbar button').forEach(b => b.onclick = () => { if(b.dataset.tab===tab && !(tab==='einst' && einSub)) return; if(tab==='einst' && b.dataset.tab==='einst'){ einSub = null; navAnim = 'pop'; } else navAnim = 'tab'; tab = b.dataset.tab; buzz(); render(); window.scrollTo(0,0); });
 document.addEventListener('visibilitychange', () => { if(!document.hidden && !sheetOpen()) render(); });
 loadLocal();
 render();

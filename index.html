@@ -1399,8 +1399,8 @@ function renderEinst(){
     <div class="sect"><h2><span>Speicher</span></h2><div class="group glass">
       <div class="cell"><span class="cl">Status</span><span class="cv" id="sync">${esc(syncStatus)}</span></div>
       <div class="cell"><span class="cl">Letzte Sicherung</span><span class="cv">${(() => { let t = 0; try{ t = +localStorage.getItem('zs-lastbackup') || 0; }catch(e){} return t ? new Date(t).toLocaleDateString('de-DE') : '<span style="color:var(--orange)">noch keine</span>'; })()}</span></div>
-      <button class="cell accent" id="bkexp">Sicherung exportieren</button>
       <button class="cell accent" id="bkimp">Sicherung importieren</button>
+      <button class="cell accent" id="bkexp">Sicherung exportieren</button>
       <button class="cell accent" id="vlexp"><span class="cl two"><span>Vorlagen exportieren</span><small style="color:var(--sec)">Arbeitsabläufe, Tätigkeiten und Maschinen – ohne Zeiten</small></span></button></div>
       </div>`;
   view.querySelectorAll('[data-sub]').forEach(b => b.onclick = () => { einSub = b.dataset.sub; navAnim = 'push'; render(); window.scrollTo(0,0); });

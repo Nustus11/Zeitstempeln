@@ -16,16 +16,16 @@
   --bg:#141513; --text:#fff; --sec:rgba(235,235,245,.62); --ter:rgba(235,235,245,.3);
   --glass:rgba(34,34,32,.45); --glass-strong:rgba(38,38,36,.78); --edge:rgba(255,255,255,.16); --hi:rgba(255,255,255,.22);
   --sep:rgba(255,255,255,.1); --fill:rgba(118,118,128,.24); --shadow:0 10px 40px rgba(0,0,0,.35);
-  --blue:#74D4D8; --green:#30D158; --orange:#F4D24A; --red:#FF453A; --indigo:#6A2BB0;
+  --blue:#8FCFD2; --green:#62C27E; --orange:#EBD27E; --red:#FF453A; --indigo:#7B55B0;
   --b1:#24063F; --b2:#123E40; --b3:#3A3112;
-  --tq:#74D4D8; --yl:#F4D24A; --pu:#2C0050; --ink:#1C1D1B;
+  --tq:#8FCFD2; --yl:#EBD27E; --pu:#2C0050; --ink:#1C1D1B; --acc-t:#8FCFD2; --yl-t:#EBD27E;
 }
 @media (prefers-color-scheme: light){
   :root:not([data-theme=dark]){
     --bg:#F5F5F2; --text:#1C1D1B; --sec:rgba(28,29,27,.6); --ter:rgba(28,29,27,.3);
     --glass:rgba(255,255,255,.58); --glass-strong:rgba(255,255,255,.85); --edge:rgba(0,0,0,.06); --hi:rgba(255,255,255,.6);
     --sep:rgba(28,29,27,.12); --fill:rgba(28,29,27,.07); --shadow:0 10px 40px rgba(44,0,80,.10);
-    --blue:#13929A; --green:#2FA84F; --orange:#B88A00; --red:#E0352B; --indigo:#4A1580;
+    --blue:#8FCFD2; --green:#62C27E; --orange:#EBD27E; --red:#E0352B; --indigo:#7B55B0; --acc-t:#3C9DA2; --yl-t:#9C8430;
     --b1:#CDB5EE; --b2:#8FE0E3; --b3:#F7DE7A;
   }
 }
@@ -33,7 +33,7 @@
     --bg:#F5F5F2; --text:#1C1D1B; --sec:rgba(28,29,27,.6); --ter:rgba(28,29,27,.3);
     --glass:rgba(255,255,255,.58); --glass-strong:rgba(255,255,255,.85); --edge:rgba(0,0,0,.06); --hi:rgba(255,255,255,.6);
     --sep:rgba(28,29,27,.12); --fill:rgba(28,29,27,.07); --shadow:0 10px 40px rgba(44,0,80,.10);
-    --blue:#13929A; --green:#2FA84F; --orange:#B88A00; --red:#E0352B; --indigo:#4A1580;
+    --blue:#8FCFD2; --green:#62C27E; --orange:#EBD27E; --red:#E0352B; --indigo:#7B55B0; --acc-t:#3C9DA2; --yl-t:#9C8430;
     --b1:#CDB5EE; --b2:#8FE0E3; --b3:#F7DE7A;
   }
 
@@ -103,7 +103,7 @@ button.cell:active{background:var(--fill)}
 .circ.orange{background:color-mix(in srgb,var(--orange) 22%,transparent);color:var(--orange)}
 .circ.green{background:color-mix(in srgb,var(--green) 22%,transparent);color:var(--green)}
 .capsule{flex:1;margin:0 12px;height:78px;border-radius:999px;border:0;background:var(--tq);color:var(--ink);font:inherit;font-size:17px;font-weight:700;
-  box-shadow:0 8px 24px rgba(116,212,216,.35),inset 0 1px 0 rgba(255,255,255,.35);padding:0 14px;line-height:1.2}
+  box-shadow:0 8px 24px rgba(143,207,210,.25),inset 0 1px 0 rgba(255,255,255,.35);padding:0 14px;line-height:1.2}
 .capsule small{display:block;font-size:13px;font-weight:400;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .linkbtn{background:none;border:0;color:var(--blue);font:inherit;padding:10px;display:block;margin:0 auto 22px}
 
@@ -167,9 +167,9 @@ button.cell:active{background:var(--fill)}
 .empty{padding:22px 16px;text-align:center;color:var(--sec);font-size:15px}
 .backbtn{background:none;border:0;color:var(--blue);font:inherit;padding:4px 0 12px;display:block}
 .grow{flex:1;min-width:0}
-:root:not([data-theme=light]) body:not(.vbmode) .blobs i{opacity:.45}
-@media (prefers-color-scheme: light){ :root:not([data-theme=dark]) body:not(.vbmode) .blobs i{opacity:.55} }
-:root[data-theme=light] body:not(.vbmode) .blobs i{opacity:.55}
+:root:not([data-theme=light]) body:not(.vbmode) .blobs i{opacity:.28}
+@media (prefers-color-scheme: light){ :root:not([data-theme=dark]) body:not(.vbmode) .blobs i{opacity:.32} }
+:root[data-theme=light] body:not(.vbmode) .blobs i{opacity:.32}
 .icon[style*="--orange"],.icon[style*="--blue"]{color:var(--ink)!important}
 .live{background:var(--tq)!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--tq) 25%,transparent)!important}
 .live.p{background:var(--yl)!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--yl) 25%,transparent)!important}
@@ -178,10 +178,10 @@ button.cell:active{background:var(--fill)}
 body{transition:background-color .8s}
 body.vbmode .blobs i{opacity:.95}
 body.vbmode .vbtoggle.on{background:var(--yl);color:var(--ink);box-shadow:0 6px 18px rgba(0,0,0,.25)}
-body.vbmode{--b1:#6A2BB0;--b2:#4A1580;--b3:#8A3FD0;--bg:#2C0050}
+body.vbmode{--b1:#7B55B0;--b2:#4A1580;--b3:#8A3FD0;--bg:#2C0050}
 @media (prefers-color-scheme: light){ body.vbmode:not([data-x]){--b1:#B993EA;--b2:#C9A8F0;--b3:#A57DE0;--bg:#D9C6F2} }
 :root[data-theme=light] body.vbmode{--b1:#B993EA;--b2:#C9A8F0;--b3:#A57DE0;--bg:#D9C6F2}
-:root[data-theme=dark] body.vbmode{--b1:#6A2BB0;--b2:#4A1580;--b3:#8A3FD0;--bg:#2C0050}
+:root[data-theme=dark] body.vbmode{--b1:#7B55B0;--b2:#4A1580;--b3:#8A3FD0;--bg:#2C0050}
 .vbtoggle{border:0;font:inherit;font-size:14px;font-weight:600;border-radius:999px;padding:8px 16px;background:var(--fill);color:var(--sec);cursor:pointer}
 .vbtoggle.on{background:var(--yl);color:var(--ink)}
 .circ{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
@@ -266,6 +266,17 @@ button.cell:active{transform:scale(.985)}
 #view.a-fsout{animation:aZoomOut .5s var(--spring) both}
 .clock{transition:color .3s}
 @media (prefers-reduced-motion: reduce){ *{animation:none!important;transition:none!important} }
+
+/* Textfarben: im hellen Modus etwas kräftiger, damit sie lesbar bleiben */
+.nav .back,.cell .cv.ph,.cell.accent,.linkbtn,.shead button,.check,.tabbar button.on,.backbtn,.todaybtn{color:var(--acc-t)}
+[style*="color:var(--blue)"]{color:var(--acc-t)!important}
+[style*="color:var(--orange)"],.circ.orange{color:var(--yl-t)!important}
+
+.datepick{position:relative;display:inline-block;cursor:pointer}
+.datepick input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+.sclear{flex:none;width:22px;height:22px;border-radius:50%;border:0;padding:0;background:var(--ter);color:var(--bg);font-size:11px;font-weight:700;display:grid;place-items:center;cursor:pointer;transition:opacity .2s,transform .25s var(--spring-b)}
+.sclear.hid{opacity:0;transform:scale(.5);pointer-events:none}
+.sclear:active{transform:scale(.85)}
 </style>
 </head>
 <body>
@@ -1105,9 +1116,11 @@ function renderStopp(){
   const d0 = new Date();
   view.innerHTML = `<div class="nav"><span></span><button class="round glass" id="addA" aria-label="Neuer Auftrag">＋</button></div><div class="ttl">Stempeln</div><div class="subttl">${WT_LONG[d0.getDay()]}, ${d0.getDate()}. ${MONATE[d0.getMonth()]}</div>
     <div class="sect">
-    <div class="search glass" style="border-radius:14px">${ICON_SEARCH}<input id="aq" placeholder="Name, Auftrags-Nr. oder EIN suchen" autocomplete="off" value="${esc(aQuery)}"></div>
+    <div class="search glass" style="border-radius:14px">${ICON_SEARCH}<input id="aq" placeholder="Name, Auftrags-Nr. oder EIN suchen" autocomplete="off" value="${esc(aQuery)}"><button class="sclear ${aQuery?'':'hid'}" id="aqx" aria-label="Suche leeren">✕</button></div>
     <div id="alist"></div></div>`;
-  document.getElementById('aq').oninput = ev => { aQuery = ev.target.value; drawAList(); };
+  const aq = document.getElementById('aq'), aqx = document.getElementById('aqx');
+  aq.oninput = ev => { aQuery = ev.target.value; aqx.classList.toggle('hid', !aQuery); drawAList(); };
+  aqx.onclick = () => { aQuery = ''; aq.value = ''; aqx.classList.add('hid'); drawAList(); };
   document.getElementById('addA').onclick = () => newAuftragSheet(aQuery.trim());
   drawAList();
 }
@@ -1168,8 +1181,10 @@ function renderAusw(){
   const allBy = {}; summarize(Object.keys(state.days), now).per.forEach(g => { allBy[aKey(g.a)] = g; });
   const perList = s.per.map(g => allBy[aKey(g.a)] || g).sort((x,y) => y.own - x.own);
   let h = `<div class="nav"><span></span><button class="round glass" id="aadd" aria-label="Nachtragen">＋</button></div><div class="ttl">Auswertung</div><div class="subttl">Arbeits- und Maschinenzeiten pro Auftrag</div>
+    <div class="search glass" style="border-radius:14px">${ICON_SEARCH}<input id="kq" placeholder="Name, Auftrags-Nr. oder EIN suchen" autocomplete="off" value="${esc(kQuery)}"><button class="sclear ${kQuery?'':'hid'}" id="kqx" aria-label="Suche leeren">✕</button></div>
+    <div id="kres"></div>
     <div class="seg glass">${['tag','woche','monat'].map(m => `<button data-mode="${m}" class="${aMode===m?'on':''}">${{tag:'Tag',woche:'Woche',monat:'Monat'}[m]}</button>`).join('')}</div>
-    <div class="period"><button class="round glass" id="ap">‹</button><div class="pmid"><b>${esc(r.label)}</b>${aOff ? '<button class="todaybtn" id="atoday">Heute</button>' : ''}</div><button class="round glass" id="an">›</button></div>
+    <div class="period"><button class="round glass" id="ap">‹</button><div class="pmid"><label class="datepick"><b>${esc(r.label)} <span class="dim" style="font-size:12px">▾</span></b><input type="date" id="adate" value="${r.keys[0]}"></label>${aOff ? '<button class="todaybtn" id="atoday">Heute</button>' : ''}</div><button class="round glass" id="an">›</button></div>
     <div class="kpis glass"><div><span>Meine Zeit</span><b class="tnum">${dur(s.own)}</b></div><div><span>Maschinen</span><b class="tnum">${dur(sum(s.masch))}</b></div><div><span>Aufträge</span><b>${s.per.length}</b></div></div>`;
   h += `<div class="sect"><div class="group glass">
       <button class="cell accent" id="abr"><span class="icon" style="background:var(--indigo)">✎</span><span class="cl two"><span>Ausbildungsbericht</span><small style="color:var(--sec)">${aMode==='woche' ? 'Ganze Woche, Tag für Tag' : aMode==='monat' ? 'Ganzer Monat, Tag für Tag' : 'Für diesen Tag'}</small></span><span class="chev">›</span></button>
@@ -1200,6 +1215,11 @@ function renderAusw(){
   document.getElementById('ap').onclick = () => { aOff--; navAnim = 'right'; render(); };
   document.getElementById('an').onclick = () => { aOff++; navAnim = 'left'; render(); };
   document.getElementById('aadd').onclick = () => editEntry(aMode === 'tag' ? r.keys[0] : dayKey(new Date()), null);
+  const kq = document.getElementById('kq'), kqx = document.getElementById('kqx');
+  kq.oninput = ev => { kQuery = ev.target.value; kqx.classList.toggle('hid', !kQuery); drawKRes(); };
+  kqx.onclick = () => { kQuery = ''; kq.value = ''; kqx.classList.add('hid'); drawKRes(); };
+  drawKRes();
+  document.getElementById('adate').onchange = ev => { if(!ev.target.value) return; const old = aOff; gotoDate(ev.target.value, aMode); navAnim = aOff > old ? 'left' : aOff < old ? 'right' : null; render(); };
   const at = document.getElementById('atoday'); if(at) at.onclick = () => { navAnim = aOff < 0 ? 'left' : 'right'; aOff = 0; render(); };
   bindEntries();
   document.getElementById('abr').onclick = () => reportSheet(r);
@@ -1299,6 +1319,54 @@ function reportSheet(r){
   const ta = body.querySelector('#rtxt');
   if(ta){ const fit = () => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }; ta.oninput = fit; requestAnimationFrame(fit); }
   const c = body.querySelector('#rcopy'); if(c) c.onclick = () => copyText(body.querySelector('#rtxt').value, body.querySelector('#rtxt'));
+}
+
+
+/* ---------- Auftragssuche & Datumsauswahl (Auswertung) ---------- */
+// Auswertung auf ein bestimmtes Datum setzen (Tag, Woche oder Monat, in dem es liegt)
+function gotoDate(k, mode){
+  aMode = mode || aMode;
+  const t = new Date(); t.setHours(0,0,0,0); const d = parseDay(k);
+  if(aMode === 'tag') aOff = Math.round((d - t) / 86400000);
+  else if(aMode === 'woche'){ const ws = x => { const y = new Date(x); y.setDate(y.getDate() - ((y.getDay()+6)%7)); return y; }; aOff = Math.round((ws(d) - ws(t)) / (7*86400000)); }
+  else aOff = (d.getFullYear() - t.getFullYear())*12 + d.getMonth() - t.getMonth();
+}
+let kQuery = '';
+function drawKRes(){
+  const el = document.getElementById('kres'); if(!el) return;
+  const ql = kQuery.trim().toLowerCase();
+  if(!ql){ el.innerHTML = ''; return; }
+  const all = summarize(Object.keys(state.days), Date.now()), tot = {}; all.per.forEach(g => { tot[aKey(g.a)] = g; });
+  const list = state.stamm.auftraege.filter(a => (a.nr + ' ' + a.produkt + ' ' + (a.ein||'')).toLowerCase().includes(ql))
+    .sort((a,b) => (a.done - b.done) || aTitle(a).localeCompare(aTitle(b), 'de', { numeric:true }));
+  el.innerHTML = `<div class="sect" style="margin-top:-8px"><h2><span>Aufträge</span><span>${list.length}</span></h2><div class="group glass">${list.length ? list.map(a => {
+      const g = tot[aKey(a)];
+      return `<button class="cell" data-ka="${a.id}"><span class="icon" style="background:${a.done?'var(--green)':'var(--blue)'}">${a.done?'✓':'#'}</span>
+        <span class="cl two"><span style="font-weight:600">${esc(aTitle(a))}</span><small>${esc(aSub(a))}${a.done ? (aSub(a)?' · ':'') + 'fertig' : ''}</small></span>
+        <span class="cv tnum">${g ? dur(g.own) : ''}</span><span class="chev">›</span></button>`; }).join('') : '<div class="empty">Kein Auftrag gefunden.</div>'}</div></div>`;
+  el.querySelectorAll('[data-ka]').forEach(b => b.onclick = () => orderSheet(aById(b.dataset.ka)));
+}
+// Auftrag im Detail: Gesamtzeiten und alle Tage, an denen daran gearbeitet wurde
+function orderSheet(A){
+  if(!A) return;
+  const now = Date.now(), key = aKey(A), days = [];
+  Object.keys(state.days).sort().reverse().forEach(k => {
+    const es = Object.values(state.days[k]).filter(e => aKey(e.a) === key);
+    if(es.length) days.push({ k, own: unionTime(es.flatMap(e => segs(e, now))), t: [...new Set(es.map(e => e.t))].join(', ') });
+  });
+  const g = summarize(Object.keys(state.days), now).per.find(x => aKey(x.a) === key);
+  const ms = g ? Object.entries(g.masch).sort((a,b) => b[1]-a[1]) : [];
+  const body = openSheet(1, { title: aTitle(A), left:'Fertig' });
+  body.innerHTML = `<div class="subttl" style="text-align:center;margin-top:-8px">${esc(aSub(A) || '')}${A.done ? ` · <span style="color:var(--green)">✓ fertig</span>` : ''}</div>
+    <div class="sect"><h2><span>Gesamt</span></h2><div class="group">
+      <div class="cell"><span class="icon" style="background:var(--blue)"><svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6z"/></svg></span><span class="cl">Meine Arbeitszeit</span>${timeVal(g ? g.own : 0)}</div>
+      ${ms.map(([mm,v]) => `<div class="cell"><span class="icon" style="background:var(--orange)">⚙︎</span><span class="cl">${esc(mm)}</span>${timeVal(v)}</div>`).join('')}
+    </div></div>
+    <div class="sect"><h2><span>Gearbeitet an</span><span>${days.length} ${days.length===1?'Tag':'Tagen'}</span></h2><div class="group">${days.length ? days.map(d => `<button class="cell" data-kd="${d.k}"><span class="cl two"><span>${dstr(d.k)}</span><small>${esc(d.t)}</small></span><span class="cv tnum" style="color:var(--text)">${dur(d.own)}</span><span class="chev">›</span></button>`).join('') : '<div class="empty">Noch keine Zeiten gebucht.</div>'}</div>
+    <div class="foot">Tag antippen, um ihn in der Auswertung zu öffnen.</div></div>`;
+  body.querySelectorAll('[data-kd]').forEach(b => b.onclick = () => {
+    gotoDate(b.dataset.kd, 'tag'); tab = 'ausw'; navAnim = 'fade'; closeSheet(1);
+  });
 }
 
 /* ---------- Tab: Verwalten ---------- */

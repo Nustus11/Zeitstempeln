@@ -414,18 +414,18 @@ function ensureName(listName, name){
   const it = { id: uid(), name }; if(listName === 'masch') it.rp = defaultPhrase(name);
   L.push(it); persist('stamm'); return name;
 }
-function ensureAuftrag(nr, produkt, ein){
-  nr = (nr||'').trim(); produkt = (produkt||'').trim(); ein = (ein||'').trim(); if(!nr && !produkt) return null;
+function ensureAuftrag(nr, produkt, ein, anz){
+  nr = (nr||'').trim(); produkt = (produkt||'').trim(); ein = (ein||'').trim(); anz = Math.max(0, Math.round(+anz || 0)); if(!nr && !produkt) return null;
   const L = state.stamm.auftraege;
   let f = L.find(x => x.nr === nr && x.produkt === produkt);
-  if(!f){ f = { id: uid(), nr, produkt, done:false }; if(ein) f.ein = ein; L.push(f); persist('stamm'); }
-  else if(ein && !f.ein){ f.ein = ein; persist('stamm'); }
+  if(!f){ f = { id: uid(), nr, produkt, done:false }; if(ein) f.ein = ein; if(anz) f.anz = anz; L.push(f); persist('stamm'); }
+  else if(ein && !f.ein || anz && !f.anz){ if(ein && !f.ein) f.ein = ein; if(anz && !f.anz) f.anz = anz; persist('stamm'); }
   return f;
 }
 // Anzeige: Name groß, darunter klein Auftrags-Nr. und EIN (beides optional)
 function aLive(a){ return (a && state.stamm.auftraege.find(x => x.nr===a.nr && x.produkt===a.produkt)) || a || {}; }
 function aTitle(a){ return (a && (a.produkt || (a.nr ? '#'+a.nr : ''))) || 'Ohne Namen'; }
-function aSub(a){ const L = aLive(a); return [a && a.produkt && a.nr ? '#'+a.nr : '', L.ein ? 'EIN '+L.ein : ''].filter(Boolean).join(' · '); }
+function aSub(a){ const L = aLive(a); return [a && a.produkt && a.nr ? '#'+a.nr : '', L.ein ? 'EIN '+L.ein : '', L.anz ? L.anz+' Stk.' : ''].filter(Boolean).join(' · '); }
 function aOne(a){ const s = aSub(a); return aTitle(a) + (s ? ' · ' + s : ''); }
 
 
@@ -526,11 +526,11 @@ function csvAuftraege(keys){
   const inRange = new Set(summarize(keys, Date.now()).per.map(g => aKey(g.a)));
   const all = summarize(Object.keys(state.days), Date.now());
   const s = { per: all.per.filter(g => inRange.has(aKey(g.a))) };
-  const rows = [['Auftrags-Nr.','Produkt','EIN','Art','Bezeichnung','Zeit (h:mm)','Zeit (Std. dezimal)','Minuten']];
+  const rows = [['Auftrags-Nr.','Produkt','EIN','Anzahl','Art','Bezeichnung','Zeit (h:mm)','Zeit (Std. dezimal)','Minuten']];
   s.per.forEach(g => {
-    rows.push([g.a.nr, g.a.produkt, aLive(g.a).ein||'', 'Arbeitszeit gesamt', '', dur(g.own), decN(g.own), Math.round(g.own/60000)]);
-    Object.entries(g.masch).forEach(([m,v]) => rows.push([g.a.nr, g.a.produkt, aLive(g.a).ein||'', 'Maschinenzeit', m, dur(v), decN(v), Math.round(v/60000)]));
-    Object.entries(g.taet).forEach(([t,v]) => rows.push([g.a.nr, g.a.produkt, aLive(g.a).ein||'', 'Tätigkeit', t, dur(v), decN(v), Math.round(v/60000)]));
+    rows.push([g.a.nr, g.a.produkt, aLive(g.a).ein||'', aLive(g.a).anz||'', 'Arbeitszeit gesamt', '', dur(g.own), decN(g.own), Math.round(g.own/60000)]);
+    Object.entries(g.masch).forEach(([m,v]) => rows.push([g.a.nr, g.a.produkt, aLive(g.a).ein||'', aLive(g.a).anz||'', 'Maschinenzeit', m, dur(v), decN(v), Math.round(v/60000)]));
+    Object.entries(g.taet).forEach(([t,v]) => rows.push([g.a.nr, g.a.produkt, aLive(g.a).ein||'', aLive(g.a).anz||'', 'Tätigkeit', t, dur(v), decN(v), Math.round(v/60000)]));
   });
   return csv(rows);
 }
@@ -641,12 +641,13 @@ function pick(kind, cur, opt){
       plist.innerHTML = `<div class="sect"><h2>Neuer Auftrag</h2><div class="group">
 <label class="cell"><span>Name</span><input id="na-pr" value="${esc(/^[\d\s\-\/.]+$/.test(nr) ? '' : nr)}" placeholder="Produktname" style="flex:1"></label>
         <label class="cell"><span>Auftrags-Nr.</span><input id="na-nr" value="${esc(/^[\d\s\-\/.]+$/.test(nr) ? nr : '')}" style="flex:1"></label>
-        <label class="cell"><span>EIN</span><input id="na-ein" value="${esc('')}" style="flex:1"></label></div></div>
+        <label class="cell"><span>EIN</span><input id="na-ein" value="${esc('')}" style="flex:1"></label>
+        <label class="cell"><span>Anzahl</span><input id="na-anz" type="number" min="1" inputmode="numeric" value="" style="flex:1"></label></div></div>
         <button class="cta blue" id="na-ok">Hinzufügen</button>`;
       document.getElementById('na-pr').focus();
       document.getElementById('na-ok').onclick = () => {
         if(!document.getElementById('na-pr').value.trim()) return toast('Name fehlt');
-        const a = ensureAuftrag(document.getElementById('na-nr').value, document.getElementById('na-pr').value, document.getElementById('na-ein').value);
+        const a = ensureAuftrag(document.getElementById('na-nr').value, document.getElementById('na-pr').value, document.getElementById('na-ein').value, document.getElementById('na-anz').value);
         if(!a) return toast('Name fehlt');
         finish(a.id);
       };
@@ -766,6 +767,19 @@ function jumpStep(r, i){
   const nr = runAblaufFrom(ab, now);
   fsRun = nr.eid; buzz(); toast('→ Schritt ' + (i+1) + ': ' + ab.steps[i].t); render();
 }
+// Schrittwechsel per Antippen erst bestätigen
+function jumpAsk(r, i){
+  if(!r || !r.ab || i === r.ab.idx) return;
+  const ab = r.ab, st = ab.steps[i], cur = ab.steps[ab.idx], done = normDone(clone(ab)).includes(i);
+  const body = openSheet(1, { title:'Schritt wechseln' });
+  body.innerHTML = `<div style="text-align:center;margin:-4px 0 18px">
+      <div class="subttl">Aktuell: Schritt ${ab.idx+1} · ${esc(cur.t)}</div>
+      <div style="margin-top:12px;font-size:20px;font-weight:700">Zu Schritt ${i+1} wechseln?</div>
+      <div style="margin-top:4px">${esc(st.t)}${st.m ? ` <span class="dim">· ⚙︎ ${esc(st.m)}</span>` : ''}</div>
+      <div class="subttl" style="margin-top:10px">Die bisherige Zeit bleibt gebucht, Schritt ${ab.idx+1} bleibt offen.${done ? ` Schritt ${i+1} wird wieder geöffnet.` : ''}</div></div>
+    <button class="cta blue" id="js-go">Wechseln</button>`;
+  body.querySelector('#js-go').onclick = () => { closeSheet(1, true); setTimeout(() => vbCheck(r, () => jumpStep(r, i)), 320); };
+}
 function advance(ab, now, msg){
   markStepDone(ab);
   const ni = nextOpen(ab, ab.idx);
@@ -828,6 +842,54 @@ function toggleVb(r){
   const nr = startEntry(e.a, e.t, e.m, r.ab, now, vb);
   if(wasPaused){ const ne = runEntry(nr); ne.p.push([now, null]); persist('d-'+nr.day); }
   fsRun = nr.eid; buzz(); toast(vb ? 'Vorbereitungszeit an' : 'Vorbereitungszeit aus'); render();
+}
+// Abschnitte derselben Aufgabe (durch Vorbereitungszeit-Umschalten geteilt), rückwärts verkettet
+function vbChain(r){
+  const e = runEntry(r); if(!e) return [];
+  const same = x => x.a && x.a.nr === e.a.nr && x.a.produkt === e.a.produkt && x.t === e.t && (x.m||'') === (e.m||'') && (!!x.ab === !!e.ab) && (!e.ab || x.ab.sid === e.ab.sid && x.ab.i === e.ab.i);
+  const out = [e]; let cur = e;
+  for(let n = 0; n < 50; n++){
+    const day = state.days[dayKey(new Date(cur.s))] || {};
+    const prev = Object.values(day).find(x => x !== cur && !x.fx && same(x) && x.e === cur.s);
+    if(!prev) break; out.push(prev); cur = prev;
+  }
+  return out;
+}
+// Warnung: Maschine benutzt, aber nur Vorbereitungszeit → keine Maschinenstunden
+function vbCheck(r, proceed){
+  const e = runEntry(r);
+  if(!e || !e.vb || !e.m || isFixM(e.m) || e.fxp) return proceed();
+  const now = Date.now(), chain = vbChain(r);
+  if(chain.some(x => machMin(x, now) > 0)) return proceed();
+  const vbMin = Math.max(1, Math.round(chain.reduce((t, x) => t + entryDur(x, now).work, 0) / 60000));
+  let edit = false, mins = vbMin;
+  const body = openSheet(1, { title:'Keine Maschinenzeit' });
+  const draw = () => {
+    body.innerHTML = `<div style="text-align:center;margin:-4px 0 18px"><div style="font-size:40px;line-height:1">⚠︎</div>
+        <div style="margin-top:10px;font-weight:600">Du warst an ⚙︎ ${esc(e.m)} nur in der Vorbereitungszeit.</div>
+        <div class="subttl" style="margin-top:6px">Für ${esc(e.t)} wird keine Maschinenzeit gebucht.</div></div>
+      ${edit ? `<div class="sect"><div class="group"><label class="cell"><span class="cl two"><span>Maschinenzeit</span><small>⚙︎ ${esc(e.m)} · <span id="vw-h">${dur(mins*60000)} h</span></small></span><input type="number" id="vw-mz" min="0" inputmode="numeric" value="${mins}" style="width:70px"><span class="dim">min</span></label></div>
+        <div class="foot">Vorgeschlagen ist die bisherige Vorbereitungszeit (${dur(vbMin*60000)} h).</div></div>
+        <button class="cta blue" id="vw-save">Übernehmen &amp; weiter</button>
+        <button class="linkbtn" id="vw-back" style="margin:12px auto 0;padding:6px;display:block">Zurück</button>`
+      : `<div class="sect"><div class="group">
+        <button class="cell" id="vw-edit"><span class="icon" style="background:var(--orange)">✎</span><span class="cl two"><span>Vergessen – anpassen</span><small>Maschinenzeit nachtragen</small></span></button>
+        <button class="cell" id="vw-ok"><span class="icon" style="background:var(--green)">✓</span><span class="cl two"><span>Passt so</span><small>Nur Arbeitszeit, keine Maschinenzeit</small></span></button>
+      </div></div>`}`;
+    const q = id => body.querySelector('#'+id);
+    if(edit){
+      const inp = q('vw-mz'); inp.oninput = () => { mins = Math.max(0, Math.round(+inp.value || 0)); q('vw-h').textContent = dur(mins*60000) + ' h'; };
+      q('vw-back').onclick = () => { edit = false; draw(); };
+      q('vw-save').onclick = () => {
+        const ce = runEntry(r); if(ce){ delete ce.vb; ce.mz = mins; persist('d-'+r.day); }
+        closeSheet(1, true); toast('⚙︎ ' + dur(mins*60000) + ' Maschinenzeit gebucht'); setTimeout(proceed, 320);
+      };
+    } else {
+      q('vw-edit').onclick = () => { edit = true; draw(); setTimeout(() => { const i = q('vw-mz'); if(i){ i.focus(); i.select(); } }, 50); };
+      q('vw-ok').onclick = () => { closeSheet(1, true); setTimeout(proceed, 320); };
+    }
+  };
+  draw();
 }
 // Fertig-Knopf: Zeit stoppen und Auftrag fertig melden
 function doneRun(r, keepOpen, fxMin){
@@ -1002,10 +1064,11 @@ function newAuftragSheet(prefill){
   body.innerHTML = `<div class="sect"><div class="group">
 <label class="cell"><span>Name</span><input id="na-pr" value="${esc(digits ? '' : prefill || '')}" placeholder="Produktname" style="flex:1"></label>
         <label class="cell"><span>Auftrags-Nr.</span><input id="na-nr" value="${esc(digits ? prefill : '')}" style="flex:1"></label>
-        <label class="cell"><span>EIN</span><input id="na-ein" value="${esc('')}" style="flex:1"></label></div></div>`;
+        <label class="cell"><span>EIN</span><input id="na-ein" value="${esc('')}" style="flex:1"></label>
+        <label class="cell"><span>Anzahl</span><input id="na-anz" type="number" min="1" inputmode="numeric" value="" style="flex:1"></label></div></div>`;
   function save(){
     if(!document.getElementById('na-pr').value.trim()) return toast('Name fehlt');
-    const A = ensureAuftrag(document.getElementById('na-nr').value, document.getElementById('na-pr').value, document.getElementById('na-ein').value);
+    const A = ensureAuftrag(document.getElementById('na-nr').value, document.getElementById('na-pr').value, document.getElementById('na-ein').value, document.getElementById('na-anz').value);
     if(!A) return toast('Name fehlt');
     if(A.done){ A.done = false; persist('stamm'); }
     aQuery = ''; stOpen.aktiv = true;
@@ -1048,7 +1111,7 @@ function renderRunning(r){
       ${ab ? `<button class="linkbtn" id="bskip" style="margin:14px auto 0;padding:6px">Schritt überspringen</button>` : ''}
     </div></div>`;
   document.getElementById('fmin').onclick = () => { fsMin = true; render(); };
-  view.querySelectorAll('[data-step]').forEach(el => el.onclick = () => jumpStep(r, +el.dataset.step));
+  view.querySelectorAll('[data-step]').forEach(el => el.onclick = () => jumpAsk(r, +el.dataset.step));
   const bfx = document.getElementById('bfx'); if(bfx) bfx.onclick = () => confirmFixed(r, document.getElementById('fxc').value);
   const bs = document.getElementById('bp');
   let holdT = null, held = false;
@@ -1062,10 +1125,10 @@ function renderRunning(r){
     togglePause(r); fsMin = true; fsRun = null; render(); window.scrollTo(0,0); toast('Pausiert – unter „Gestoppt“');
   };
   const bres = document.getElementById('bres'); if(bres) bres.onclick = () => togglePause(r);
-  document.getElementById('bdone').onclick = () => doneChoice(r);
+  document.getElementById('bdone').onclick = () => vbCheck(r, () => doneChoice(r));
   const bvb = document.getElementById('bvb'); if(bvb) bvb.onclick = () => toggleVb(r);
-  const bn = document.getElementById('bn'); if(bn) bn.onclick = () => nextStep(r);
-  const bnt = document.getElementById('bnt'); if(bnt) bnt.onclick = () => nextTaskSheet(r);
+  const bn = document.getElementById('bn'); if(bn) bn.onclick = () => vbCheck(r, () => nextStep(r));
+  const bnt = document.getElementById('bnt'); if(bnt) bnt.onclick = () => vbCheck(r, () => nextTaskSheet(r));
   view.querySelectorAll('[data-sw]').forEach(b => b.onclick = () => { fsRun = b.dataset.sw; navAnim = 'fade'; render(); });
   const sk = document.getElementById('bskip');
   if(sk){
@@ -1442,7 +1505,8 @@ function editItem(k, id){
     ? `<div class="sect"><div class="group">
 <label class="cell"><span>Name</span><input id="ei-pr" value="${esc(x?x.produkt:'')}" placeholder="Produktname" style="flex:1"></label>
         <label class="cell"><span>Auftrags-Nr.</span><input id="ei-nr" value="${esc(x?x.nr:'')}" style="flex:1"></label>
-        <label class="cell"><span>EIN</span><input id="ei-ein" value="${esc(x&&x.ein?x.ein:'')}" style="flex:1"></label></div></div>
+        <label class="cell"><span>EIN</span><input id="ei-ein" value="${esc(x&&x.ein?x.ein:'')}" style="flex:1"></label>
+        <label class="cell"><span>Anzahl</span><input id="ei-anz" type="number" min="1" inputmode="numeric" value="${x&&x.anz?x.anz:''}" style="flex:1"></label></div></div>
       ${x ? `<div class="sect"><div class="group"><label class="cell"><span class="cl">Fertig gemeldet</span><input type="checkbox" class="sw" id="ei-done" ${x.done?'checked':''}></label></div></div>` : ''}`
     : `<div class="sect"><div class="group"><label class="cell"><input class="left" id="ei-n" value="${esc(x?x.name:'')}" placeholder="Name"></label></div>
        ${x ? '<div class="foot">Umbenennen ändert nur künftige Buchungen.</div>' : ''}</div>
@@ -1453,10 +1517,10 @@ function editItem(k, id){
   if(x) body.insertAdjacentHTML('beforeend', `<div class="group"><button class="cell danger" id="ei-del">Löschen</button></div>`);
   function save(){
     if(isA){
-      const nr = document.getElementById('ei-nr').value.trim(), pr = document.getElementById('ei-pr').value.trim(), ein = document.getElementById('ei-ein').value.trim();
+      const nr = document.getElementById('ei-nr').value.trim(), pr = document.getElementById('ei-pr').value.trim(), ein = document.getElementById('ei-ein').value.trim(), anz = Math.max(0, Math.round(+document.getElementById('ei-anz').value || 0));
       if(!pr) return toast('Name fehlt');
       const cx = id ? state.stamm[k].find(y => y.id===id) : null;
-      if(cx){ cx.nr = nr; cx.produkt = pr; if(ein) cx.ein = ein; else delete cx.ein; cx.done = document.getElementById('ei-done').checked; persist('stamm'); } else ensureAuftrag(nr, pr, ein);
+      if(cx){ cx.nr = nr; cx.produkt = pr; if(ein) cx.ein = ein; else delete cx.ein; if(anz) cx.anz = anz; else delete cx.anz; cx.done = document.getElementById('ei-done').checked; persist('stamm'); } else ensureAuftrag(nr, pr, ein, anz);
     } else {
       const n = document.getElementById('ei-n').value.trim(); if(!n) return toast('Name fehlt');
       const fix = k==='masch' && document.getElementById('ei-fx').checked;
@@ -1492,14 +1556,14 @@ function editEntry(day, eid){
   const e = orig ? clone(orig) : { a:null, t:last.t||'', m:'', s:parseDay(day).setHours(8,0,0,0), e:parseDay(day).setHours(9,0,0,0), p:[], note:'' };
   let aId = e.a ? (ensureAuftrag(e.a.nr, e.a.produkt)||{}).id : last.a;
   const mz0 = e.m ? machMin(e, now) : 0;
-  const x = { day, s:hm(e.s), e:e.e?hm(e.e):'', t:e.t, m:e.m||'', note:e.note||'', mz: mz0 };
+  const x = { day, s:hm(e.s), e:e.e?hm(e.e):'', t:e.t, m:e.m||'', note:e.note||'', mz: mz0, mt: '' };
   let armed = false;
   const body = openSheet(1, { title: orig ? 'Buchung' : 'Nachtragen', right:'Sichern', onRight: save });
   const g = id => document.getElementById(id);
   const read = () => {
     if(!g('xe-day')) return;
-    x.day = g('xe-day').value || x.day; x.s = g('xe-s').value; if(!running) x.e = g('xe-e').value;
-    x.note = g('xe-n').value; if(g('xe-mz')) x.mz = g('xe-mz').value;
+    x.day = g('xe-day').value || x.day; if(g('xe-s')) x.s = g('xe-s').value; if(g('xe-e')) x.e = g('xe-e').value;
+    x.note = g('xe-n').value; if(g('xe-mz')) x.mz = g('xe-mz').value; if(g('xe-mt')) x.mt = g('xe-mt').value;
   };
   // Dauer aus Start/Ende (Pausen werden beim Ändern der Zeiten verworfen)
   const span = () => {
@@ -1508,18 +1572,21 @@ function editEntry(day, eid){
     let m = (eh*60+em) - (sh*60+sm); if(m <= 0) m += 1440; return m;
   };
   const showMach = () => !running && x.m && !isFixM(x.m);
+  const fixNew = () => !orig && x.m && isFixM(x.m);
   const draw = () => {
     const sp = running ? null : (x.s === hm(e.s) && x.e === (e.e ? hm(e.e) : '') && orig ? Math.round(entryDur(e, now).work/60000) : span());
     body.innerHTML = `
       ${e.ab ? `<div class="subttl" style="text-align:center;margin-bottom:12px">${esc(e.ab.n)} · Schritt ${e.ab.i+1} von ${e.ab.of}</div>` : ''}
       <div class="sect"><div class="group">
         <label class="cell"><span class="cl">Datum</span><input type="date" id="xe-day" value="${x.day}"></label>
-        <label class="cell"><span class="cl">Start</span><input type="time" id="xe-s" value="${x.s}"></label>
+        ${fixNew() ? '' : `<label class="cell"><span class="cl">Start</span><input type="time" id="xe-s" value="${x.s}"></label>
         <label class="cell"><span class="cl">Ende</span>${running ? '<span class="cv">läuft noch</span>' : `<input type="time" id="xe-e" value="${x.e}">`}</label>
-        ${running ? '' : `<div class="cell"><span class="cl">Arbeitszeit</span><span class="cv tnum" id="xe-dur">${sp != null ? dur(sp*60000) : '–'}</span></div>`}
-        ${showMach() ? `<label class="cell"><span class="cl two"><span>Maschinenzeit</span><small>⚙︎ ${esc(x.m)} · <span id="xe-mzh">${dur((+x.mz||0)*60000)} h</span></small></span><input type="number" id="xe-mz" min="0" inputmode="numeric" value="${x.mz}" style="width:70px"><span class="dim">min</span></label>` : ''}
-      </div>${showMach() ? '<div class="foot">Maschinenzeit kannst du unabhängig von der Arbeitszeit anpassen, z. B. auf 0 für reine Vorbereitung.</div>' : ''}</div>
-      <div class="sect"><div class="group">${pickCell('a','Auftrag',aVal(aById(aId)),'Wählen')}${pickCell('t','Tätigkeit',esc(x.t),'Wählen')}${pickCell('m','Maschine',esc(x.m),'Ohne')}</div></div>
+        ${running ? '' : `<div class="cell"><span class="cl">Arbeitszeit</span><span class="cv tnum" id="xe-dur">${sp != null ? dur(sp*60000) : '–'}</span></div>`}`}
+      </div></div>
+      <div class="sect"><div class="group">${pickCell('a','Auftrag',aVal(aById(aId)),'Wählen')}${pickCell('t','Tätigkeit',esc(x.t),'Wählen')}${pickCell('m','Maschine',esc(x.m),'Ohne')}
+        ${showMach() ? `<label class="cell"><span class="cl two"><span>Maschinenzeit</span><small><span id="xe-mzh">${dur((+x.mz||0)*60000)} h</span></small></span><input type="number" id="xe-mz" min="0" inputmode="numeric" value="${x.mz}" style="width:70px"><span class="dim">min</span></label>` : ''}
+        ${fixNew() ? `<label class="cell"><span class="cl two"><span>Feste Zeit</span><small>nur Maschinenzeit</small></span><input type="number" id="xe-mt" min="1" inputmode="numeric" placeholder="0" value="${x.mt}" style="width:70px"><span class="dim">min</span></label>` : ''}
+      </div>${showMach() ? '<div class="foot">Maschinenzeit kannst du unabhängig von der Arbeitszeit anpassen, z. B. auf 0 für reine Vorbereitung.</div>' : fixNew() ? '<div class="foot">Feste Buchung – zählt nur als Maschinenzeit, nicht als Arbeitszeit.</div>' : ''}</div>
       <div class="sect"><h2><span>Notiz</span></h2><div class="group"><div class="cell"><textarea id="xe-n" placeholder="Optional">${esc(x.note)}</textarea></div></div></div>
       ${orig && !running ? '<div class="group"><button class="cell danger" id="xe-del">Buchung löschen</button></div>' : ''}`;
     const upd = () => {
@@ -1552,6 +1619,14 @@ function editEntry(day, eid){
     const A = aById(aId);
     if(!A) return toast('Bitte Auftrag wählen');
     if(!x.t) return toast('Bitte Tätigkeit wählen');
+    if(fixNew()){
+      const mt = Math.max(0, Math.round(+x.mt || 0));
+      if(!mt) return toast('Bitte Minuten eingeben');
+      const [h0, m0] = (x.s || '08:00').split(':').map(Number), t0 = parseDay(x.day).setHours(h0, m0, 0, 0);
+      const fe = { id: uid(), a:{ nr:A.nr, produkt:A.produkt }, t:x.t, m:x.m, s:t0, e:t0, p:[], note:x.note, fx:true, mt };
+      state.days[x.day] = state.days[x.day] || {}; state.days[x.day][fe.id] = fe; persist('d-'+x.day);
+      closeSheet(1); toast('Gespeichert'); return;
+    }
     if(!x.s) return toast('Startzeit fehlt');
     const [sh, sm] = x.s.split(':').map(Number);
     const s = parseDay(x.day).setHours(sh, sm, 0, 0);
@@ -1600,6 +1675,46 @@ function editFixed(day, orig){
   };
 }
 
+/* ---------- Arbeitsablauf aus Auftrag übernehmen ---------- */
+// Schritte aus allen Buchungen eines Auftrags in zeitlicher Reihenfolge; durch Vorbereitungszeit geteilte Abschnitte werden zusammengefasst
+function stepsFromAuftrag(A){
+  const key = aKey(A), list = [];
+  Object.values(state.days).forEach(d => Object.values(d || {}).forEach(e => { if(e && e.a && aKey(e.a) === key && e.t) list.push(e); }));
+  list.sort((x, y) => x.s - y.s);
+  const out = [];
+  list.forEach(e => {
+    const m = e.m || '', prev = out[out.length - 1], fix = !!e.fx || isFixM(m);
+    if(prev && !fix && !prev._fix && prev.t === e.t && prev.m === m && prev._e === e.s){ prev._e = e.e || e.s; return; }
+    const st = { t:e.t, m, _e: e.e || e.s, _fix: fix };
+    if(fix){ if(+e.mt > 0) st.mt = Math.round(+e.mt); }
+    else if(m && e.vb) st.vb = true;
+    out.push(st);
+  });
+  return out.map(({ _e, _fix, ...x }) => x);
+}
+function pickAuftragForAblauf(){
+  return new Promise(res => {
+    let q = '', finished = false;
+    const finish = v => { if(finished) return; finished = true; closeSheet(2); res(v); };
+    const body = openSheet(2, { title:'Auftrag wählen', onLeft: () => finish(undefined) });
+    const cand = state.stamm.auftraege.map(a => ({ a, n: stepsFromAuftrag(a).length })).filter(x => x.n)
+      .sort((x, y) => (y.a.done - x.a.done) || ((y.a.doneAt || 0) - (x.a.doneAt || 0)) || aTitle(x.a).localeCompare(aTitle(y.a), 'de'));
+    body.innerHTML = `<div class="search">${ICON_SEARCH}<input id="iq" placeholder="Name, Auftrags-Nr. oder EIN" autocomplete="off"></div><div id="ilist"></div>
+      <div class="foot" style="margin-top:4px">Die gestempelten Schritte werden der Reihe nach übernommen. Danach kannst du alles noch anpassen.</div>`;
+    const draw = () => {
+      const ql = q.trim().toLowerCase();
+      const list = cand.filter(x => !ql || (x.a.nr + ' ' + x.a.produkt + ' ' + (x.a.ein || '')).toLowerCase().includes(ql));
+      body.querySelector('#ilist').innerHTML = `<div class="sect"><div class="group">${list.length ? list.map(x => {
+        const sub = [aSub(x.a), x.a.done ? 'fertig' : ''].filter(Boolean).join(' · ');
+        return `<button class="cell" data-ia="${x.a.id}"><span class="icon" style="background:var(--indigo)">${x.n}</span><span class="cl two"><span>${esc(aTitle(x.a))}</span>${sub ? `<small>${esc(sub)}</small>` : ''}</span><span class="chev">›</span></button>`; }).join('')
+        : `<div class="empty">${cand.length ? 'Kein Auftrag gefunden.' : 'Noch keine Aufträge mit gestempelten Zeiten.'}</div>`}</div></div>`;
+      body.querySelectorAll('[data-ia]').forEach(b => b.onclick = () => finish(state.stamm.auftraege.find(a => a.id === b.dataset.ia)));
+    };
+    body.querySelector('#iq').oninput = ev => { q = ev.target.value; draw(); };
+    draw();
+  });
+}
+
 /* ---------- Arbeitsablauf bearbeiten ---------- */
 function editAblauf(id){
   const st = state.stamm, orig = id ? st.ablaeufe.find(x => x.id===id) : null;
@@ -1608,6 +1723,7 @@ function editAblauf(id){
   const readName = () => { const n = document.getElementById('ab-name'); if(n) name = n.value; };
   const draw = () => {
     body.innerHTML = `<div class="sect"><div class="group"><label class="cell"><input class="left" id="ab-name" value="${esc(name)}" placeholder="Name, z. B. Welle fertigen"></label></div></div>
+      <div class="group" style="background:var(--glass)"><button class="cell accent" id="ab-imp" style="justify-content:center">⤓ Schritte aus Auftrag übernehmen</button></div>
       <div class="sect"><h2><span>Schritte</span></h2>
       ${steps.map((s,i) => `<div class="stepbox">
         <div class="stephead"><span>SCHRITT ${i+1}</span><span class="smini">
@@ -1628,6 +1744,15 @@ function editAblauf(id){
     body.querySelectorAll('[data-dn]').forEach(b => b.onclick = () => { readName(); const i = +b.dataset.dn; [steps[i+1], steps[i]] = [steps[i], steps[i+1]]; draw(); });
     body.querySelectorAll('[data-rs]').forEach(b => b.onclick = () => { readName(); steps.splice(+b.dataset.rs, 1); draw(); });
     document.getElementById('ab-add').onclick = () => { readName(); steps.push({ t:'', m:'' }); draw(); };
+    document.getElementById('ab-imp').onclick = async () => {
+      readName();
+      const A = await pickAuftragForAblauf(); if(!A) return;
+      const imp = stepsFromAuftrag(A); if(!imp.length) return toast('Keine Schritte gefunden');
+      const hasSteps = steps.some(x => x.t);
+      steps = hasSteps ? steps.filter(x => x.t).concat(imp) : imp;
+      if(!name.trim()) name = aTitle(A);
+      draw(); toast(imp.length + (imp.length === 1 ? ' Schritt' : ' Schritte') + (hasSteps ? ' angehängt' : ' übernommen'));
+    };
     body.querySelectorAll('[data-mt]').forEach(c => c.oninput = () => { steps[+c.dataset.mt].mt = Math.round(+c.value || 0); });
     body.querySelectorAll('[data-vb]').forEach(c => c.onchange = () => { const s = steps[+c.dataset.vb]; if(c.checked) s.vb = true; else delete s.vb; });
     const del = document.getElementById('ab-del');
@@ -1707,7 +1832,7 @@ function importBackup(){
       const st = state.stamm;
       (d.stamm.taet||[]).forEach(x => ensureName('taet', x.name));
       (d.stamm.masch||[]).forEach(x => { const n = ensureName('masch', x.name); const m = st.masch.find(y => y.name === n); if(m && x.fix){ m.fix = true; } if(m && x.rp && !m.rp){ m.rp = x.rp; } });
-      (d.stamm.auftraege||[]).forEach(x => { const a = ensureAuftrag(x.nr, x.produkt, x.ein); if(a && x.done) a.done = true; });
+      (d.stamm.auftraege||[]).forEach(x => { const a = ensureAuftrag(x.nr, x.produkt, x.ein, x.anz); if(a && x.done) a.done = true; });
       (d.stamm.ablaeufe||[]).forEach(x => { if(!st.ablaeufe.some(y => y.id===x.id)) st.ablaeufe.push(x); });
       persist('stamm'); closeSheet(1); toast('Import erfolgreich');
     }catch(e){ toast('Ungültige Sicherung'); }

@@ -353,7 +353,7 @@ async function initCloud(){
       let changed = false;
       snap.docs.forEach(d => { if(writing[d.id] || dirty[d.id]) return; const data = d.data(); if(!data) return; try{ if(JSON.stringify(bodyFor(d.id)) === JSON.stringify(data)) return; }catch(e){} applyDoc(d.id, data); changed = true; });
       syncStatus = 'synchronisiert';
-      if(changed){ saveLocal(); if(!sheetOpen()) render(); }
+      if(changed){ linkAuftraege(); saveLocal(); if(!sheetOpen()) render(); }
       renderSyncInfo();
     }, () => { clearTimeout(timer); syncStatus = 'Cloud getrennt – speichert auf dem Gerät'; renderSyncInfo(); });
   }catch(e){}
@@ -390,7 +390,26 @@ function dur(ms, sec){ ms = Math.max(0, ms); const t = Math.floor(ms/1000); retu
 const dec = ms => (Math.max(0,ms)/3600000).toFixed(2).replace('.',',') + ' h';
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
-const aKey = a => (a && a.nr || '') + '|' + (a && a.produkt || '');
+// Aufträge werden über ihre ID verknüpft (Umbenennen wirkt dann überall), alte Buchungen über Nr.+Name
+function aLookup(a){
+  if(!a) return null; const L = state.stamm.auftraege;
+  return (a.id && L.find(x => x.id === a.id)) || L.find(x => x.nr === a.nr && x.produkt === a.produkt) || null;
+}
+const aKey = a => { const f = aLookup(a); return f ? 'id:' + f.id : (a && a.nr || '') + '|' + (a && a.produkt || ''); };
+const aRef = A => ({ id: A.id, nr: A.nr, produkt: A.produkt });
+// Buchungen mit ihrem Auftrag verknüpfen; Buchungen eines früher umbenannten Auftrags über die Auftrags-Nr. wiederfinden
+function linkAuftraege(){
+  const L = state.stamm.auftraege, byNr = {};
+  L.forEach(x => { if(x.nr) byNr[x.nr] = byNr[x.nr] === undefined ? x : null; });
+  const fix = a => {
+    if(!a) return false;
+    const f = aLookup(a) || (a.nr && byNr[a.nr]) || null; if(!f) return false;
+    if(a.id === f.id && a.nr === f.nr && a.produkt === f.produkt) return false;
+    a.id = f.id; a.nr = f.nr; a.produkt = f.produkt; return true;
+  };
+  Object.entries(state.days).forEach(([k, d]) => { let ch = false; Object.values(d || {}).forEach(e => { if(e && fix(e.a)) ch = true; }); if(ch) persist('d-' + k); });
+  let ra = false; (state.aktiv || []).forEach(r => { if(r && r.ab && fix(r.ab.a)) ra = true; }); if(ra) persist('aktiv');
+}
 const aLabel = a => a ? aOne(a) : '–';
 
 function entryDur(e, now){
@@ -443,9 +462,9 @@ function ensureAuftrag(nr, produkt, ein, anz){
   return f;
 }
 // Anzeige: Name groß, darunter klein Auftrags-Nr. und EIN (beides optional)
-function aLive(a){ return (a && state.stamm.auftraege.find(x => x.nr===a.nr && x.produkt===a.produkt)) || a || {}; }
-function aTitle(a){ return (a && (a.produkt || (a.nr ? '#'+a.nr : ''))) || 'Ohne Namen'; }
-function aSub(a){ const L = aLive(a); return [a && a.produkt && a.nr ? '#'+a.nr : '', L.ein ? 'EIN '+L.ein : '', L.anz ? L.anz+' Stk.' : ''].filter(Boolean).join(' · '); }
+function aLive(a){ return aLookup(a) || a || {}; }
+function aTitle(a){ a = aLive(a); return (a.produkt || (a.nr ? '#'+a.nr : '')) || 'Ohne Namen'; }
+function aSub(a){ const L = aLive(a); return [L.produkt && L.nr ? '#'+L.nr : '', L.ein ? 'EIN '+L.ein : '', L.anz ? L.anz+' Stk.' : ''].filter(Boolean).join(' · '); }
 function aOne(a){ const s = aSub(a); return aTitle(a) + (s ? ' · ' + s : ''); }
 
 
@@ -468,7 +487,7 @@ function stopRun(r, now){
 }
 function startEntry(auftrag, t, m, ab, now, vb){
   const day = dayKey(new Date(now));
-  const e = { id: uid(), a:{ nr:auftrag.nr, produkt:auftrag.produkt }, t, m: m||'', s: now, e: null, p: [], note:'' };
+  const e = { id: uid(), a: auftrag.id ? aRef(auftrag) : { nr:auftrag.nr, produkt:auftrag.produkt }, t, m: m||'', s: now, e: null, p: [], note:'' };
   if(vb){ e.vb = true; e.vp = [[now, null]]; }
   if(ab) e.ab = { n: ab.name, i: ab.idx, of: ab.steps.length, sid: ab.sid || '' };
   state.days[day] = state.days[day] || {};
@@ -697,7 +716,7 @@ function bindEntries(root){ (root||view).querySelectorAll('[data-entry]').forEac
 
 /* ---------- Starten / Stoppen ---------- */
 let fsMin = false; // Vollbild minimiert?
-const aFind = x => x && state.stamm.auftraege.find(a => a.nr===x.nr && a.produkt===x.produkt);
+const aFind = x => aLookup(x) || undefined;
 
 let fsRun = null; // welche laufende Aufgabe im Vollbild gezeigt wird
 // Aufgabe anhalten und Position am Auftrag merken
@@ -730,7 +749,7 @@ function startAblaufFor(A, def, fromIdx){
   A = freshA(A);
   if(!def.steps.length){ toast('Arbeitsablauf hat keine Schritte'); return false; }
   const now = Date.now(); stopRunsOf(A, now); clearResume(A); reactivate(A);
-  const ab = { id:def.id, name:def.name, steps:clone(def.steps), idx: fromIdx||0, done: Array.isArray(def.done) ? clone(def.done) : [...Array(fromIdx||0).keys()], a:{ nr:A.nr, produkt:A.produkt }, sid: uid() };
+  const ab = { id:def.id, name:def.name, steps:clone(def.steps), idx: fromIdx||0, done: Array.isArray(def.done) ? clone(def.done) : [...Array(fromIdx||0).keys()], a: aRef(A), sid: uid() };
   state.stamm.last = Object.assign(state.stamm.last||{}, { a:A.id, ab:def.id }); persist('stamm');
   const r = runAblaufFrom(ab, now);
   if(!r){ afterRunEnd(); buzz(); render(); doneAsk(freshA(A), 'Arbeitsablauf abgeschlossen'); return true; }
@@ -750,7 +769,7 @@ const fxCell = (f) => isFixM(f.m) ? `<label class="cell"><span class="cl two"><s
 // feste Maschinenzeit buchen: keine Arbeitszeit, nur Maschinenzeit
 function bookFixed(a, m, t, ab, now, mt){
   const day = dayKey(new Date(now));
-  const e = { id: uid(), a:{ nr:a.nr, produkt:a.produkt }, t: t || 'Maschinenbuchung', m, s: now, e: now, p: [], note:'', fx: true, mt: Math.max(0, Math.round(+mt || 0)) };
+  const e = { id: uid(), a: a.id ? aRef(a) : { nr:a.nr, produkt:a.produkt }, t: t || 'Maschinenbuchung', m, s: now, e: now, p: [], note:'', fx: true, mt: Math.max(0, Math.round(+mt || 0)) };
   if(ab) e.ab = { n: ab.name, i: ab.idx, of: ab.steps.length, sid: ab.sid || '' };
   state.days[day] = state.days[day] || {};
   state.days[day][e.id] = e; persist('d-'+day);
@@ -866,7 +885,7 @@ function toggleVb(r){
 // Abschnitte derselben Aufgabe (durch Vorbereitungszeit-Umschalten geteilt), rückwärts verkettet
 function vbChain(r){
   const e = runEntry(r); if(!e) return [];
-  const same = x => x.a && x.a.nr === e.a.nr && x.a.produkt === e.a.produkt && x.t === e.t && (x.m||'') === (e.m||'') && (!!x.ab === !!e.ab) && (!e.ab || x.ab.sid === e.ab.sid && x.ab.i === e.ab.i);
+  const same = x => x.a && aKey(x.a) === aKey(e.a) && x.t === e.t && (x.m||'') === (e.m||'') && (!!x.ab === !!e.ab) && (!e.ab || x.ab.sid === e.ab.sid && x.ab.i === e.ab.i);
   const out = [e]; let cur = e;
   for(let n = 0; n < 50; n++){
     const day = state.days[dayKey(new Date(cur.s))] || {};
@@ -1644,14 +1663,14 @@ function editEntry(day, eid){
       const mt = Math.max(0, Math.round(+x.mt || 0));
       if(!mt) return toast('Bitte Minuten eingeben');
       const [h0, m0] = (x.s || '08:00').split(':').map(Number), t0 = parseDay(x.day).setHours(h0, m0, 0, 0);
-      const fe = { id: uid(), a:{ nr:A.nr, produkt:A.produkt }, t:x.t, m:x.m, s:t0, e:t0, p:[], note:x.note, fx:true, mt };
+      const fe = { id: uid(), a: aRef(A), t:x.t, m:x.m, s:t0, e:t0, p:[], note:x.note, fx:true, mt };
       state.days[x.day] = state.days[x.day] || {}; state.days[x.day][fe.id] = fe; persist('d-'+x.day);
       closeSheet(1); toast('Gespeichert'); return;
     }
     if(!x.s) return toast('Startzeit fehlt');
     const [sh, sm] = x.s.split(':').map(Number);
     const s = parseDay(x.day).setHours(sh, sm, 0, 0);
-    const ne = { ...e, id: e.id || uid(), a:{ nr:A.nr, produkt:A.produkt }, t:x.t, m:x.m||'', s, note:x.note };
+    const ne = { ...e, id: e.id || uid(), a: aRef(A), t:x.t, m:x.m||'', s, note:x.note };
     if(!running){
       if(!x.e) return toast('Endzeit fehlt');
       const [eh, em] = x.e.split(':').map(Number);
@@ -1698,7 +1717,7 @@ function editFixed(day, orig){
 
 /* ---------- Auftrag umbenennen: alle Buchungen und laufenden Abläufe mitziehen ---------- */
 function renameAuftragEverywhere(A, nr, produkt){
-  const oldKey = aKey(A), fix = a => { if(a && aKey(a) === oldKey){ a.nr = nr; a.produkt = produkt; return true; } return false; };
+  const oldKey = aKey(A), fix = a => { if(a && aKey(a) === oldKey){ a.id = A.id; a.nr = nr; a.produkt = produkt; return true; } return false; };
   Object.entries(state.days).forEach(([k, d]) => {
     let ch = false;
     Object.values(d || {}).forEach(e => { if(e && fix(e.a)) ch = true; });
@@ -1868,7 +1887,7 @@ function importBackup(){
       (d.stamm.masch||[]).forEach(x => { const n = ensureName('masch', x.name); const m = st.masch.find(y => y.name === n); if(m && x.fix){ m.fix = true; } if(m && x.rp && !m.rp){ m.rp = x.rp; } });
       (d.stamm.auftraege||[]).forEach(x => { const a = ensureAuftrag(x.nr, x.produkt, x.ein, x.anz); if(a && x.done) a.done = true; });
       (d.stamm.ablaeufe||[]).forEach(x => { if(!st.ablaeufe.some(y => y.id===x.id)) st.ablaeufe.push(x); });
-      persist('stamm'); closeSheet(1); toast('Import erfolgreich');
+      persist('stamm'); linkAuftraege(); closeSheet(1); toast('Import erfolgreich');
     }catch(e){ toast('Ungültige Sicherung'); }
   }
 }
@@ -1912,6 +1931,7 @@ window.addEventListener('resize', moveTabPill);
 document.querySelectorAll('.tabbar button').forEach(b => b.onclick = () => { if(b.dataset.tab===tab && !(tab==='einst' && einSub)) return; if(tab==='einst' && b.dataset.tab==='einst'){ einSub = null; navAnim = 'pop'; } else navAnim = 'tab'; tab = b.dataset.tab; buzz(); render(); window.scrollTo(0,0); });
 document.addEventListener('visibilitychange', () => { if(!document.hidden && !sheetOpen()) render(); });
 loadLocal();
+linkAuftraege();
 render();
 initCloud();
 if(STANDALONE){

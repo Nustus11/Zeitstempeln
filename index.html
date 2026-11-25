@@ -399,6 +399,26 @@ function entryDur(e, now){
   let p = 0; (e.p||[]).forEach(([ps,pe]) => { p += (pe || end) - ps; });
   return { work: Math.max(0, end - e.s - p), pause: p };
 }
+// Vorbereitungszeit innerhalb eines Eintrags (e.vp = [[start, ende|null], …]); alte Einträge: ganzer Eintrag e.vb
+function vbMs(e, now){
+  if(e.fx || e.fxp) return 0;
+  if(!e.vp) return e.vb ? entryDur(e, now).work : 0;
+  const end = e.e || now; let t = 0;
+  e.vp.forEach(([a, b]) => {
+    b = Math.min(b || end, end); if(b <= a) return;
+    let len = b - a;
+    (e.p||[]).forEach(([ps, pe]) => { pe = pe || end; len -= Math.max(0, Math.min(b, pe) - Math.max(a, ps)); });
+    t += Math.max(0, len);
+  });
+  return Math.min(t, entryDur(e, now).work);
+}
+function machMs(e, now){
+  if(e.fx) return (+e.mt || 0) * 60000;
+  if(!e.m || e.fxp) return 0;
+  if(e.vb && !e.vp) return 0;
+  if(e.mz != null) return (+e.mz) * 60000;
+  return Math.max(0, entryDur(e, now).work - vbMs(e, now));
+}
 function isPaused(e){ const p = e.p||[]; return p.length && !p[p.length-1][1]; }
 
 let toastT;
@@ -443,13 +463,13 @@ function curEntry(){ return runEntry(runs()[0]); }
 function stopRun(r, now){
   const e = runEntry(r);
   if(e && e.fxp){ delete state.days[r.day][r.eid]; persist('d-'+r.day); }
-  else if(e){ if(isPaused(e)) e.p[e.p.length-1][1] = now; e.e = now; persist('d-'+r.day); }
+  else if(e){ if(isPaused(e)) e.p[e.p.length-1][1] = now; if(e.vp){ const l = e.vp[e.vp.length-1]; if(l && !l[1]) l[1] = now; delete e.vb; } e.e = now; persist('d-'+r.day); }
   state.aktiv = runs().filter(x => x.eid !== r.eid); persist('aktiv');
 }
 function startEntry(auftrag, t, m, ab, now, vb){
   const day = dayKey(new Date(now));
   const e = { id: uid(), a:{ nr:auftrag.nr, produkt:auftrag.produkt }, t, m: m||'', s: now, e: null, p: [], note:'' };
-  if(vb) e.vb = true;
+  if(vb){ e.vb = true; e.vp = [[now, null]]; }
   if(ab) e.ab = { n: ab.name, i: ab.idx, of: ab.steps.length, sid: ab.sid || '' };
   state.days[day] = state.days[day] || {};
   state.days[day][e.id] = e; persist('d-'+day);
@@ -495,9 +515,9 @@ function summarize(dayKeys, now){
       segs(e, now).forEach(s => all.push(s));
       const key = aKey(e.a);
       const g = per[key] = per[key] || { a:e.a, own:0, vb:0, masch:{}, taet:{}, n:0 };
-      g.own += w; g.n++; if(e.vb) g.vb += w;
+      g.own += w; g.n++; g.vb += vbMs(e, now);
       g.taet[e.t] = (g.taet[e.t]||0) + w;
-      const mv = e.vb ? 0 : (e.mz != null ? (+e.mz)*60000 : w);
+      const mv = machMs(e, now);
       if(e.m && mv){ g.masch[e.m] = (g.masch[e.m]||0) + mv; masch[e.m] = (masch[e.m]||0) + mv; }
     });
   });
@@ -540,7 +560,7 @@ function csvBuchungen(keys){
   keys.forEach(k => Object.values(state.days[k]||{}).sort((a,b)=>a.s-b.s).forEach(e => {
     const d = entryDur(e, now);
     rows.push([parseDay(k).toLocaleDateString('de-DE'), hm(e.s), e.e?hm(e.e):'läuft', e.a.nr, e.a.produkt, aLive(e.a).ein||'', e.ab?e.ab.n:'', e.ab?(e.ab.i+1)+'/'+e.ab.of:'',
-      e.t, e.m, e.vb ? 'ja' : '', e.fx ? '' : Math.round(d.pause/60000), e.fx ? '' : dur(d.work), e.fx ? '' : decN(d.work), e.fx ? dur((+e.mt||0)*60000) : e.m ? dur((e.vb ? 0 : e.mz != null ? +e.mz*60000 : d.work)) : '', (e.note||'').replace(/\s+/g,' ')]);
+      e.t, e.m, vbMs(e, now) ? dur(vbMs(e, now)) : '', e.fx ? '' : Math.round(d.pause/60000), e.fx ? '' : dur(d.work), e.fx ? '' : decN(d.work), e.fx ? dur((+e.mt||0)*60000) : e.m ? dur(machMs(e, now)) : '', (e.note||'').replace(/\s+/g,' ')]);
   }));
   return csv(rows);
 }
@@ -669,7 +689,7 @@ function entryCell(e, now){
     <span class="cv tnum" style="color:var(--orange)">⚙︎ ${dur((+e.mt||0)*60000)}</span><span class="chev">›</span></button>`;
   const d = entryDur(e, now);
   return `<button class="cell" data-entry="${e.id}" data-day="${dayKey(new Date(e.s))}">
-    <span class="cl two"><span>${esc(e.t)}${e.m?` <span class="dim">· ${esc(e.m)}</span>`:''}${e.vb && e.t !== 'Vorbereitung' ? ' <span class="dim">· Vorbereitung</span>' : ''}</span>
+    <span class="cl two"><span>${esc(e.t)}${e.m?` <span class="dim">· ${esc(e.m)}</span>`:''}${(e.vb && !e.vp) && e.t !== 'Vorbereitung' ? ' <span class="dim">· Vorbereitung</span>' : ''}</span>
     <small>${esc(aTitle(e.a))} · ${hm(e.s)}–${e.e?hm(e.e):'jetzt'}</small></span>
     <span class="cv tnum" style="color:var(--text)">${dur(d.work)}</span><span class="chev">›</span></button>`;
 }
@@ -833,15 +853,15 @@ function nextTaskSheet(r){
   };
   draw();
 }
-// Vorbereitungszeit während des Stempelns an/aus: ab jetzt neuer Abschnitt
+// Vorbereitungszeit während des Stempelns an/aus: gleiche Buchung, nur die Maschinenzeit ruht
 function toggleVb(r){
   const e = runEntry(r); if(!e) return;
-  const now = Date.now(), wasPaused = isPaused(e), vb = !e.vb;
-  if(now - e.s < 60000 && !(e.p||[]).length){ if(vb) e.vb = true; else delete e.vb; persist('d-'+r.day); buzz(); render(); return; }
-  stopRun(r, now);
-  const nr = startEntry(e.a, e.t, e.m, r.ab, now, vb);
-  if(wasPaused){ const ne = runEntry(nr); ne.p.push([now, null]); persist('d-'+nr.day); }
-  fsRun = nr.eid; buzz(); toast(vb ? 'Vorbereitungszeit an' : 'Vorbereitungszeit aus'); render();
+  const now = Date.now(), vb = !e.vb;
+  if(!e.vp) e.vp = e.vb ? [[e.s, null]] : [];
+  if(vb){ e.vb = true; e.vp.push([now, null]); }
+  else { const l = e.vp[e.vp.length-1]; if(l && !l[1]) l[1] = now; delete e.vb; }
+  e.vp = e.vp.filter(([a, b]) => !b || b - a >= 1000);
+  persist('d-'+r.day); buzz(); toast(vb ? 'Vorbereitungszeit an' : 'Vorbereitungszeit aus'); render();
 }
 // Abschnitte derselben Aufgabe (durch Vorbereitungszeit-Umschalten geteilt), rückwärts verkettet
 function vbChain(r){
@@ -881,7 +901,7 @@ function vbCheck(r, proceed){
       const inp = q('vw-mz'); inp.oninput = () => { mins = Math.max(0, Math.round(+inp.value || 0)); q('vw-h').textContent = dur(mins*60000) + ' h'; };
       q('vw-back').onclick = () => { edit = false; draw(); };
       q('vw-save').onclick = () => {
-        const ce = runEntry(r); if(ce){ delete ce.vb; ce.mz = mins; persist('d-'+r.day); }
+        const ce = runEntry(r); if(ce){ if(ce.vp){ const l = ce.vp[ce.vp.length-1]; if(l && !l[1]) l[1] = Date.now(); } else ce.vp = []; delete ce.vb; ce.mz = mins; persist('d-'+r.day); }
         closeSheet(1, true); toast('⚙︎ ' + dur(mins*60000) + ' Maschinenzeit gebucht'); setTimeout(proceed, 320);
       };
     } else {
@@ -1520,6 +1540,7 @@ function editItem(k, id){
       const nr = document.getElementById('ei-nr').value.trim(), pr = document.getElementById('ei-pr').value.trim(), ein = document.getElementById('ei-ein').value.trim(), anz = Math.max(0, Math.round(+document.getElementById('ei-anz').value || 0));
       if(!pr) return toast('Name fehlt');
       const cx = id ? state.stamm[k].find(y => y.id===id) : null;
+      if(cx && (cx.nr !== nr || cx.produkt !== pr)) renameAuftragEverywhere(cx, nr, pr);
       if(cx){ cx.nr = nr; cx.produkt = pr; if(ein) cx.ein = ein; else delete cx.ein; if(anz) cx.anz = anz; else delete cx.anz; cx.done = document.getElementById('ei-done').checked; persist('stamm'); } else ensureAuftrag(nr, pr, ein, anz);
     } else {
       const n = document.getElementById('ei-n').value.trim(); if(!n) return toast('Name fehlt');
@@ -1546,7 +1567,7 @@ function editItem(k, id){
 
 /* ---------- Buchung bearbeiten ---------- */
 // Maschinenzeit einer Buchung in Minuten (Vorbereitung = 0, sonst angepasst oder gemessen)
-function machMin(e, now){ if(e.vb) return 0; if(e.mz != null) return +e.mz; return Math.round(entryDur(e, now || Date.now()).work / 60000); }
+function machMin(e, now){ return Math.round(machMs(e, now || Date.now()) / 60000); }
 function editEntry(day, eid){
   const orig = eid ? state.days[day] && state.days[day][eid] : null;
   if(eid && !orig) return;
@@ -1639,10 +1660,10 @@ function editEntry(day, eid){
       if(!orig || x.s !== hm(orig.s) || x.e !== hm(orig.e) || x.day !== day) ne.p = [];
       if(showMach()){
         const mz = Math.max(0, Math.round(+x.mz || 0));
-        const auto = Math.round(entryDur(ne, now).work / 60000);
-        if(mz !== auto || orig && orig.mz != null){ ne.mz = mz; } else delete ne.mz;
-        delete ne.vb;
-      } else if(!ne.m){ delete ne.mz; delete ne.vb; }
+        const tmp = { ...ne }; delete tmp.mz;
+        const auto = machMin(tmp, now);
+        if(mz !== auto || orig && orig.mz != null){ ne.mz = mz; if(ne.vb && !ne.vp){ delete ne.vb; ne.vp = []; } } else delete ne.mz;
+      } else if(!ne.m){ delete ne.mz; delete ne.vb; delete ne.vp; }
     }
     if(orig && x.day !== day){ delete state.days[day][e.id]; persist('d-'+day); if(runObj){ runObj.day = x.day; persist('aktiv'); } }
     state.days[x.day] = state.days[x.day] || {}; state.days[x.day][ne.id] = ne; persist('d-'+x.day);
@@ -1675,6 +1696,19 @@ function editFixed(day, orig){
   };
 }
 
+/* ---------- Auftrag umbenennen: alle Buchungen und laufenden Abläufe mitziehen ---------- */
+function renameAuftragEverywhere(A, nr, produkt){
+  const oldKey = aKey(A), fix = a => { if(a && aKey(a) === oldKey){ a.nr = nr; a.produkt = produkt; return true; } return false; };
+  Object.entries(state.days).forEach(([k, d]) => {
+    let ch = false;
+    Object.values(d || {}).forEach(e => { if(e && fix(e.a)) ch = true; });
+    if(ch) persist('d-' + k);
+  });
+  let ra = false; runs().forEach(r => { if(r.ab && fix(r.ab.a)) ra = true; });
+  if(ra) persist('aktiv');
+  state.stamm.auftraege.forEach(x => { if(x.resume && x.resume.ab) fix(x.resume.ab.a); });
+}
+
 /* ---------- Arbeitsablauf aus Auftrag übernehmen ---------- */
 // Schritte aus allen Buchungen eines Auftrags in zeitlicher Reihenfolge; durch Vorbereitungszeit geteilte Abschnitte werden zusammengefasst
 function stepsFromAuftrag(A){
@@ -1687,7 +1721,7 @@ function stepsFromAuftrag(A){
     if(prev && !fix && !prev._fix && prev.t === e.t && prev.m === m && prev._e === e.s){ prev._e = e.e || e.s; return; }
     const st = { t:e.t, m, _e: e.e || e.s, _fix: fix };
     if(fix){ if(+e.mt > 0) st.mt = Math.round(+e.mt); }
-    else if(m && e.vb) st.vb = true;
+    else if(m && (e.vb && !e.vp || e.vp && e.vp.length && e.vp[0][0] - e.s < 60000)) st.vb = true;
     out.push(st);
   });
   return out.map(({ _e, _fix, ...x }) => x);
